@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "84857083181",
+    "project_id": "comunicador-b4160",
+    "storage_bucket": "comunicador-b4160.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:84857083181:android:6a17f00fb43e606788afa4",
+        "android_client_info": {
+          "package_name": "jordigomez.ioc.cat.comunicador"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "84857083181-2hkof6gn4a94qbqllba2e5p967435n4g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCECnwdilxZKwIgaJzdIoi9sifMeNf1jPQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "84857083181-2hkof6gn4a94qbqllba2e5p967435n4g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

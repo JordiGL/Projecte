@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Comunicador</string>
+    <string name="txt_registrar">Registrar</string>
+    <string name="campEmailBuitLogin">Introdueix l\'email</string>
+    <string name="campClauBuitLogin">Introdueix la clau</string>
+    <string name="errorEmailOClau">Email o clau incorrecta</string>
+    <string name="errorRegitreUsuari">No s\'ha pogut dur a terme el registre.</string>
+</resources>
