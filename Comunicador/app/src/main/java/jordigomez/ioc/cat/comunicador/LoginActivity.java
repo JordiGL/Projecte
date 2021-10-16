@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -13,8 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import gestor.DbHelper;
-import gestor.DbUsuaris;
+import dao.Database;
+import dao.DAOUsuariImpl;
+import gestor.GestorException;
+import gestor.GestorLogin;
+import interfaces.DAOUsuari;
 import io.github.muddz.styleabletoast.StyleableToast;
 import model.Usuari;
 
@@ -24,10 +28,9 @@ import model.Usuari;
  * @see AppCompatActivity
  */
 public class LoginActivity extends AppCompatActivity {
-    private EditText email, clau;
-    private SQLiteDatabase db;
-    private DbUsuaris dbUsuaris;
-    private Usuari usuari;
+    public final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
+    private EditText email, password;
+    private GestorLogin gestorLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +42,13 @@ public class LoginActivity extends AppCompatActivity {
         //Amagar barra superior de la info del dispositiu.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        DbHelper dbHelper = new DbHelper(LoginActivity.this);
-        db = dbHelper.getWritableDatabase();
-        dbUsuaris = new DbUsuaris(LoginActivity.this);
-
         TextView btnAlta = findViewById(R.id.textAlta);
         Button btnIniciSessio = findViewById(R.id.btnLogin);
+        TextView btnClauPerduda = findViewById(R.id.clauPerduda);
         email = findViewById(R.id.inputEmailLogin);
-        clau = findViewById(R.id.inputPasswordLogin);
+        password = findViewById(R.id.inputPasswordLogin);
+
+
 
         btnAlta.setOnClickListener(new View.OnClickListener() {
 
@@ -59,103 +61,111 @@ public class LoginActivity extends AppCompatActivity {
 
         btnIniciSessio.setOnClickListener(new View.OnClickListener() {
 
+
             @Override
             public void onClick(View view) {
+                DAOUsuari dao;
+                Intent intent;
+                Usuari usuari;
 
-                if(!comprovarCamps()){
+                if(emailAndPasswordChecker()){
+                    dao = new DAOUsuariImpl(LoginActivity.this);
+                    usuari = dao.obtenir(email.getText().toString());
 
-                    if(usuari.isEnabled()){
+                    if(usuari.getPassword().equals(password.getText().toString())){
 
-                        startActivity(new Intent(LoginActivity.this, AdministratorActivity.class));
+                        if(usuari.isAdministrator()){
 
-                    }else{
+                            intent = new Intent(LoginActivity.this, AdministratorActivity.class);
+                        }else{
 
-                        startActivity(new Intent(LoginActivity.this, ClientActivity.class));
+                            intent = new Intent(LoginActivity.this, ClientActivity.class);
+                        }
+                        intent.putExtra(EXTRA_MESSAGE, usuari.getEmail());
+                        startActivity(intent);
+
+                    } else {
+                        email.setBackgroundResource(R.drawable.bg_edittext_error);
+                        password.setBackgroundResource(R.drawable.bg_edittext_error);
+                        email.setError("Usuari o clau incorrectes");
+                        password.setError("Usuari o clau incorrectes");
+                        StyleableToast.makeText(LoginActivity.this, getResources().getString(R.string.errorEmailOClau), Toast.LENGTH_SHORT, R.style.toastError).show();
                     }
                 }
             }
         });
+
+        btnClauPerduda.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
+    private boolean emailAndPasswordChecker(){
 
-    /**
-     * Obté el valor introduït per l'usuari en els diferents camps del registre i comprova que no hi hagi errors.
-     * @return Un booleà: true si ha trobat error, i false en cas contrari.
-     * @author Jordi Gómez Lozano.
-     */
-    private boolean comprovarCamps(){
+        boolean correcte = true;
 
-        /*En el login no és necessari que un usuari sàpiga si un correu existeix a la base de dades,
-        per tant no es mostrarà un error referent a això.*/
-        boolean errorEmail = comprovarCampBuit(email, R.string.campEmailBuitLogin, R.drawable.ic_email);
-        boolean errorClau = comprovarCampBuit(clau, R.string.campClauBuitLogin, R.drawable.ic_security);
+        gestorLogin = new GestorLogin(email.getText().toString(), password.getText().toString());
 
-        if(!errorEmail && !errorClau) {
 
-                if (dbUsuaris.comprovarContacte(email.getText().toString())) {
+        if (!gestorLogin.emailChecker()) {
 
-                    usuari = dbUsuaris.obtenirContacte(email.getText().toString());
+            email.setBackgroundResource(R.drawable.bg_edittext_error);
+            email.setError(gestorLogin.getError());
 
-                    if (usuari.getPassword().equals(clau.getText().toString())) {
+            correcte = false;
 
-                        return false;
-                    }
-                }
+        } else {
 
-                clau.setBackgroundResource(R.drawable.bg_edittext_error);
-                email.setBackgroundResource(R.drawable.bg_edittext_error);
-
-                StyleableToast.makeText(LoginActivity.this, getResources().getString(R.string.errorEmailOClau), Toast.LENGTH_SHORT, R.style.toastError).show();
-                return true;
+            email.setBackgroundResource(R.drawable.bg_edittext);
         }
 
-        return true;
-    }
+        if (!gestorLogin.passwordChecker()) {
 
-    /**
-     * Comprova si els TextViews estan buits.
-     * @param textView a comprovar.
-     * @param textError missatge a mostrar.
-     * @param iconaEsquerra icona esquerra del camp.
-     * @return Un booleà: true si el camp del TextView esta buit, i false en cas contrari.
-     * @author Jordi Gómez Lozano.
-     */
-    private boolean comprovarCampBuit(TextView textView, int textError, int iconaEsquerra){
+            password.setBackgroundResource(R.drawable.bg_edittext_error);
+            password.setError(gestorLogin.getError());
 
-        boolean error = false;
+            correcte = false;
 
-        if (TextUtils.isEmpty(textView.getText().toString().trim())) {
+        } else {
 
-            textView.setBackgroundResource(R.drawable.bg_edittext_error);
-            textView.setError(getResources().getString(textError));
-
-            error = true;
-
-        }else{
-
-            textView.setBackgroundResource(R.drawable.bg_edittext);
+            email.setBackgroundResource(R.drawable.bg_edittext);
         }
 
-
-        return error;
+        return correcte;
     }
 
     private void crearBaseDeDades(){
-
-        if(db != null){
-            Toast.makeText(LoginActivity.this, "Base de dades creada", Toast.LENGTH_LONG).show();
-            DbUsuaris dbUsuaris = new DbUsuaris(LoginActivity.this);
-            dbUsuaris.insertarUsuaris("gemmarica94@gmail.com", true,
-                    "FEMALE", "Gemma", "gemma", "600000001");
-            dbUsuaris.insertarUsuaris("jonatanchaler@gmail.com", true,
-                    "MALE", "Jonatan", "jonatan", "600000002");
-            dbUsuaris.insertarUsuaris("jogomloz@gmail.com", true,
-                    "MALE", "Jordi", "jordi", "600000003");
-            dbUsuaris.insertarUsuaris("mariaprova@gmail.com", false,
-                    "FEMALE", "Maria", "maria", "600000004");
-        }else{
-            Toast.makeText(LoginActivity.this, "ERROR EN CREAR LA BASE DE DADES", Toast.LENGTH_LONG).show();
+        try {
+            Database db = new Database(LoginActivity.this);
+            SQLiteDatabase database = db.getWritableDatabase();
+            if (database != null) {
+                Toast.makeText(LoginActivity.this, "Base de dades creada", Toast.LENGTH_LONG).show();
+                DAOUsuariImpl DAOUsuariImpl = new DAOUsuariImpl(LoginActivity.this);
+                DAOUsuariImpl.insertar(new Usuari("gemmarica94@gmail.com", true,
+                        "FEMALE", "Gemma", "gemma", "600000001"));
+                DAOUsuariImpl.insertar(new Usuari("jonatanchaler@gmail.com", true,
+                        "MALE", "Jonatan", "jonatan", "600000002"));
+                DAOUsuariImpl.insertar(new Usuari("jogomloz@gmail.com", true,
+                        "MALE", "Jordi", "jordi", "600000003"));
+                DAOUsuariImpl.insertar(new Usuari("mariaprova@gmail.com", false,
+                        "FEMALE", "Maria", "maria", "600000004"));
+            } else {
+                Toast.makeText(LoginActivity.this, "ERROR EN CREAR LA BASE DE DADES", Toast.LENGTH_LONG).show();
+            }
+        }catch(GestorException ex){
+            Log.w("Error", "Error en registrar l'usuari", ex);
         }
+    }
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }

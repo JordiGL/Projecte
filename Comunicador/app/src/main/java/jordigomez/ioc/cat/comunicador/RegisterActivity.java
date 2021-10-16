@@ -1,11 +1,11 @@
 package jordigomez.ioc.cat.comunicador;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Patterns;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -15,8 +15,13 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.util.regex.Pattern;
-import gestor.DbUsuaris;
+
+import dao.DAOUsuariImpl;
+import gestor.GestorException;
+import gestor.GestorRegistre;
+import interfaces.DAOUsuari;
+import io.github.muddz.styleabletoast.StyleableToast;
+import model.Usuari;
 
 /**
  * Classe que permet registrar-se.
@@ -24,16 +29,14 @@ import gestor.DbUsuaris;
  * @see AppCompatActivity
  */
 public class RegisterActivity extends AppCompatActivity {
-    private EditText nom, telefon, email, clau, confirmarClau;
+    private EditText nameSurname, phone, email, password, conformPassword;
     private RadioGroup radioGroupVeu;
-    private TextView tornarLogin;
-    private CharSequence  genereIntroduit;
-    private Button btnRegistrar;
-    private DbUsuaris dbUsuaris;
     private LinearLayout ln_radioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
@@ -43,13 +46,13 @@ public class RegisterActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
-        btnRegistrar = findViewById(R.id.btnRegister);
-        tornarLogin = findViewById(R.id.textTornarLogin);
-        nom = findViewById(R.id.inputUsername);
-        telefon = findViewById(R.id.inputTelefon);
+        Button btnRegistrar = findViewById(R.id.btnRegister);
+        TextView tornarLogin = findViewById(R.id.textTornarLogin);
+        nameSurname = findViewById(R.id.inputUsername);
+        phone = findViewById(R.id.inputTelefon);
         email = findViewById(R.id.inputEmail);
-        clau = findViewById(R.id.inputPassword);
-        confirmarClau = findViewById(R.id.inputConformPassword);
+        password = findViewById(R.id.inputPassword);
+        conformPassword = findViewById(R.id.inputConformPassword);
         radioGroupVeu = findViewById(R.id.rg);
         ln_radioGroup = findViewById(R.id.linearLayoutVeu);
 
@@ -57,13 +60,13 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                try {
 
-                if(validador()){
+                    registerUser();
 
-                    Toast.makeText(RegisterActivity.this, "Usuari creat correctament", Toast.LENGTH_LONG).show();
-                    netejarCamps();
-                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                } catch (GestorException ex) {
 
+                    Log.w("Error", "Error en registrar l'usuari", ex);
                 }
             }
         });
@@ -72,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             }
         });
@@ -79,35 +83,62 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     /**
-     * Mètode que controla que el registre es porti a terme correctament, en cas contrari avisa a l'usuari.
-     * @return Un booleà: true si s'ha efectuat el registre correctament, i false en cas contrari.
+     * Controla que el registre es porti a terme correctament, en cas contrari avisa a l'usuari.
      * @author Jordi Gómez Lozano.
      */
-    public boolean validador(){
+    public void registerUser() throws GestorException {
 
-        boolean registre = false;
-        dbUsuaris = new DbUsuaris(RegisterActivity.this);
+        DAOUsuari dao = new DAOUsuariImpl(RegisterActivity.this);
 
-        if(!comprovarCamps()) {
+        if(checkFields()) {
 
-            int selectedId = radioGroupVeu.getCheckedRadioButtonId();
-            RadioButton radioButton = (RadioButton) findViewById(selectedId);
-            genereIntroduit = radioButton.getText();
+            Usuari usuari = createUsuari();
 
-            long introduccio = dbUsuaris.insertarUsuaris( email.getText().toString(), false,
-                    genereIntroduit.toString(), nom.getText().toString(), clau.getText().toString(), telefon.getText().toString());
+            if (dao.insertar(usuari)) {
 
-            if (introduccio > 0) {
+                Toast.makeText(RegisterActivity.this, "Usuari creat correctament", Toast.LENGTH_LONG).show();
+                cleanFields();
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
 
-                registre = true;
-
-            }else{
-                btnRegistrar.setTextColor(getResources().getColor(R.color.red));
-                Toast.makeText(RegisterActivity.this, "Error en introduir l'usuari", Toast.LENGTH_LONG).show();
+            } else {
+                StyleableToast.makeText(RegisterActivity.this, getResources().getString(R.string.errorRegitreUsuari), Toast.LENGTH_SHORT, R.style.toastError).show();
             }
         }
 
-        return registre;
+    }
+
+    /**
+     * Crea l'usuari amb els paràmetres entrats per aquest.
+     * @return usuari creat
+     * @author Jordi Gómez Lozano.
+     */
+    @NonNull
+    private Usuari createUsuari() {
+        String voiceUsuari = " ";
+        int selectedId = radioGroupVeu.getCheckedRadioButtonId();
+        RadioButton radioButton = (RadioButton) findViewById(selectedId);
+
+        String emailUsuari = email.getText().toString();
+        String nomUsuari = nameSurname.getText().toString();
+        String telefonUsuari = phone.getText().toString();
+        String clauUsuari = password.getText().toString();
+
+        if(radioButton != null){
+
+            voiceUsuari = radioButton.getText().toString();
+            voiceUsuari = (voiceUsuari.equals("Masculina") ? "male" : "female");
+        }
+
+        Usuari usuari = new Usuari(
+                emailUsuari,
+                false,
+                voiceUsuari,
+                nomUsuari,
+                clauUsuari,
+                telefonUsuari
+        );
+
+        return usuari;
     }
 
     /**
@@ -115,136 +146,104 @@ public class RegisterActivity extends AppCompatActivity {
      * @return Un booleà: true si ha trobat error, i false en cas contrari.
      * @author Jordi Gómez Lozano.
      */
-    private boolean comprovarCamps(){
+    private boolean checkFields() throws GestorException {
+        boolean correcte = true;
+        DAOUsuari dao = new DAOUsuariImpl(RegisterActivity.this);
+        Usuari usuari = createUsuari();
 
-        boolean errorEnCamp = false;
-        String nomtext = nom.getText().toString().trim();
-        String telefonText = telefon.getText().toString().trim();
-        String emailText = email.getText().toString().trim();
-        String clauText = clau.getText().toString().trim();
+        //Gestor del registre.
+        GestorRegistre gestorRegistre = new GestorRegistre(usuari, conformPassword.getText().toString());
 
-        if (TextUtils.isEmpty(nomtext) && nom.getId() == R.id.inputUsername) {
+        if (!gestorRegistre.nameSurnameChecker()) {
 
-            nom.setBackgroundResource(R.drawable.bg_edittext_error);
-            nom.setError("Introdueix el nom");
+            nameSurname.setBackgroundResource(R.drawable.bg_edittext_error);
+            nameSurname.setError(gestorRegistre.getError());
 
-            errorEnCamp = true;
+            correcte = false;
 
-        }else{
+        } else {
 
-            nom.setBackgroundResource(R.drawable.bg_edittext);
+            nameSurname.setBackgroundResource(R.drawable.bg_edittext);
         }
 
-        if(TextUtils.isEmpty(telefonText) && telefon.getId() == R.id.inputTelefon){
+        if (!gestorRegistre.phoneChecker()) {
 
-            telefon.setBackgroundResource(R.drawable.bg_edittext_error);
-            telefon.setError("Introdueix el telèfon");
+            phone.setBackgroundResource(R.drawable.bg_edittext_error);
+            phone.setError(gestorRegistre.getError());
 
-            errorEnCamp = true;
+            correcte = false;
 
-        }else{
+        } else {
 
-            telefon.setBackgroundResource(R.drawable.bg_edittext);
+            phone.setBackgroundResource(R.drawable.bg_edittext);
         }
 
-        if (TextUtils.isEmpty(emailText) &&  email.getId() == R.id.inputEmail){
+        if (!gestorRegistre.emailChecker()) {
 
             email.setBackgroundResource(R.drawable.bg_edittext_error);
-            email.setError("Introdueix l'email");
+            email.setError(gestorRegistre.getError());
 
-            errorEnCamp = true;
+            correcte = false;
 
-        }else if (!Patterns.EMAIL_ADDRESS.matcher(emailText).matches()) {
+        } else if (dao.comprovar(usuari.getEmail())) {
 
-            email.setText("");
+            correcte = false;
             email.setBackgroundResource(R.drawable.bg_edittext_error);
-            email.setError("Correu inacceptable");
+            email.setError("Email ja assignat a un usuari");
 
-            errorEnCamp = true;
-
-        }else if (dbUsuaris.comprovarContacte(emailText)) {
-
-            email.setText("");
-            email.setBackgroundResource(R.drawable.bg_edittext_error);
-            email.setError("Email assignat a un compte");
-
-            errorEnCamp = true;
-
-        }else{
+        } else {
 
             email.setBackgroundResource(R.drawable.bg_edittext);
         }
 
-        if(TextUtils.isEmpty(clauText) && clau.getId() == R.id.inputPassword){
+        if (!gestorRegistre.passwordChecker()) {
 
-            clau.setBackgroundResource(R.drawable.bg_edittext_error);
-            clau.setError("Introdueix la clau");
+            password.setBackgroundResource(R.drawable.bg_edittext_error);
+            password.setError(gestorRegistre.getError());
 
-            errorEnCamp = true;
+            correcte = false;
 
-        }else if(clauText.length() < 8 ){
+        } else {
 
-            clau.setBackgroundResource(R.drawable.bg_edittext_error);
-            clau.setError("Mínim de vuit caràcters");
-
-            errorEnCamp = true;
-
-        }else if(!Pattern.compile("[0-9]").matcher(clauText).find()){
-
-            clau.setBackgroundResource(R.drawable.bg_edittext_error);
-            clau.setError("Ha de contenir un número");
-
-            errorEnCamp = true;
-
-        }else{
-
-            clau.setBackgroundResource(R.drawable.bg_edittext);
-
+            password.setBackgroundResource(R.drawable.bg_edittext);
         }
 
-        if(TextUtils.isEmpty(confirmarClau.getText().toString().trim()) && confirmarClau.getId() == R.id.inputConformPassword){
+        if (!gestorRegistre.conformPasswordChecker()) {
 
-            confirmarClau.setBackgroundResource(R.drawable.bg_edittext_error);
-            confirmarClau.setError("Confirma la clau");
+            conformPassword.setBackgroundResource(R.drawable.bg_edittext_error);
+            conformPassword.setError(gestorRegistre.getError());
 
-            errorEnCamp = true;
+            correcte = false;
 
-        }else if (!clau.getText().toString().equals(confirmarClau.getText().toString())) {
+        } else {
 
-            confirmarClau.setBackgroundResource(R.drawable.bg_edittext_error);
-            confirmarClau.setError("La clau no coincideix");
-            confirmarClau.setText("");
-
-            errorEnCamp = true;
-
-        }else{
-
-            confirmarClau.setBackgroundResource(R.drawable.bg_edittext);
+            conformPassword.setBackgroundResource(R.drawable.bg_edittext);
         }
 
-        if(radioGroupVeu.getCheckedRadioButtonId() == -1){
-            ln_radioGroup = findViewById(R.id.linearLayoutVeu);
+        if (!gestorRegistre.voiceChecker()) {
+
             ln_radioGroup.setBackgroundResource(R.drawable.bg_edittext_error);
 
-            errorEnCamp = true;
+            correcte = false;
 
-        }else{
+        } else {
 
             ln_radioGroup.setBackgroundResource(R.drawable.bg_edittext);
         }
 
-        return errorEnCamp;
+        return correcte;
     }
 
     /**
      * Neteja tots els camps dels EditText.
      * @author Jordi Gómez Lozano.
      */
-    private void netejarCamps(){
-        nom.setText("");
-        telefon.setText("");
+    private void cleanFields() {
+        nameSurname.setText("");
+        phone.setText("");
         email.setText("");
-        clau.setText("");
-        confirmarClau.setText("");
+        password.setText("");
+        conformPassword.setText("");
     }
+
 }

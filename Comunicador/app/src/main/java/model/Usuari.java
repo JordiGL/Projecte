@@ -1,5 +1,7 @@
 package model;
 
+import androidx.annotation.Nullable;
+
 /**
  *
  * @author Jordi Gómez Lozano
@@ -8,26 +10,40 @@ public class Usuari {
 
     private String email;
 
-    private boolean enabled;
+    private boolean administrator;
 
-    private String gender;
+    private String voice;
 
-    private String nom;
+    private String nameSurname;
 
     private String password;
 
     private String phone;
+    @Nullable
+    private String token;
 
     public Usuari(){}
 
-    public Usuari(String email, boolean enabled, String gender, String nom, String password, String phone) {
+    public Usuari(String email, boolean administrator, String voice, String nameSurname, String password, String phone) {
         this.email = email;
-        this.enabled = enabled;
-        this.gender = gender;
-        this.nom = nom;
+        this.administrator = administrator;
+        this.voice = voice;
+        this.nameSurname = nameSurname;
         this.password = password;
         this.phone = phone;
+        this.token = null;
     }
+
+    public Usuari(String email, String voice, String nameSurname, String password, String phone) {
+        this.email = email;
+        this.administrator = false;
+        this.voice = voice;
+        this.nameSurname = nameSurname;
+        this.password = password;
+        this.phone = phone;
+        this.token = null;
+    }
+
 
 
     public String getEmail() {
@@ -38,28 +54,28 @@ public class Usuari {
         this.email = email;
     }
 
-    public boolean isEnabled() {
-        return enabled;
+    public boolean isAdministrator() {
+        return administrator;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setAdministrator(boolean administrator) {
+        this.administrator = administrator;
     }
 
-    public String getGender() {
-        return gender;
+    public String getVoice() {
+        return voice;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setVoice(String voice) {
+        this.voice = voice;
     }
 
-    public String getNom() {
-        return nom;
+    public String getNameSurname() {
+        return nameSurname;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setNameSurname(String nameSurname) {
+        this.nameSurname = nameSurname;
     }
 
     public String getPassword() {
@@ -76,5 +92,14 @@ public class Usuari {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    @Nullable
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(@Nullable String token) {
+        this.token = token;
     }
 }
