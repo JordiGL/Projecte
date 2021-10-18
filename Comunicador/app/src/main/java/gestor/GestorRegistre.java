@@ -1,10 +1,7 @@
 package gestor;
 
-import android.util.Log;
-
 import java.util.Arrays;
 import java.util.regex.Pattern;
-
 import model.Usuari;
 
 /**
@@ -13,8 +10,6 @@ import model.Usuari;
  */
 public class GestorRegistre {
 
-    private String nameSurname;
-    private String phone;
     private String email;
     private String password;
     private String conformPassword;
@@ -24,8 +19,6 @@ public class GestorRegistre {
     public GestorRegistre(){}
 
     public GestorRegistre(Usuari usuari, String conformPassword){
-        this.nameSurname = usuari.getNameSurname();
-        this.phone = usuari.getPhone();
         this.voice = usuari.getVoice();
         this.email = usuari.getEmail();
         this.password = usuari.getPassword();
@@ -38,22 +31,6 @@ public class GestorRegistre {
 
     public void setError(String error) {
         this.error = error;
-    }
-
-    public String getNameSurname() {
-        return nameSurname;
-    }
-
-    public void setNameSurname(String nameSurname) {
-        this.nameSurname = nameSurname;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public String getVoice() {
@@ -86,51 +63,6 @@ public class GestorRegistre {
 
     public void setConformPassword(String conformPassword) {
         this.conformPassword = conformPassword;
-    }
-
-    /**
-     * Comprova que el nom entrat entrat per l'usuari sigui correcte
-     * @return true si es correcte, false en cas contrari.
-     * @author Jordi Gómez Lozano.
-     */
-    public boolean nameSurnameChecker(){
-
-        boolean correcte = true;
-
-        if(nameSurname.trim().length() == 0){
-
-            error = "Introdueix el nom";
-            correcte = false;
-        }
-
-        return correcte;
-    }
-
-    /**
-     * Comprova que el telèfon entrat entrat per l'usuari sigui correcte
-     * @return true si es correcte, false en cas contrari.
-     * @author Jordi Gómez Lozano.
-     */
-    public boolean phoneChecker(){
-
-        boolean correcte = true;
-        String telefonPattern = "^\\+?\\(?[0-9]{1,3}\\)? ?-?[0-9]{1,3} ?-?[0-9]{3,5} ?-?[0-9]{4}( ?-?[0-9]{3})?";
-
-        if(phone.trim().length() == 0){
-
-            error = "Introdueix el telèfon";
-            correcte = false;
-
-        } else if (!phone.matches(telefonPattern)){
-
-            error = "Telèfon inacceptable";
-            correcte = false;
-
-        } else {
-            correcte = true;
-        }
-
-        return correcte;
     }
 
     /**
@@ -210,6 +142,11 @@ public class GestorRegistre {
         return correcte;
     }
 
+    /**
+     * Comprova que la veu seleccionada per l'usuari sigui correcte
+     * @return true si es correcte, false en cas contrari.
+     * @author Jordi Gómez Lozano.
+     */
     public boolean voiceChecker(){
 
         boolean correcte = true;

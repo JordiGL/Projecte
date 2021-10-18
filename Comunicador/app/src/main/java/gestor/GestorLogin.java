@@ -15,19 +15,13 @@ public class GestorLogin {
     private String email;
     private String password;
     private String error;
-    private boolean isAdministrator;
+    private int isAdministrator;
 
     public GestorLogin(){}
 
     public GestorLogin(String email, String password){
         this.email = email;
         this.password = password;
-    }
-
-    public GestorLogin(String email, String password, boolean isAdministrator){
-        this.email = email;
-        this.password = password;
-        this.isAdministrator = isAdministrator;
     }
 
     public String getError() {
@@ -55,11 +49,11 @@ public class GestorLogin {
     }
 
 
-    public boolean isAdministrator() {
+    public int isAdministrator() {
         return isAdministrator;
     }
 
-    public void setAdministrator(boolean administrator) {
+    public void setAdministrator(int administrator) {
         isAdministrator = administrator;
     }
 
@@ -121,9 +115,9 @@ public class GestorLogin {
      * @return true si es correcte, false en cas contrari.
      * @author Jordi Gómez Lozano.
      */
-    public boolean checkAuthentication(@NonNull List<Usuari> usuaris){
+    public boolean checkAuthenticationForTest(@NonNull List<Usuari> usuaris){
         boolean correcte = false;
-        isAdministrator = false;
+        isAdministrator = 1;
 
         for(Usuari usuari: usuaris){
             if(usuari.getEmail().equals(email) && usuari.getPassword().equals(password)){
@@ -135,6 +129,30 @@ public class GestorLogin {
         if(!correcte){
 
             error = "Usuari o clau incorrectes";
+        }
+
+        return correcte;
+    }
+
+    /**
+     * Comprova l'autentificació de l'usuari.
+     * @param usuari usuari a comprovar autentificació.
+     * @return true si es correcte, false en cas contrari.
+     * @author Jordi Gómez Lozano.
+     */
+    public boolean checkAuthentication(Usuari usuari){
+        boolean correcte = false;
+
+        if(usuari != null){
+            if(usuari.getPassword().equals(password)){
+
+                correcte = true;
+            }
+        }
+
+        if(!correcte){
+
+            error = "Email o clau incorrecta";
         }
 
         return correcte;

@@ -3,12 +3,19 @@ package jordigomez.ioc.cat.comunicador;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+/**
+ * Activitat del clien.
+ * @see AppCompatActivity
+ * @author Jordi Gómez Lozano
+ */
 public class ClientActivity extends AppCompatActivity {
 
     @Override
@@ -27,28 +34,17 @@ public class ClientActivity extends AppCompatActivity {
         Intent intent = getIntent();
         textEmailClient.setText(intent.getStringExtra(LoginActivity.EXTRA_MESSAGE));
 
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//
-//        if(user != null){
-//            textEmailClient.setText(user.getEmail());
-//        }
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnLogout.setOnClickListener(view -> {
+            //Borrar token
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+            pref.edit().remove("token").commit();
+            Log.i("ClientToken", "Token borrat");
 
-                //FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(ClientActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-
-            }
+            Intent intent1 = new Intent(ClientActivity.this, LoginActivity.class);
+            startActivity(intent1);
+            finish();
         });
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        moveTaskToBack(true);
     }
 }

@@ -7,44 +7,29 @@ import androidx.annotation.Nullable;
  * @author Jordi Gómez Lozano
  */
 public class Usuari {
-
     private String email;
-
-    private boolean administrator;
-
+    private int administrator;
     private String voice;
-
-    private String nameSurname;
-
     private String password;
-
-    private String phone;
-    @Nullable
-    private String token;
+    private boolean enabled;
 
     public Usuari(){}
 
-    public Usuari(String email, boolean administrator, String voice, String nameSurname, String password, String phone) {
+    public Usuari(String email, int administrator, String voice, String password, boolean enabled) {
         this.email = email;
         this.administrator = administrator;
         this.voice = voice;
-        this.nameSurname = nameSurname;
         this.password = password;
-        this.phone = phone;
-        this.token = null;
+        this.enabled = enabled;
     }
 
-    public Usuari(String email, String voice, String nameSurname, String password, String phone) {
+    public Usuari(String email, String voice, String password) {
         this.email = email;
-        this.administrator = false;
+        this.administrator = 1;
         this.voice = voice;
-        this.nameSurname = nameSurname;
         this.password = password;
-        this.phone = phone;
-        this.token = null;
+        this.enabled = true;
     }
-
-
 
     public String getEmail() {
         return email;
@@ -54,11 +39,11 @@ public class Usuari {
         this.email = email;
     }
 
-    public boolean isAdministrator() {
+    public int isAdministrator() {
         return administrator;
     }
 
-    public void setAdministrator(boolean administrator) {
+    public void setAdministrator(int administrator) {
         this.administrator = administrator;
     }
 
@@ -70,14 +55,6 @@ public class Usuari {
         this.voice = voice;
     }
 
-    public String getNameSurname() {
-        return nameSurname;
-    }
-
-    public void setNameSurname(String nameSurname) {
-        this.nameSurname = nameSurname;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -86,20 +63,11 @@ public class Usuari {
         this.password = password;
     }
 
-    public String getPhone() {
-        return phone;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    @Nullable
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(@Nullable String token) {
-        this.token = token;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

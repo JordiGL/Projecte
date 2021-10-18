@@ -3,10 +3,10 @@ package jordigomez.ioc.cat.comunicador;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +15,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 import dao.DAOUsuariImpl;
 import gestor.GestorException;
@@ -48,42 +53,30 @@ public class RegisterActivity extends AppCompatActivity {
 
         Button btnRegistrar = findViewById(R.id.btnRegister);
         TextView tornarLogin = findViewById(R.id.textTornarLogin);
-        nameSurname = findViewById(R.id.inputUsername);
-        phone = findViewById(R.id.inputTelefon);
         email = findViewById(R.id.inputEmail);
         password = findViewById(R.id.inputPassword);
         conformPassword = findViewById(R.id.inputConformPassword);
         radioGroupVeu = findViewById(R.id.rg);
         ln_radioGroup = findViewById(R.id.linearLayoutVeu);
 
-        btnRegistrar.setOnClickListener(new View.OnClickListener() {
+        btnRegistrar.setOnClickListener(view -> {
+            try {
 
-            @Override
-            public void onClick(View view) {
-                try {
+                registerUser();
 
-                    registerUser();
+            } catch (GestorException ex) {
 
-                } catch (GestorException ex) {
-
-                    Log.w("Error", "Error en registrar l'usuari", ex);
-                }
+                Log.w("Error", "Error en registrar l'usuari", ex);
             }
         });
 
-        tornarLogin.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-            }
-        });
+        tornarLogin.setOnClickListener(view -> startActivity(new Intent(RegisterActivity.this, LoginActivity.class)));
     }
 
 
     /**
      * Controla que el registre es porti a terme correctament, en cas contrari avisa a l'usuari.
+     * Alhora crea un login al Firebase per a què aquest pugui generar el toquen corresponent.
      * @author Jordi Gómez Lozano.
      */
     public void registerUser() throws GestorException {
@@ -96,9 +89,25 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (dao.insertar(usuari)) {
 
-                Toast.makeText(RegisterActivity.this, "Usuari creat correctament", Toast.LENGTH_LONG).show();
-                cleanFields();
-                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                FirebaseAuth autentificacio = FirebaseAuth.getInstance();
+
+                autentificacio.createUserWithEmailAndPassword(usuari.getEmail(), usuari.getPassword())
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+
+                                    Toast.makeText(RegisterActivity.this, "Usuari creat correctament", Toast.LENGTH_LONG).show();
+                                    cleanFields();
+                                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+
+                                } else {
+                                    StyleableToast.makeText(RegisterActivity.this, getResources().getString(R.string.errorRegitreUsuari), Toast.LENGTH_SHORT, R.style.toastError).show();
+                                    Log.w("Error", "Error en crear el login.", task.getException());
+                                }
+                            }
+                        });
 
             } else {
                 StyleableToast.makeText(RegisterActivity.this, getResources().getString(R.string.errorRegitreUsuari), Toast.LENGTH_SHORT, R.style.toastError).show();
@@ -116,11 +125,9 @@ public class RegisterActivity extends AppCompatActivity {
     private Usuari createUsuari() {
         String voiceUsuari = " ";
         int selectedId = radioGroupVeu.getCheckedRadioButtonId();
-        RadioButton radioButton = (RadioButton) findViewById(selectedId);
+        RadioButton radioButton = findViewById(selectedId);
 
         String emailUsuari = email.getText().toString();
-        String nomUsuari = nameSurname.getText().toString();
-        String telefonUsuari = phone.getText().toString();
         String clauUsuari = password.getText().toString();
 
         if(radioButton != null){
@@ -129,16 +136,11 @@ public class RegisterActivity extends AppCompatActivity {
             voiceUsuari = (voiceUsuari.equals("Masculina") ? "male" : "female");
         }
 
-        Usuari usuari = new Usuari(
+        return new Usuari(
                 emailUsuari,
-                false,
                 voiceUsuari,
-                nomUsuari,
-                clauUsuari,
-                telefonUsuari
+                clauUsuari
         );
-
-        return usuari;
     }
 
     /**
@@ -146,37 +148,13 @@ public class RegisterActivity extends AppCompatActivity {
      * @return Un booleà: true si ha trobat error, i false en cas contrari.
      * @author Jordi Gómez Lozano.
      */
-    private boolean checkFields() throws GestorException {
+    private boolean checkFields() {
         boolean correcte = true;
         DAOUsuari dao = new DAOUsuariImpl(RegisterActivity.this);
         Usuari usuari = createUsuari();
 
         //Gestor del registre.
         GestorRegistre gestorRegistre = new GestorRegistre(usuari, conformPassword.getText().toString());
-
-        if (!gestorRegistre.nameSurnameChecker()) {
-
-            nameSurname.setBackgroundResource(R.drawable.bg_edittext_error);
-            nameSurname.setError(gestorRegistre.getError());
-
-            correcte = false;
-
-        } else {
-
-            nameSurname.setBackgroundResource(R.drawable.bg_edittext);
-        }
-
-        if (!gestorRegistre.phoneChecker()) {
-
-            phone.setBackgroundResource(R.drawable.bg_edittext_error);
-            phone.setError(gestorRegistre.getError());
-
-            correcte = false;
-
-        } else {
-
-            phone.setBackgroundResource(R.drawable.bg_edittext);
-        }
 
         if (!gestorRegistre.emailChecker()) {
 
@@ -239,8 +217,6 @@ public class RegisterActivity extends AppCompatActivity {
      * @author Jordi Gómez Lozano.
      */
     private void cleanFields() {
-        nameSurname.setText("");
-        phone.setText("");
         email.setText("");
         password.setText("");
         conformPassword.setText("");

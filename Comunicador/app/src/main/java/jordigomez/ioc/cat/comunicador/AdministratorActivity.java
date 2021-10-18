@@ -3,12 +3,18 @@ package jordigomez.ioc.cat.comunicador;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+/**
+ * Activitat de l'administrador.
+ * @see AppCompatActivity
+ * @author Jordi Gómez Lozano
+ */
 public class AdministratorActivity extends AppCompatActivity {
 
 
@@ -28,28 +34,15 @@ public class AdministratorActivity extends AppCompatActivity {
         Intent intent = getIntent();
         correuAdministrador.setText(intent.getStringExtra(LoginActivity.EXTRA_MESSAGE));
 
+        btnLogout.setOnClickListener(view -> {
+            //Borrar token
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+            pref.edit().remove("token").commit();
+            Log.i("AdministratorToken", "Token borrat");
 
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//
-//        if(user != null){
-//            correuAdministrador.setText(user.getEmail());
-//        }
-
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(AdministratorActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-
-            }
+            Intent intent1 = new Intent(AdministratorActivity.this, LoginActivity.class);
+            startActivity(intent1);
+            finish();
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        moveTaskToBack(true);
     }
 }

@@ -19,24 +19,6 @@ public class GestorRegistreTest{
     }
 
     @Test
-    public void testNameSurnameChecker() {
-        gestorRegistre.setNameSurname("");
-        assertFalse(gestorRegistre.nameSurnameChecker());
-        gestorRegistre.setNameSurname("Jordi");
-        assertTrue(gestorRegistre.nameSurnameChecker());
-    }
-    @Test
-    public void testPhoneChecker() {
-        gestorRegistre.setPhone("");
-        assertFalse(gestorRegistre.phoneChecker());
-        gestorRegistre.setPhone("qwerrew");
-        assertFalse(gestorRegistre.phoneChecker());
-        gestorRegistre.setPhone("123456789");
-        assertTrue(gestorRegistre.phoneChecker());
-        gestorRegistre.setPhone("+(34)82765348");
-        assertTrue(gestorRegistre.phoneChecker());
-    }
-    @Test
     public void testEmailChecker() {
         gestorRegistre.setEmail("");
         assertFalse(gestorRegistre.emailChecker());

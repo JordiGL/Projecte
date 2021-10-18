@@ -45,20 +45,19 @@ public class GestorLoginTest {
         List<Usuari> basededades = new ArrayList<>();
         Usuari usuari = new Usuari(
                 "jogomloz@gmail.com",
-                true,
+                1,
                 "male",
-                "Jordi Gómez Lozano",
                 "123456789",
-                "123456789"
+                false
         );
         basededades.add(usuari);
 
         gestorLogin.setEmail("jogomloz@gmail.com");
         gestorLogin.setPassword("qwerqwer123");
-        assertFalse(gestorLogin.checkAuthentication(basededades));
+        assertFalse(gestorLogin.checkAuthenticationForTest(basededades));
 
         gestorLogin.setEmail("jogomloz@gmail.com");
         gestorLogin.setPassword("123456789");
-        assertTrue(gestorLogin.checkAuthentication(basededades));
+        assertTrue(gestorLogin.checkAuthenticationForTest(basededades));
     }
 }

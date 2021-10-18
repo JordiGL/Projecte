@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/fondo"
+    android:background="@drawable/fondo3"
     tools:context=".LoginActivity">
 
     <EditText
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@drawable/bg_edittext"
-        android:drawableStart="@drawable/ic_security"
+        android:drawableStart="@drawable/ic_lock"
         android:drawablePadding="10dp"
         android:ems="10"
         android:hint="Clau"
@@ -80,7 +80,9 @@
         android:shadowColor="@color/black"
         android:text="Has oblidat la teva clau?"
         android:textColor="@color/blue"
-        android:textSize="18sp"
+        android:textSize="20sp"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintEnd_toEndOf="@+id/inputPasswordLogin"
         app:layout_constraintTop_toBottomOf="@+id/inputPasswordLogin" />
 
@@ -88,7 +90,7 @@
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="48dp"
         android:background="@drawable/btn_bg"
         android:text="Entrar"
         app:layout_constraintEnd_toEndOf="@+id/inputPasswordLogin"
@@ -99,7 +101,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:gravity="center"
         android:orientation="horizontal"
         android:textAlignment="center"
@@ -113,16 +115,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ets nou usuari? Si és així, "
-            android:textSize="18sp"
-            android:textColor="@color/white" />
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/textAlta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="dona't d'alta"
-            android:textSize="18sp"
-            android:textColor="@color/blue" />
+            android:clickable="true"
+            android:focusable="true"
+            android:textColor="@color/blue"
+            android:textSize="21sp" />
 
     </LinearLayout>
 
