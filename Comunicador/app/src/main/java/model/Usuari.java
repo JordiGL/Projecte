@@ -1,6 +1,10 @@
 package model;
 
+import android.content.Context;
+
 import androidx.annotation.Nullable;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 /**
  *
@@ -39,14 +43,6 @@ public class Usuari {
         this.email = email;
     }
 
-    public int isAdministrator() {
-        return administrator;
-    }
-
-    public void setAdministrator(int administrator) {
-        this.administrator = administrator;
-    }
-
     public String getVoice() {
         return voice;
     }
@@ -70,4 +66,13 @@ public class Usuari {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+    public int getAdministrator() {
+        return administrator;
+    }
+
+    public void setAdministrator(int administrator) {
+        this.administrator = administrator;
+    }
+
 }

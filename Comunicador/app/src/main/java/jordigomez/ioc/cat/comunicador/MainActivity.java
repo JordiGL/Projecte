@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         DAOUsuari dao = new DAOUsuariImpl(MainActivity.this);
         Usuari usuari = dao.obtenir(email);
 
-        if(usuari.isAdministrator() == 2){
+        if(usuari.getAdministrator() == 2){
 
             intent = new Intent(MainActivity.this, AdministratorActivity.class);
         }else{

@@ -3,7 +3,6 @@ package jordigomez.ioc.cat.comunicador;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,7 +22,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
-
         btnRecuperar = findViewById(R.id.btnRecuperar);
         inputEmail = findViewById(R.id.inputEmailRecuperar);
         btnTornarLogin = findViewById(R.id.textTornarLoginForgotPassword);
@@ -33,13 +31,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         btnRecuperar.setOnClickListener(view -> validar());
 
-        btnTornarLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        btnTornarLogin.setOnClickListener(view -> {
+            Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -49,12 +44,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         if(gestorForgotPaswword.emailChecker()){
 
-            inputEmail.setBackgroundResource(R.drawable.bg_edittext_error);
-            inputEmail.setError(gestorForgotPaswword.getError());
-
+            enviarEmail(email);
         }else{
 
-            enviarEmail(email);
+            inputEmail.setBackgroundResource(R.drawable.bg_edittext_error);
+            inputEmail.setError(gestorForgotPaswword.getError());
         }
     }
 

@@ -121,7 +121,7 @@ public class GestorLogin {
 
         for(Usuari usuari: usuaris){
             if(usuari.getEmail().equals(email) && usuari.getPassword().equals(password)){
-                isAdministrator = usuari.isAdministrator();
+                isAdministrator = usuari.getAdministrator();
                 correcte = true;
             }
         }

@@ -78,7 +78,7 @@ public class DAOUsuariImpl extends Database implements DAOUsuari {
             Database database = new Database(context);
             SQLiteDatabase db = database.getWritableDatabase();
 
-            cursor = db.rawQuery("SELECT email FROM " + TABLE_USUARIS + " WHERE username= '" + email + "' LIMIT 1", null);
+            cursor = db.rawQuery("SELECT username FROM " + TABLE_USUARIS + " WHERE username= '" + email + "' LIMIT 1", null);
 
             return cursor.moveToFirst();
 
@@ -110,7 +110,9 @@ public class DAOUsuariImpl extends Database implements DAOUsuari {
             Database database = new Database(context);
             SQLiteDatabase db = database.getWritableDatabase();
 
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_USUARIS + " WHERE username= '" + email + "' LIMIT 1", null);
+            cursor = db.rawQuery("SELECT u.*, ur.role_id FROM " + TABLE_USUARIS +" u "+"" +
+                    "INNER JOIN " +TABLE_USUARIS_ROLES+" ur ON u.id = ur.role_id " +
+                    "WHERE username= '" + email + "' LIMIT 1", null);
 
             if (cursor.moveToFirst()) {
 
@@ -119,6 +121,7 @@ public class DAOUsuariImpl extends Database implements DAOUsuari {
                 usuari.setVoice(cursor.getString(2));
                 usuari.setEnabled(cursor.getInt(3) > 0);
                 usuari.setPassword(cursor.getString(4));
+                usuari.setAdministrator(cursor.getInt(5));
             }
 
         } catch (Exception ex) {
@@ -143,7 +146,7 @@ public class DAOUsuariImpl extends Database implements DAOUsuari {
      */
     public int obtenirId(String email) {
         Cursor cursor = null;
-        int administrador = 1;
+        int idUsuari = 0;
 
         try {
             Database database = new Database(context);
@@ -153,8 +156,8 @@ public class DAOUsuariImpl extends Database implements DAOUsuari {
 
             if (cursor.moveToFirst()) {
 
-                administrador = cursor.getInt(0);
-                return administrador;
+                idUsuari = cursor.getInt(0);
+                return idUsuari;
 
             }
 
@@ -168,7 +171,7 @@ public class DAOUsuariImpl extends Database implements DAOUsuari {
             }
         }
 
-        return administrador;
+        return idUsuari;
 
     }
 

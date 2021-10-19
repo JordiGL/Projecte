@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <usuari id="1" username="jogomloz@gmail.com" password="123456789" enabled="true" voice="MALE" />
+    <usuari id="2" username="prova@gmail.com" password="987654321" enabled="false" voice="FEMALE" />
+</dataset>

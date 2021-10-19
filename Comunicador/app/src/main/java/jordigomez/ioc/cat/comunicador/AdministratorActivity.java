@@ -38,7 +38,6 @@ public class AdministratorActivity extends AppCompatActivity {
             //Borrar token
             SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
             pref.edit().remove("token").commit();
-            Log.i("AdministratorToken", "Token borrat");
 
             Intent intent1 = new Intent(AdministratorActivity.this, LoginActivity.class);
             startActivity(intent1);

@@ -154,7 +154,7 @@ public class LoginActivity extends AppCompatActivity {
         dao.updateEnable(usuari.getEmail(), false);
         usuari.setEnabled(false);
 
-        if(usuari.isAdministrator() == 2){
+        if(usuari.getAdministrator() == 2){
 
             intent = new Intent(LoginActivity.this, AdministratorActivity.class);
         }else{

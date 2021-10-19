@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
  */
 public class Database extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 14;
     private static final String DATABASE_NOMBRE = "comunicador.db";
     public static final String TABLE_USUARIS = "usuaris";
     public static final String TABLE_ROLES = "roles";
@@ -30,7 +30,7 @@ public class Database extends SQLiteOpenHelper {
                 "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                 "username TEXT UNIQUE," +
                 "voice TEXT," +
-                "enabled BOOLEAN," +
+                "enabled BOOLEAN DEFAULT 0," +
                 "password TEXT)");
 
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ROLES+ "(" +
