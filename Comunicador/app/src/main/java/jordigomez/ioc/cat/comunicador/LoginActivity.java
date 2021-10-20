@@ -61,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         btnIniciSessio.setOnClickListener(view -> {
 
             if(emailAndPasswordChecker()){
+
                 dao = new DAOUsuariImpl(LoginActivity.this);
                 usuari = dao.obtenir(email.getText().toString());
 
