@@ -170,11 +170,7 @@ public class GestorRequest {
     @Nullable
     public long getExpireTimeFromToken(String token) {
         JWT parsedJWT = new JWT(token);
-        Log.i("Info", token);
         Claim subscriptionMetaData = parsedJWT.getClaim("exp");
-        Log.i("Info", String.valueOf(subscriptionMetaData.asInt()));
-        long expiredTime = subscriptionMetaData.asLong();
-
-        return expiredTime;
+        return subscriptionMetaData.asLong();
     }
 }

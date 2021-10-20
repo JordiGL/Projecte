@@ -44,8 +44,6 @@ public class LoginActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     private EditText email, password;
     private GestorLogin gestorLogin;
-    private DAOUsuari dao;
-    private Usuari usuari;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                             Date expiredDate = new Date(expiredTime*1000);
                             Log.i("Info", "Expired time: "+String.valueOf(expiredDate));
 
-                            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+                            SharedPreferences pref = getApplicationContext().getSharedPreferences("InfoObt", 0);
                             SharedPreferences.Editor editor = pref.edit();
                             editor.putString("token", token);
                             editor.putString("expired_time", String.valueOf(expiredDate));
