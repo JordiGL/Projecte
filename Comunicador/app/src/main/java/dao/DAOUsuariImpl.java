@@ -27,7 +27,6 @@ public class DAOUsuariImpl extends Database implements DAOUsuari {
 
     /**
      * Afegeix un usuari a la base de dades.
-     *
      * @param usuari a afegir.
      * @return true si s'ha afegit l'usuari a la base de dades, false en cas contrari.
      * @author Jordi Gómez Lozano.
@@ -65,8 +64,7 @@ public class DAOUsuariImpl extends Database implements DAOUsuari {
     }
 
     /**
-     * Cerca un usuari a la base de dades.
-     *
+     * Comprova que un usuari estigui a la base de dades.
      * @param email de l'usuari a cercar.
      * @return true si ha trobat l'usuari a la base de dades, false en cas contrari.
      * @author Jordi Gómez Lozano.
@@ -96,9 +94,8 @@ public class DAOUsuariImpl extends Database implements DAOUsuari {
     }
 
     /**
-     * Cerca un usuari a la base de dades.
-     *
-     * @param email de l'usuari a cercar.
+     * Obté un usuari de la base de dades.
+     * @param email de l'usuari a obtenir.
      * @return Usuari si ha trobat l'usuari a la base de dades, false en cas contrari.
      * @author Jordi Gómez Lozano.
      */
@@ -139,12 +136,11 @@ public class DAOUsuariImpl extends Database implements DAOUsuari {
 
     /**
      * Cerca un usuari a la base de dades.
-     *
      * @param email de l'usuari a cercar.
      * @return true si ha trobat l'usuari a la base de dades, false en cas contrari.
      * @author Jordi Gómez Lozano.
      */
-    public int obtenirId(String email) {
+    private int obtenirId(String email) {
         Cursor cursor = null;
         int idUsuari = 0;
 
@@ -175,6 +171,12 @@ public class DAOUsuariImpl extends Database implements DAOUsuari {
 
     }
 
+    /**
+     * Actualitza l'atribut d'activitat de l'usuari
+     * @param email de l'usuari.
+     * @param enabled de l'usuari.
+     * @author Jordi Gómez Lozano.
+     */
     public void updateEnable(String email, boolean enabled) {
         Cursor cursor = null;
 

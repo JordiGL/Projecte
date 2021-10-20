@@ -36,7 +36,7 @@ public class AdministratorActivity extends AppCompatActivity {
 
         btnLogout.setOnClickListener(view -> {
             //Borrar token
-            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("InfoObt", 0);
             pref.edit().remove("token").commit();
 
             Intent intent1 = new Intent(AdministratorActivity.this, LoginActivity.class);

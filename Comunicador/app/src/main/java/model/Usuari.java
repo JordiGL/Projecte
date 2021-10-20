@@ -7,7 +7,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 /**
- *
+ * Classe usuari
  * @author Jordi Gómez Lozano
  */
 public class Usuari {
@@ -16,7 +16,6 @@ public class Usuari {
     private String voice;
     private String password;
     private boolean enabled;
-    private String token;
 
     public Usuari(){}
 
@@ -26,7 +25,6 @@ public class Usuari {
         this.voice = voice;
         this.password = password;
         this.enabled = enabled;
-        this.token = null;
     }
 
     public Usuari(String email, String voice, String password) {
@@ -35,7 +33,6 @@ public class Usuari {
         this.voice = voice;
         this.password = password;
         this.enabled = true;
-        this.token = null;
     }
 
     public String getEmail() {
@@ -78,11 +75,4 @@ public class Usuari {
         this.administrator = administrator;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

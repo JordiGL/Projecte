@@ -185,8 +185,5 @@ public class GestorLogin {
         context.startActivity(intent);
 
     }
-    
-    public void xifrarToken(){
 
-    }
 }

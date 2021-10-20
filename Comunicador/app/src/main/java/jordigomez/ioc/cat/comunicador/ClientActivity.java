@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
- * Activitat del clien.
+ * Activitat del client.
  * @see AppCompatActivity
  * @author Jordi Gómez Lozano
  */
@@ -37,7 +37,7 @@ public class ClientActivity extends AppCompatActivity {
 
         btnLogout.setOnClickListener(view -> {
             //Borrar token
-            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("InfoObt", 0);
             pref.edit().remove("token").commit();
             Log.i("ClientToken", "Token borrat");
 

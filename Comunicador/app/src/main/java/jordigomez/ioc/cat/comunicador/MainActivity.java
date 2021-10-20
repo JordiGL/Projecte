@@ -3,7 +3,6 @@ package jordigomez.ioc.cat.comunicador;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Pair;
@@ -45,15 +44,16 @@ public class MainActivity extends AppCompatActivity {
         logo.setAnimation(animation);
 
         new Handler().postDelayed(() -> {
-
             String role;
             String email;
+            Date expiredData;
             gestorMain = new GestorMain(this);
             gestorRequest = new GestorRequest();
-            Date expiredData = gestorMain.expiredDateFromSharedPreferences(this);
+
             String token = gestorMain.tokenFromSharedPreferences(this);
 
             if(token != null){
+                expiredData = gestorMain.expiredDateFromSharedPreferences(this);
 
                 if(expiredData.after(new Date())) {
 
@@ -73,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Dirigeix l'usuari cap al LoginActivity
+     * @author Jordi Gómez Lozano
+     */
     private void dirigirALogin(){
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         //Assignem la transició al TextEdit que te la propietat com a logoTextTransition;

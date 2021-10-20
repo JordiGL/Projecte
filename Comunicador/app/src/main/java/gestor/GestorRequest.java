@@ -1,7 +1,5 @@
 package gestor;
 
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 
 import com.auth0.android.jwt.Claim;
@@ -20,32 +18,8 @@ import java.nio.charset.StandardCharsets;
 
 public class GestorRequest {
     private String token;
-    private String role;
-//    private int expiresIn;
-
 
     public GestorRequest() {}
-
-//    public int getExpiresIn() {
-//        return expiresIn;
-//    }
-//
-//    public void setExpiresIn(int expiresIn) {
-//        this.expiresIn = expiresIn;
-//    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
 
     public String getToken() {
         return token;
@@ -54,6 +28,7 @@ public class GestorRequest {
     /**
      * Post request al servidor per obtenir el token.
      * @return un int per part del servidor, si retorna 200 el request s'ha efectuat correctament.
+     * @author Jordi Gómez Lozano.
      */
     public int requestToken(String username, String clau){
         int responseCode = 0;
@@ -82,7 +57,6 @@ public class GestorRequest {
                 responseCode = conn.getResponseCode();
 
                 token = obtenirToken(bytesToString(data));
-//                expiresIn = obtenirExpiresIn(bytesToString(data));
             }
             conn.disconnect();
         } catch (Exception e) {
@@ -93,9 +67,9 @@ public class GestorRequest {
     }
 
     /**
-     *
-     * @param resposta
-     * @return
+     * Obté l'estring a partir dels bytes.
+     * @param resposta la resposta del servidor.
+     * @return l'estring a partir dels bytes.
      * @throws IOException
      * @author Jordi Gómez Lozano.
      */
@@ -121,18 +95,6 @@ public class GestorRequest {
         JSONObject access_token = new JSONObject(data);
         return access_token.getString("access_token");
     }
-
-//    /**
-//     * Obtinc la dada del token del JSON que rebo, aquest té altres dades.
-//     * @param data
-//     * @return
-//     * @throws JSONException
-//     * @author Jordi Gómez Lozano.
-//     */
-//    private int obtenirExpiresIn(String data) throws JSONException {
-//        JSONObject access_token = new JSONObject(data);
-//        return access_token.getInt("expires_in");
-//    }
 
     /**
      * Decodifica el token i obté l'email.
@@ -162,7 +124,7 @@ public class GestorRequest {
     }
 
     /**
-     * Decodifica el token i obté el role.
+     * Decodifica el token i obté el la data d'expiració.
      * @param token L'String del token de l'usuari.
      * @return un String amb l'email.
      * @author Jordi Gómez Lozano.
@@ -173,4 +135,16 @@ public class GestorRequest {
         Claim subscriptionMetaData = parsedJWT.getClaim("exp");
         return subscriptionMetaData.asLong();
     }
+
+    //    /**
+//     * Obtinc la dada del token del JSON que rebo, aquest té altres dades.
+//     * @param data
+//     * @return
+//     * @throws JSONException
+//     * @author Jordi Gómez Lozano.
+//     */
+//    private int obtenirExpiresIn(String data) throws JSONException {
+//        JSONObject access_token = new JSONObject(data);
+//        return access_token.getInt("expires_in");
+//    }
 }

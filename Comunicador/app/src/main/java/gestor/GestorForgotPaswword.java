@@ -2,6 +2,10 @@ package gestor;
 
 import android.util.Log;
 
+/**
+ * Classe gestora per a recuperar la clau.
+ * @author Jordi Gómez Lozano.
+ */
 public class GestorForgotPaswword {
     private String error;
     private String email;
@@ -16,6 +20,14 @@ public class GestorForgotPaswword {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     /**
@@ -40,13 +52,5 @@ public class GestorForgotPaswword {
         }
         Log.i("Error", String.valueOf(correcte));
         return correcte;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 }
