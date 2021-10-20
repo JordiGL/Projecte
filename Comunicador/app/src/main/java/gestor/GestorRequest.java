@@ -1,11 +1,12 @@
 package gestor;
 
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 
 import com.auth0.android.jwt.Claim;
 import com.auth0.android.jwt.JWT;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -17,24 +18,27 @@ import java.nio.charset.StandardCharsets;
 
 public class GestorRequest {
 
-    private String Token;
+    private String token;
 
     public GestorRequest() {}
 
     public String getToken() {
-        return Token;
+        return token;
     }
 
-
-    private String obtenirDades(){
-        String dades = "";
-
+    /**
+     * Post request al servidor per obtenir el token.
+     * @return un int per part del servidor, si retorna 200 el request s'ha efectuat correctament.
+     */
+    public int requestToken(){
+        int responseCode = 0;
         try {
+            //La urlParametres hauria d'estar formada pels paràmetres del requestToken( String username, String clau).
             String urlParameters = "username=gemmarica94@gmail.com&password=12345&grant_type=password";
             byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
             int postDataLength = postData.length;
+            //Atenció a Android Studio he d'utilitzar 10.0.2.2, en comptes de localhost.
             String request = "http://10.0.2.2:8080/oauth/token";
-
             URL url = new URL( request );
             HttpURLConnection conn= (HttpURLConnection) url.openConnection();
             conn.setDoOutput( true );
@@ -46,21 +50,30 @@ public class GestorRequest {
             conn.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
             conn.setUseCaches( false );
             try( DataOutputStream wr = new DataOutputStream( conn.getOutputStream())) {
-                wr.write(postData);
 
+                wr.write(postData);
                 InputStream data = conn.getInputStream();
-                dades = bytesToString(data);
-                Log.i("Info", String.valueOf(conn.getResponseCode()));
-                Log.i("Info" , bytesToString(data));
+
+                responseCode = conn.getResponseCode();
+
+                token = obtenirToken(bytesToString(data));
+
             }
             conn.disconnect();
         } catch (Exception e) {
-            e.getMessage();
+            e.printStackTrace();
         }
 
-        return dades;
+        return responseCode;
     }
 
+    /**
+     *
+     * @param resposta
+     * @return
+     * @throws IOException
+     * @author Jordi Gómez Lozano.
+     */
     public String bytesToString(InputStream resposta) throws IOException {
 
         ByteArrayOutputStream into = new ByteArrayOutputStream();
@@ -73,7 +86,19 @@ public class GestorRequest {
     }
 
     /**
-     * Decodifica el token i obte l'email.
+     * Obtinc la dada del token del JSON que rebo, aquest té altres dades.
+     * @param data
+     * @return
+     * @throws JSONException
+     * @author Jordi Gómez Lozano.
+     */
+    private String obtenirToken(String data) throws JSONException {
+        JSONObject access_token = new JSONObject(data);
+        return access_token.getString("access_token");
+    }
+
+    /**
+     * Decodifica el token i obté l'email.
      * @param token L'String del token de l'usuari.
      * @return un String amb l'email.
      * @author Jordi Gómez Lozano.
@@ -81,9 +106,21 @@ public class GestorRequest {
     @Nullable
     private String getEmailFromToken(String token) {
         JWT parsedJWT = new JWT(token);
-        Claim subscriptionMetaData = parsedJWT.getClaim("email");
-        String decodedEmail = subscriptionMetaData.asString();
-        Log.i("MainToken", "Decoded token, email: " +decodedEmail);
-        return decodedEmail;
+        Claim subscriptionMetaData = parsedJWT.getClaim("user_name");
+        return subscriptionMetaData.asString();
+    }
+
+    /**
+     * Decodifica el token i obté el role.
+     * @param token L'String del token de l'usuari.
+     * @return un String amb l'email.
+     * @author Jordi Gómez Lozano.
+     */
+    @Nullable
+    public String getRoleFromToken(String token) {
+        JWT parsedJWT = new JWT(token);
+        Claim subscriptionMetaData = parsedJWT.getClaim("authorities");
+        String[] decodedEmail = subscriptionMetaData.asArray(String.class);
+        return decodedEmail[0];
     }
 }
