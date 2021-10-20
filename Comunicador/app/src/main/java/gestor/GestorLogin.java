@@ -1,10 +1,16 @@
 package gestor;
 
+import android.content.Context;
+import android.content.Intent;
+
 import androidx.annotation.NonNull;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
+import jordigomez.ioc.cat.comunicador.AdministratorActivity;
+import jordigomez.ioc.cat.comunicador.ClientActivity;
+import jordigomez.ioc.cat.comunicador.MainActivity;
 import model.Usuari;
 
 /**
@@ -95,16 +101,17 @@ public class GestorLogin {
             error = "Introdueix la clau";
             correcte = false;
 
-        } else if(password.length() < 8 ){
-
-            error = "Mínim de vuit caràcters";
-            correcte = false;
-
-        }else if(!Pattern.compile("[0-9]").matcher(password).find()) {
-
-            error = "Ha de contenir un número";
-            correcte = false;
         }
+//        else if(password.length() < 8 ){
+//
+//            error = "Mínim de vuit caràcters";
+//            correcte = false;
+//
+//        }else if(!Pattern.compile("[0-9]").matcher(password).find()) {
+//
+//            error = "Ha de contenir un número";
+//            correcte = false;
+//        }
 
         return correcte;
     }
@@ -156,5 +163,30 @@ public class GestorLogin {
         }
 
         return correcte;
+    }
+
+    /**
+     * Direcciona un usuari segons si és usuari o client
+     * @param role de l'usuari a direccionar.
+     * @author Jordi Gómez Lozano.
+     */
+    public void dirigirUsuariSegonsRole(String role, Context context, String message) {
+        Intent intent;
+
+        if(role.equals("ROLE_ADMIN")){
+
+            intent = new Intent(context, AdministratorActivity.class);
+        }else{
+
+            intent = new Intent(context, ClientActivity.class);
+        }
+
+        intent.putExtra(message, role);
+        context.startActivity(intent);
+
+    }
+    
+    public void xifrarToken(){
+
     }
 }

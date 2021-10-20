@@ -3,15 +3,17 @@ package jordigomez.ioc.cat.comunicador;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.util.Pair;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+
+import java.util.Date;
 
 import gestor.GestorRequest;
 
@@ -22,7 +24,9 @@ import gestor.GestorRequest;
  */
 public class MainActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
+    GestorRequest gestorRequest;
     TextView logo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,59 +44,78 @@ public class MainActivity extends AppCompatActivity {
 
 
         new Handler().postDelayed(() -> {
-            Log.i("Info" , "ha entrat");
-            String token = null;
-            String role = null;
+            String role;
+            String email;
+            gestorRequest = new GestorRequest();
+            Date expiredData = expiredDateFromSharedPreferences();
+            String token = tokenFromSharedPreferences();
 
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    GestorRequest gestorRequest = new GestorRequest();
+            if(token != null){
 
-//                    En el requestToken() hi tinc per defecte l'email i la clau d'un usuari, hauria
-//                    de passar-los com a paràmetre requestToken(username, clau). El mètode el tinc aquí
-//                    per a proves, hauria d'estar en el LoginActivity.
-                    int responseCode = gestorRequest.requestToken();
+                role = gestorRequest.getRoleFromToken(token);
+                email = gestorRequest.getEmailFromToken(token);
+                dirigirUsuari(token, role, email, expiredData);
 
-                    if(responseCode == 200) {
+            }else{
 
-                        String token = gestorRequest.getToken();
-                        String role = gestorRequest.getRoleFromToken(token);
-                        dirigirUsuariSegonsRole(role);
+                dirigirALogin();
 
-                    } else {
+            }
 
-                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                        //Assignem la transició al TextEdit que te la propietat com a logoTextTransition;
-                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, new Pair<>(logo, "logoTextTransition"));
-                        startActivity(intent, options.toBundle());
-
-                    }
-                }
-            });
-            thread.start();
         }, 2000);
 
     }
 
-    /**
-     * Direcciona un usuari segons si és usuari o client
-     * @param role de l'usuari a direccionar.
-     * @author Jordi Gómez Lozano.
-     */
-    private void dirigirUsuariSegonsRole(String role) {
+    private void dirigirUsuari(String token, String role, String email, Date expiredData){
         Intent intent;
 
-        if(role.equals("ROLE_ADMIN")){
+        if(token != null){
 
-            intent = new Intent(MainActivity.this, AdministratorActivity.class);
+            if(expiredData.after(new Date())) {
+
+
+                if(role.equals("ROLE_ADMIN")){
+
+                    intent = new Intent(MainActivity.this, AdministratorActivity.class);
+                }else{
+
+                    intent = new Intent(MainActivity.this, ClientActivity.class);
+                }
+
+                intent.putExtra(EXTRA_MESSAGE, email);
+                startActivity(intent);
+
+            } else {
+
+                dirigirALogin();
+            }
         }else{
 
-            intent = new Intent(MainActivity.this, ClientActivity.class);
+            dirigirALogin();
+
         }
+    }
 
-        intent.putExtra(EXTRA_MESSAGE, role);
-        startActivity(intent);
+    private void dirigirALogin(){
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        //Assignem la transició al TextEdit que te la propietat com a logoTextTransition;
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, new Pair<>(logo, "logoTextTransition"));
+        startActivity(intent, options.toBundle());
+    }
 
+    private Date expiredDateFromSharedPreferences() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        Date data = new Date(pref.getString("expired_time", null));
+        return data;
+    }
+
+    private String tokenFromSharedPreferences() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        return pref.getString("token", null);
+    }
+
+    private String roleFromSharedPreferences() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        return pref.getString("role", null);
     }
 }

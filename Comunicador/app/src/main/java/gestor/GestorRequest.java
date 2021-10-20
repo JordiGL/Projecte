@@ -1,5 +1,7 @@
 package gestor;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import com.auth0.android.jwt.Claim;
@@ -17,10 +19,33 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class GestorRequest {
-
     private String token;
+    private String role;
+//    private int expiresIn;
+
 
     public GestorRequest() {}
+
+//    public int getExpiresIn() {
+//        return expiresIn;
+//    }
+//
+//    public void setExpiresIn(int expiresIn) {
+//        this.expiresIn = expiresIn;
+//    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
 
     public String getToken() {
         return token;
@@ -30,11 +55,11 @@ public class GestorRequest {
      * Post request al servidor per obtenir el token.
      * @return un int per part del servidor, si retorna 200 el request s'ha efectuat correctament.
      */
-    public int requestToken(){
+    public int requestToken(String username, String clau){
         int responseCode = 0;
         try {
-            //La urlParametres hauria d'estar formada pels paràmetres del requestToken( String username, String clau).
-            String urlParameters = "username=gemmarica94@gmail.com&password=12345&grant_type=password";
+
+            String urlParameters = "username="+ username +"&password="+ clau +"&grant_type=password";
             byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
             int postDataLength = postData.length;
             //Atenció a Android Studio he d'utilitzar 10.0.2.2, en comptes de localhost.
@@ -57,7 +82,7 @@ public class GestorRequest {
                 responseCode = conn.getResponseCode();
 
                 token = obtenirToken(bytesToString(data));
-
+//                expiresIn = obtenirExpiresIn(bytesToString(data));
             }
             conn.disconnect();
         } catch (Exception e) {
@@ -97,6 +122,18 @@ public class GestorRequest {
         return access_token.getString("access_token");
     }
 
+//    /**
+//     * Obtinc la dada del token del JSON que rebo, aquest té altres dades.
+//     * @param data
+//     * @return
+//     * @throws JSONException
+//     * @author Jordi Gómez Lozano.
+//     */
+//    private int obtenirExpiresIn(String data) throws JSONException {
+//        JSONObject access_token = new JSONObject(data);
+//        return access_token.getInt("expires_in");
+//    }
+
     /**
      * Decodifica el token i obté l'email.
      * @param token L'String del token de l'usuari.
@@ -104,7 +141,7 @@ public class GestorRequest {
      * @author Jordi Gómez Lozano.
      */
     @Nullable
-    private String getEmailFromToken(String token) {
+    public String getEmailFromToken(String token) {
         JWT parsedJWT = new JWT(token);
         Claim subscriptionMetaData = parsedJWT.getClaim("user_name");
         return subscriptionMetaData.asString();
@@ -120,7 +157,24 @@ public class GestorRequest {
     public String getRoleFromToken(String token) {
         JWT parsedJWT = new JWT(token);
         Claim subscriptionMetaData = parsedJWT.getClaim("authorities");
-        String[] decodedEmail = subscriptionMetaData.asArray(String.class);
-        return decodedEmail[0];
+        String[] decodedRole = subscriptionMetaData.asArray(String.class);
+        return decodedRole[0];
+    }
+
+    /**
+     * Decodifica el token i obté el role.
+     * @param token L'String del token de l'usuari.
+     * @return un String amb l'email.
+     * @author Jordi Gómez Lozano.
+     */
+    @Nullable
+    public long getExpireTimeFromToken(String token) {
+        JWT parsedJWT = new JWT(token);
+        Log.i("Info", token);
+        Claim subscriptionMetaData = parsedJWT.getClaim("exp");
+        Log.i("Info", String.valueOf(subscriptionMetaData.asInt()));
+        long expiredTime = subscriptionMetaData.asLong();
+
+        return expiredTime;
     }
 }
