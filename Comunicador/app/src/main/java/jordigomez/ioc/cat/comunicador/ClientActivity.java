@@ -11,6 +11,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import gestor.GestorCrypto;
+
 /**
  * Activitat del client.
  * @see AppCompatActivity
@@ -37,9 +39,10 @@ public class ClientActivity extends AppCompatActivity {
 
         btnLogout.setOnClickListener(view -> {
             //Borrar token
-            SharedPreferences pref = getApplicationContext().getSharedPreferences("InfoObt", 0);
-            pref.edit().remove("token").commit();
-            Log.i("ClientToken", "Token borrat");
+            GestorCrypto gestorCrypto = new GestorCrypto();
+
+            SharedPreferences sharedPreferences =  gestorCrypto.getEncryptedSharedPreferences(this);
+            sharedPreferences.edit().remove("token").apply();
 
             Intent intent1 = new Intent(ClientActivity.this, LoginActivity.class);
             startActivity(intent1);

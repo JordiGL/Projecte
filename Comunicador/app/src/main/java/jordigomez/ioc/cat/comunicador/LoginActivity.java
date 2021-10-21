@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import java.util.Date;
 
+import gestor.GestorCrypto;
 import gestor.GestorLogin;
 import gestor.GestorRequest;
 import io.github.muddz.styleabletoast.StyleableToast;
@@ -118,9 +119,11 @@ public class LoginActivity extends AppCompatActivity {
      * @author Jordi Gómez Lozano
      */
     private void savingData(String token, long expiredTime) {
+        GestorCrypto gestorCrypto = new GestorCrypto();
         Date expiredDate = new Date(expiredTime *1000);
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("InfoObt", 0);
-        SharedPreferences.Editor editor = pref.edit();
+
+        SharedPreferences sharedPreferences =  gestorCrypto.getEncryptedSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("token", token);
         editor.putString("expired_time", String.valueOf(expiredDate));
         editor.apply();

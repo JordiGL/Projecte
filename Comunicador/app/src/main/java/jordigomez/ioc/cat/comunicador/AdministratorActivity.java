@@ -10,6 +10,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import gestor.GestorCrypto;
+
 /**
  * Activitat de l'administrador.
  * @see AppCompatActivity
@@ -36,8 +38,10 @@ public class AdministratorActivity extends AppCompatActivity {
 
         btnLogout.setOnClickListener(view -> {
             //Borrar token
-            SharedPreferences pref = getApplicationContext().getSharedPreferences("InfoObt", 0);
-            pref.edit().remove("token").commit();
+            GestorCrypto gestorCrypto = new GestorCrypto();
+
+            SharedPreferences sharedPreferences =  gestorCrypto.getEncryptedSharedPreferences(this);
+            sharedPreferences.edit().remove("token").apply();
 
             Intent intent1 = new Intent(AdministratorActivity.this, LoginActivity.class);
             startActivity(intent1);

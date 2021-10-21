@@ -48,8 +48,9 @@ public class GestorMain {
      * @author Jordi Gómez Lozano
      */
     public Date expiredDateFromSharedPreferences(Context context) {
-        SharedPreferences pref = context.getApplicationContext().getSharedPreferences("InfoObt", 0);
-        Date data = new Date(pref.getString("expired_time", null));
+        GestorCrypto gestorCrypto = new GestorCrypto();
+        SharedPreferences sharedPreferences =  gestorCrypto.getEncryptedSharedPreferences(context);
+        Date data = new Date(sharedPreferences.getString("expired_time", null));
         return data;
     }
 
@@ -60,7 +61,8 @@ public class GestorMain {
      * @author Jordi Gómez Lozano
      */
     public String tokenFromSharedPreferences(Context context) {
-        SharedPreferences pref = context.getApplicationContext().getSharedPreferences("InfoObt", 0);
-        return pref.getString("token", null);
+        GestorCrypto gestorCrypto = new GestorCrypto();
+        SharedPreferences sharedPreferences =  gestorCrypto.getEncryptedSharedPreferences(context);
+        return sharedPreferences.getString("token", null);
     }
 }
