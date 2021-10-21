@@ -9,7 +9,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import gestor.GestorException;
-import interfaces.DAOUsuari;
 import model.Usuari;
 
 /**

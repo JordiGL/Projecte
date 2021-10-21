@@ -14,12 +14,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Comunicador">
         <activity
+            android:name="testservidor.ServerTestsActivity"
+            android:exported="true"/>
+        <activity
             android:name=".ForgotPasswordActivity"
             android:exported="true"
-            android:parentActivityName=".LoginActivity"/>
+            android:parentActivityName=".LoginActivity" />
         <activity
             android:name=".AdministratorActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".RegisterActivity"
             android:exported="true"
@@ -27,11 +30,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ClientActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".LoginActivity"
             android:exported="true"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

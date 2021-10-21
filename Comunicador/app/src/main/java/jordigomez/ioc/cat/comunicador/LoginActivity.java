@@ -16,6 +16,7 @@ import java.util.Date;
 import gestor.GestorLogin;
 import gestor.GestorRequest;
 import io.github.muddz.styleabletoast.StyleableToast;
+import testservidor.ServerTestsActivity;
 
 /**
  * Classe que permet iniciar sessió.
@@ -24,6 +25,8 @@ import io.github.muddz.styleabletoast.StyleableToast;
  */
 public class LoginActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
+    public final static String ROLE_USER = "ROLE_USER";
+    public final static int AFFIRMATIVE = 200;
     private EditText email, password;
     private GestorLogin gestorLogin;
 
@@ -47,44 +50,55 @@ public class LoginActivity extends AppCompatActivity {
 
         btnIniciSessio.setOnClickListener(view -> {
 
-            if(emailAndPasswordChecker()){
+            //Per a fer tests al servidor.-----------------------------------------------------------------//
+            if(email.getText().toString().equals("test") && password.getText().toString().equals("test")){
+                Intent intent = new Intent(LoginActivity.this, ServerTestsActivity.class);
+                startActivity(intent);
+                finish();
 
-                Thread thread = new Thread(new Runnable() {
+            }else {
+            //----------------------------------------------------------------------------------------------//
+                if (emailAndPasswordChecker()) {
 
-                    @Override
-                    public void run() {
-                        GestorRequest gestorRequest = new GestorRequest();
-                        GestorLogin gestorLogin = new GestorLogin();
+                    Thread thread = new Thread(new Runnable() {
 
-                        //Faig la petició i obtinc el token i el codi de resposta
-                        int responseCode = gestorRequest.requestToken(email.getText().toString(), password.getText().toString());
+                        @Override
+                        public void run() {
+                            GestorRequest gestorRequest = new GestorRequest();
+                            GestorLogin gestorLogin = new GestorLogin();
 
-                        if(responseCode == 200) {
+                            //Faig la petició i obtinc el token i el codi de resposta
+                            int responseCode = gestorRequest.requestToken(email.getText().toString(), password.getText().toString());
 
-                            //Si la resposta es afirmativa(200) obtinc el rol del token i dirigeixo a l'usuari a la corresponent pantalla.
-                            String token = gestorRequest.getToken();
-                            String role = gestorRequest.getRoleFromToken(token);
-                            long expiredTime = gestorRequest.getExpireTimeFromToken(token);
+                            if (responseCode == AFFIRMATIVE) {
 
-                            savingData(token, expiredTime);
+                                //Si la resposta es afirmativa(200) obtinc el rol del token i dirigeixo a l'usuari a la corresponent pantalla.
+                                String token = gestorRequest.getToken();
+                                long expiredTime = gestorRequest.getExpireTimeFromToken(token);
+                                savingData(token, expiredTime);
 
-                            gestorLogin.dirigirUsuariSegonsRole(role, LoginActivity.this, EXTRA_MESSAGE);
-
-                        } else {
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //Si la resposta és negativa, es mostra un error
-                                    password.setBackgroundResource(R.drawable.bg_edittext_error);
-                                    email.setBackgroundResource(R.drawable.bg_edittext_error);
-                                    StyleableToast.makeText(LoginActivity.this, getResources().getString(R.string.errorEmailOClau), Toast.LENGTH_SHORT, R.style.toastError).show();
+                                String role = gestorRequest.getRoleFromToken(token);
+                                if (role == null) {
+                                    role = ROLE_USER;
                                 }
-                            });
+                                gestorLogin.dirigirUsuariSegonsRole(role, LoginActivity.this, EXTRA_MESSAGE);
+
+                            } else {
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //Si la resposta és negativa, es mostra un error
+                                        password.setBackgroundResource(R.drawable.bg_edittext_error);
+                                        email.setBackgroundResource(R.drawable.bg_edittext_error);
+                                        StyleableToast.makeText(LoginActivity.this, getResources().getString(R.string.errorEmailOClau), Toast.LENGTH_SHORT, R.style.toastError).show();
+                                    }
+                                });
+                            }
                         }
-                    }
-                });
-                thread.start();
+                    });
+                    thread.start();
+                }
             }
         });
 
@@ -94,6 +108,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
     }
 
     /**

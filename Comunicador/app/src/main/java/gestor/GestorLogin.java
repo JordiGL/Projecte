@@ -102,6 +102,7 @@ public class GestorLogin {
             correcte = false;
 
         }
+// Ho he tret per a fer proves amb el servidor.
 //        else if(password.length() < 8 ){
 //
 //            error = "Mínim de vuit caràcters";

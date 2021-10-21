@@ -13,9 +13,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Classe que fa al servidor la petició del token.
+ * @author Jordi Gómez Lozano
+ */
 public class GestorRequest {
     private String token;
 
@@ -32,34 +35,25 @@ public class GestorRequest {
      */
     public int requestToken(String username, String clau){
         int responseCode = 0;
-        try {
+        Connexio conn = new Connexio();
+        String metodeDeLaPeticio = "POST";
+        String requestUrl = "http://10.0.2.2:8080/oauth/token";
+        String urlParameters = "username="+username+"&password="+clau+"&grant_type=password";
+        byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
+        int postDataLength = postData.length;
+        conn.setConn(conn.postRequest(postDataLength, metodeDeLaPeticio, requestUrl));
+        HttpURLConnection connexio = conn.getConn();
 
-            String urlParameters = "username="+ username +"&password="+ clau +"&grant_type=password";
-            byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
-            int postDataLength = postData.length;
-            //Atenció a Android Studio he d'utilitzar 10.0.2.2, en comptes de localhost.
-            String request = "http://10.0.2.2:8080/oauth/token";
-            URL url = new URL( request );
-            HttpURLConnection conn= (HttpURLConnection) url.openConnection();
-            conn.setDoOutput( true );
-            conn.setInstanceFollowRedirects( false );
-            conn.setRequestMethod( "POST" );
-            conn.setRequestProperty( "Authorization", "Basic YW5kcm9pZGFwcDoxMjM0NQ==");
-            conn.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty( "charset", "utf-8");
-            conn.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
-            conn.setUseCaches( false );
-            try( DataOutputStream wr = new DataOutputStream( conn.getOutputStream())) {
+        try( DataOutputStream wr = new DataOutputStream(connexio.getOutputStream())) {
 
-                wr.write(postData);
-                InputStream data = conn.getInputStream();
+            wr.write(postData);
+            InputStream data = connexio.getInputStream();
 
-                responseCode = conn.getResponseCode();
+            responseCode = connexio.getResponseCode();
 
-                token = obtenirToken(bytesToString(data));
-            }
-            conn.disconnect();
-        } catch (Exception e) {
+            token = obtenirToken(bytesToString(data));
+
+        }catch (Exception e){
             e.printStackTrace();
         }
 

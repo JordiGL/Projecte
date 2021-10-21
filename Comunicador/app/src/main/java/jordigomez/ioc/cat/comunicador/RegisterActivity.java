@@ -24,7 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import dao.DAOUsuariImpl;
 import gestor.GestorException;
 import gestor.GestorRegistre;
-import interfaces.DAOUsuari;
+import dao.DAOUsuari;
 import io.github.muddz.styleabletoast.StyleableToast;
 import model.Usuari;
 
