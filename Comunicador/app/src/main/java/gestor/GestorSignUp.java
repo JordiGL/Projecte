@@ -8,17 +8,29 @@ import model.Usuari;
  * Classe gestora del registre.
  * @author Jordi Gómez Lozano.
  */
-public class GestorRegistre {
+public class GestorSignUp {
 
+    public static final String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    public static final String PASSWORD_NUMBER_PATTERN = "[0-9]";
+    public static final String MALE = "male";
+    public static final String FEMALE = "female";
+    public static final String ERROR_VOICE = "Selecciona la veu";
+    public static final String ERROR_MATCH_PASSWORD = "La clau no coincideix";
+    public static final String ERROR_CONFIRMATION_KEY = "Confirma la clau";
+    public static final String ERROR_CONTAIN_NUMBER = "Ha de contenir un número";
+    public static final String ERROR_MINIMUM_NUMBERS = "Mínim de vuit caràcters";
+    public static final String ERROR_EMPTY_PASSWORD = "Introdueix la clau";
+    public static final String ERROR_UNACCEPTABLE_EMAIL = "Correu inacceptable";
+    public static final String ERROR_EMPTY_EMAIL = "Introdueix l'email";
     private String email;
     private String password;
     private String conformPassword;
     private String voice;
     private String error;
 
-    public GestorRegistre(){}
+    public GestorSignUp(){}
 
-    public GestorRegistre(Usuari usuari, String conformPassword){
+    public GestorSignUp(Usuari usuari, String conformPassword){
         this.voice = usuari.getVoice();
         this.email = usuari.getEmail();
         this.password = usuari.getPassword();
@@ -73,16 +85,15 @@ public class GestorRegistre {
     public boolean emailChecker(){
 
         boolean correcte = true;
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
         if(email.trim().length() == 0){
 
-            error = "Introdueix l'email";
+            error = ERROR_EMPTY_EMAIL;
             correcte = false;
 
-        } else if (!email.matches(emailPattern)){
+        } else if (!email.matches(EMAIL_PATTERN)){
 
-            error = "Correu inacceptable";
+            error = ERROR_UNACCEPTABLE_EMAIL;
             correcte = false;
 
         }
@@ -101,17 +112,17 @@ public class GestorRegistre {
 
         if(password.trim().length() == 0){
 
-            error = "Introdueix la clau";
+            error = ERROR_EMPTY_PASSWORD;
             correcte = false;
 
         } else if(password.length() < 8 ){
 
-            error = "Mínim de vuit caràcters";
+            error = ERROR_MINIMUM_NUMBERS;
             correcte = false;
 
-        }else if(!Pattern.compile("[0-9]").matcher(password).find()) {
+        }else if(!Pattern.compile(PASSWORD_NUMBER_PATTERN).matcher(password).find()) {
 
-            error = "Ha de contenir un número";
+            error = ERROR_CONTAIN_NUMBER;
             correcte = false;
         }
 
@@ -129,12 +140,12 @@ public class GestorRegistre {
 
         if(conformPassword.trim().length() == 0){
 
-            error = "Confirma la clau";
+            error = ERROR_CONFIRMATION_KEY;
             correcte = false;
 
         } else if (!password.equals(conformPassword)){
 
-            error = "La clau no coincideix";
+            error = ERROR_MATCH_PASSWORD;
 
             correcte = false;
         }
@@ -151,9 +162,9 @@ public class GestorRegistre {
 
         boolean correcte = true;
 
-        if(!Arrays.asList("male", "female").contains(voice)) {
+        if(!Arrays.asList(MALE, FEMALE).contains(voice)) {
 
-            error = "Selecciona la veu";
+            error = ERROR_VOICE;
             correcte = false;
         }
 

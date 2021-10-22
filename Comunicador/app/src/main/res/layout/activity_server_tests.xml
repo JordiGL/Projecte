@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Test"
+        android:text="@string/textButtonServerTestUI"
         app:layout_constraintBottom_toBottomOf="@+id/clauTest"
         app:layout_constraintEnd_toEndOf="@+id/emailTest"
         app:layout_constraintTop_toBottomOf="@+id/emailTest" />
@@ -37,17 +37,19 @@
         android:background="@drawable/bg_edittext"
         android:drawablePadding="10dp"
         android:ems="10"
-        android:hint="clau"
+        android:hint="@string/clauEditTextHint"
         android:minHeight="48dp"
-        android:paddingLeft="20dp"
+        android:paddingStart="20dp"
         android:paddingTop="10dp"
-        android:paddingRight="10dp"
+        android:paddingEnd="10dp"
         android:paddingBottom="10dp"
         android:textColor="@color/black"
         android:textColorHint="@color/darkerGray"
         app:layout_constraintEnd_toStartOf="@+id/buttonTest"
         app:layout_constraintStart_toStartOf="@+id/emailTest"
-        app:layout_constraintTop_toBottomOf="@+id/emailTest" />
+        app:layout_constraintTop_toBottomOf="@+id/emailTest"
+        android:autofillHints="password"
+        android:inputType="none" />
 
     <EditText
         android:id="@+id/emailTest"
@@ -56,11 +58,11 @@
         android:background="@drawable/bg_edittext"
         android:drawablePadding="10dp"
         android:ems="10"
-        android:hint="email"
+        android:hint="@string/emailEditTextHint"
         android:minHeight="48dp"
-        android:paddingLeft="20dp"
+        android:paddingStart="20dp"
         android:paddingTop="10dp"
-        android:paddingRight="10dp"
+        android:paddingEnd="10dp"
         android:paddingBottom="10dp"
         android:textColor="@color/black"
         android:textColorHint="@color/darkerGray"
@@ -69,5 +71,7 @@
         app:layout_constraintHorizontal_bias="0.222"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.248" />
+        app:layout_constraintVertical_bias="0.248"
+        android:autofillHints="emailAddress"
+        android:inputType="none" />
 </androidx.constraintlayout.widget.ConstraintLayout>

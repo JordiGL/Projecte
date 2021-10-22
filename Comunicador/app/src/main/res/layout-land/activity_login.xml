@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/fondo"
+    android:background="@drawable/fondolandscape"
     tools:context=".LoginActivity">
 
     <EditText
@@ -90,7 +90,7 @@
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/btn_bg"
         android:text="@string/textEntrarButtonLoginUI"
         app:layout_constraintEnd_toEndOf="@+id/inputPasswordLogin"
@@ -101,7 +101,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:gravity="center"
         android:orientation="horizontal"
         android:textAlignment="center"

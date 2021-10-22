@@ -11,7 +11,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
-
 import java.util.Date;
 
 import gestor.GestorMain;
@@ -24,6 +23,7 @@ import gestor.GestorRequest;
  */
 public class MainActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
+    public static final String LOGO_TO_TRANSITION_ID = "logoTextTransition";
     GestorRequest gestorRequest;
     TextView logo;
     GestorMain gestorMain;
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private void dirigirALogin(){
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         //Assignem la transició al TextEdit que te la propietat com a logoTextTransition;
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, new Pair<>(logo, "logoTextTransition"));
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, new Pair<>(logo, LOGO_TO_TRANSITION_ID));
         startActivity(intent, options.toBundle());
     }
 }

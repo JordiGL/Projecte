@@ -7,8 +7,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.google.firebase.auth.FirebaseAuth;
-
 
 import gestor.GestorForgotPaswword;
 
@@ -18,6 +16,7 @@ import gestor.GestorForgotPaswword;
  * @author Jordi Gómez Lozano.
  */
 public class ForgotPasswordActivity extends AppCompatActivity {
+    public static final String EMAIL_SENT = "Correu enviat";
     Button btnRecuperar;
     EditText inputEmail;
     TextView btnTornarLogin;
@@ -53,11 +52,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         if(gestorForgotPaswword.emailChecker()){
             //De moment retorna al login.
-            Toast.makeText(ForgotPasswordActivity.this, "Correu enviat", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ForgotPasswordActivity.this, EMAIL_SENT, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
-//            enviarEmail(email); Gestiona el canvi de clau enviant un email amb firebase.
+
         }else{
 
             inputEmail.setBackgroundResource(R.drawable.bg_edittext_error);
@@ -72,26 +71,3 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         finish();
     }
 }
-
-// GESTIONA EL CANVI DE CLAU ENVIANT UN EMAIL AMB FIREBASE
-//    private void enviarEmail(String email) {
-//        FirebaseAuth autentificador = FirebaseAuth.getInstance();
-//
-//        autentificador.sendPasswordResetEmail(email)
-//                .addOnCompleteListener(task -> {
-//
-//                    if(task.isSuccessful()){
-//
-//                        Toast.makeText(ForgotPasswordActivity.this, "Correu enviat", Toast.LENGTH_SHORT).show();
-//                        Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
-//                        startActivity(intent);
-//                        finish();
-//
-//                    }else{
-//
-//                        inputEmail.setBackgroundResource(R.drawable.bg_edittext_error);
-//                        inputEmail.setError("Email incorrecte");
-//                    }
-//                });
-//
-//    }

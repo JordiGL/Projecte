@@ -9,6 +9,13 @@ import java.net.URL;
  */
 public class Connexio {
 
+    public static final String AUTHORIZATION_KEY = "Authorization";
+    public static final String CONTENT_TYPE_KEY = "Content-Type";
+    public static final String CHARSET_KEY = "charset";
+    public static final String CONTENT_LENGTH_KEY = "Content-Length";
+    public static final String AUTHORIZATION_VALUE = "Basic YW5kcm9pZGFwcDoxMjM0NQ==";
+    public static final String CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded";
+    public static final String CHARSET_VALUE = "utf-8";
     HttpURLConnection conn;
 
     public HttpURLConnection getConn() {
@@ -33,15 +40,14 @@ public class Connexio {
             conn.setDoOutput( true );
             conn.setInstanceFollowRedirects( false );
             conn.setRequestMethod( method );
-            conn.setRequestProperty( "Authorization", "Basic YW5kcm9pZGFwcDoxMjM0NQ==");
-            conn.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty( "charset", "utf-8");
-            conn.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
+            conn.setRequestProperty(AUTHORIZATION_KEY, AUTHORIZATION_VALUE);
+            conn.setRequestProperty(CONTENT_TYPE_KEY, CONTENT_TYPE_VALUE);
+            conn.setRequestProperty(CHARSET_KEY, CHARSET_VALUE);
+            conn.setRequestProperty(CONTENT_LENGTH_KEY, Integer.toString( postDataLength ));
             conn.setUseCaches( false );
         } catch (Exception e) {
             e.printStackTrace();
         }
         return conn;
     }
-
 }

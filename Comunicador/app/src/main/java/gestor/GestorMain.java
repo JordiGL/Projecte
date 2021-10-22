@@ -12,6 +12,9 @@ import jordigomez.ioc.cat.comunicador.ClientActivity;
  * @author Jordi Gómez Lozano
  */
 public class GestorMain {
+    public static final String SHARED_PREFERENCES_TOKEN_KEY = "token";
+    public static final String SHARED_PREFERENCES_EXPIRED_KEY = "expired_time";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
     Context context;
 
     public GestorMain(Context context){
@@ -28,7 +31,7 @@ public class GestorMain {
     public void dirigirUsuari(String role, String email, String message){
         Intent intent;
 
-        if (role.equals("ROLE_ADMIN")) {
+        if (role.equals(ROLE_ADMIN)) {
 
             intent = new Intent(context, AdministratorActivity.class);
         } else {
@@ -50,7 +53,7 @@ public class GestorMain {
     public Date expiredDateFromSharedPreferences(Context context) {
         GestorCrypto gestorCrypto = new GestorCrypto();
         SharedPreferences sharedPreferences =  gestorCrypto.getEncryptedSharedPreferences(context);
-        Date data = new Date(sharedPreferences.getString("expired_time", null));
+        Date data = new Date(sharedPreferences.getString(SHARED_PREFERENCES_EXPIRED_KEY, null));
         return data;
     }
 
@@ -63,6 +66,6 @@ public class GestorMain {
     public String tokenFromSharedPreferences(Context context) {
         GestorCrypto gestorCrypto = new GestorCrypto();
         SharedPreferences sharedPreferences =  gestorCrypto.getEncryptedSharedPreferences(context);
-        return sharedPreferences.getString("token", null);
+        return sharedPreferences.getString(SHARED_PREFERENCES_TOKEN_KEY, null);
     }
 }

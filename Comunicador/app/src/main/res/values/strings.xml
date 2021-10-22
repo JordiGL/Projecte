@@ -1,8 +1,47 @@
 <resources>
-    <string name="app_name">Comunicador</string>
-    <string name="txt_registrar">Registrar</string>
+    //Name
+    <string name="app_name">Escolta\'m</string>
+
+    //SignUp UI
+    <string name="txtButtonSignUpUI">Registrar</string>
+    <string name="textInfoAlreadyAccountSignUpUI">Ja tens un compte? </string>
+    <string name="textInfoLoginSignUpUI">Torna al login</string>
+    <string name="textRadioButtonFemaleSignUpUI">Femenina</string>
+    <string name="textRadioButtonMaleSignUpUI">Masculina</string>
+
+    //Login UI
+    <string name="textInfoSignUpLoginUI">dona\'t d\'alta</string>
     <string name="campEmailBuitLogin">Introdueix l\'email</string>
     <string name="campClauBuitLogin">Introdueix la clau</string>
-    <string name="errorEmailOClau">Email o clau incorrecta</string>
-    <string name="errorRegitreUsuari">No s\'ha pogut dur a terme el registre.</string>
+    <string name="titleLoginUI">Escolta\'m</string>
+    <string name="textForgotPasswordLoginUI">Has oblidat la teva clau?</string>
+    <string name="textEntrarButtonLoginUI">Entrar</string>
+    <string name="textInfoNewUserLoginUI">Ets nou usuari? Si és així, </string>
+    <string name="errorEmailPassword">Email o clau incorrecta</string>
+    <string name="errorUserSignUp">No s\'ha pogut dur a terme el registre.</string>
+
+    //Forgot Password UI
+    <string name="textButtonForgotPasswordUI">Recuperar</string>
+    <string name="textInfoForgotPasswordUI">Introdueix el teu email i recupera la clau</string>
+    <string name="textTornarForgotPasswordUI">Tornar al login</string>
+
+    //Administrator UI
+    <string name="titleAdministratorUI">Administrador</string>
+    <string name="textLogoutButtonAdministrator">Logout</string>
+
+    //Client UI
+    <string name="titleUiClient">Client</string>
+    <string name="textLogoutButtonClient">Logout</string>
+
+    //Main UI
+    <string name="titleMainUI">Escolta\'m</string>
+    <string name="confClauEditTextHint">Confirmar clau</string>
+
+    //Server Test UI
+    <string name="textButtonServerTestUI">Test</string>
+
+    //Generals UI
+    <string name="emailEditTextHint">Email</string>
+    <string name="clauEditTextHint">Clau</string>
+
 </resources>

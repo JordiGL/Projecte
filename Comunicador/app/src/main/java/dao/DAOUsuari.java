@@ -4,6 +4,10 @@ package dao;
 import gestor.GestorException;
 import model.Usuari;
 
+/**
+ * Interface DAO de l'usuari.
+ * @Jordi Gómez Lozano.
+ */
 public interface DAOUsuari {
 
     public boolean insertar(Usuari usuari) throws GestorException;

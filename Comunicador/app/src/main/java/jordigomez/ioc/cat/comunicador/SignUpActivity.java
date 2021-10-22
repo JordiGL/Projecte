@@ -23,7 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import dao.DAOUsuariImpl;
 import gestor.GestorException;
-import gestor.GestorRegistre;
+import gestor.GestorSignUp;
 import dao.DAOUsuari;
 import io.github.muddz.styleabletoast.StyleableToast;
 import model.Usuari;
@@ -33,8 +33,13 @@ import model.Usuari;
  * @author Jordi Gómez Lozano.
  * @see AppCompatActivity
  */
-public class RegisterActivity extends AppCompatActivity {
-    private EditText nameSurname, phone, email, password, conformPassword;
+public class SignUpActivity extends AppCompatActivity {
+    public static final String USER_CREATED_SUCCESSFULLY = "Usuari creat correctament";
+    public static final String ERROR_EMAIL_ALREADY_ASSIGNED = "Email ja assignat a un usuari";
+    public static final String RADIO_BUTTON_COMPARED_TEXT = "Masculina";
+    public static final String MALE = "male";
+    public static final String FEMALE = "female";
+    private EditText email, password, conformPassword;
     private RadioGroup radioGroupVeu;
     private LinearLayout ln_radioGroup;
 
@@ -43,7 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_sign_up);
 
         //Amagar barra superior del layout.
         getSupportActionBar().hide();
@@ -70,7 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        tornarLogin.setOnClickListener(view -> startActivity(new Intent(RegisterActivity.this, LoginActivity.class)));
+        tornarLogin.setOnClickListener(view -> startActivity(new Intent(SignUpActivity.this, LoginActivity.class)));
     }
 
 
@@ -81,7 +86,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     public void registerUser() throws GestorException {
 
-        DAOUsuari dao = new DAOUsuariImpl(RegisterActivity.this);
+        DAOUsuari dao = new DAOUsuariImpl(SignUpActivity.this);
 
         if(checkFields()) {
 
@@ -98,19 +103,18 @@ public class RegisterActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
 
-                                    Toast.makeText(RegisterActivity.this, "Usuari creat correctament", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(SignUpActivity.this, USER_CREATED_SUCCESSFULLY, Toast.LENGTH_LONG).show();
                                     cleanFields();
-                                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                    startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
 
                                 } else {
-                                    StyleableToast.makeText(RegisterActivity.this, getResources().getString(R.string.errorRegitreUsuari), Toast.LENGTH_SHORT, R.style.toastError).show();
-                                    Log.w("Error", "Error en crear el login.", task.getException());
+                                    StyleableToast.makeText(SignUpActivity.this, getResources().getString(R.string.errorUserSignUp), Toast.LENGTH_SHORT, R.style.toastError).show();
                                 }
                             }
                         });
 
             } else {
-                StyleableToast.makeText(RegisterActivity.this, getResources().getString(R.string.errorRegitreUsuari), Toast.LENGTH_SHORT, R.style.toastError).show();
+                StyleableToast.makeText(SignUpActivity.this, getResources().getString(R.string.errorUserSignUp), Toast.LENGTH_SHORT, R.style.toastError).show();
             }
         }
 
@@ -133,7 +137,7 @@ public class RegisterActivity extends AppCompatActivity {
         if(radioButton != null){
 
             voiceUsuari = radioButton.getText().toString();
-            voiceUsuari = (voiceUsuari.equals("Masculina") ? "male" : "female");
+            voiceUsuari = (voiceUsuari.equals(RADIO_BUTTON_COMPARED_TEXT) ? MALE : FEMALE);
         }
 
         return new Usuari(
@@ -150,16 +154,15 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private boolean checkFields() {
         boolean correcte = true;
-        DAOUsuari dao = new DAOUsuariImpl(RegisterActivity.this);
+        DAOUsuari dao = new DAOUsuariImpl(SignUpActivity.this);
         Usuari usuari = createUsuari();
 
-        //Gestor del registre.
-        GestorRegistre gestorRegistre = new GestorRegistre(usuari, conformPassword.getText().toString());
+        GestorSignUp gestorSignUp = new GestorSignUp(usuari, conformPassword.getText().toString());
 
-        if (!gestorRegistre.emailChecker()) {
+        if (!gestorSignUp.emailChecker()) {
 
             email.setBackgroundResource(R.drawable.bg_edittext_error);
-            email.setError(gestorRegistre.getError());
+            email.setError(gestorSignUp.getError());
 
             correcte = false;
 
@@ -167,17 +170,17 @@ public class RegisterActivity extends AppCompatActivity {
 
             correcte = false;
             email.setBackgroundResource(R.drawable.bg_edittext_error);
-            email.setError("Email ja assignat a un usuari");
+            email.setError(ERROR_EMAIL_ALREADY_ASSIGNED);
 
         } else {
 
             email.setBackgroundResource(R.drawable.bg_edittext);
         }
 
-        if (!gestorRegistre.passwordChecker()) {
+        if (!gestorSignUp.passwordChecker()) {
 
             password.setBackgroundResource(R.drawable.bg_edittext_error);
-            password.setError(gestorRegistre.getError());
+            password.setError(gestorSignUp.getError());
 
             correcte = false;
 
@@ -186,10 +189,10 @@ public class RegisterActivity extends AppCompatActivity {
             password.setBackgroundResource(R.drawable.bg_edittext);
         }
 
-        if (!gestorRegistre.conformPasswordChecker()) {
+        if (!gestorSignUp.conformPasswordChecker()) {
 
             conformPassword.setBackgroundResource(R.drawable.bg_edittext_error);
-            conformPassword.setError(gestorRegistre.getError());
+            conformPassword.setError(gestorSignUp.getError());
 
             correcte = false;
 
@@ -198,7 +201,7 @@ public class RegisterActivity extends AppCompatActivity {
             conformPassword.setBackgroundResource(R.drawable.bg_edittext);
         }
 
-        if (!gestorRegistre.voiceChecker()) {
+        if (!gestorSignUp.voiceChecker()) {
 
             ln_radioGroup.setBackgroundResource(R.drawable.bg_edittext_error);
 

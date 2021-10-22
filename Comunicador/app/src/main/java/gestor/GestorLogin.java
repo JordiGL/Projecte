@@ -6,11 +6,9 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import jordigomez.ioc.cat.comunicador.AdministratorActivity;
 import jordigomez.ioc.cat.comunicador.ClientActivity;
-import jordigomez.ioc.cat.comunicador.MainActivity;
 import model.Usuari;
 
 /**
@@ -18,6 +16,11 @@ import model.Usuari;
  * @author Jordi Gómez Lozano.
  */
 public class GestorLogin {
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    public static final String ERROR_EMAIL_PASSWORD = "Email o clau incorrecta";
+    public static final String ERROR_EMPTY_PASSWORD = "Introdueix la clau";
+    public static final String ERROR_EMPTY_EMAIL = "Introdueix l'email";
+    public static final String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     private String email;
     private String password;
     private String error;
@@ -70,14 +73,13 @@ public class GestorLogin {
      */
     public boolean emailChecker(){
         boolean correcte = true;
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
         if(email.trim().length() == 0){
 
-            error = "Introdueix l'email";
+            error = ERROR_EMPTY_EMAIL;
             correcte = false;
 
-        } else if (!email.matches(emailPattern)){
+        } else if (!email.matches(EMAIL_PATTERN)){
 
             error = "Correu inacceptable";
             correcte = false;
@@ -98,7 +100,7 @@ public class GestorLogin {
 
         if(password.trim().length() == 0){
 
-            error = "Introdueix la clau";
+            error = ERROR_EMPTY_PASSWORD;
             correcte = false;
 
         }
@@ -136,7 +138,7 @@ public class GestorLogin {
 
         if(!correcte){
 
-            error = "Usuari o clau incorrectes";
+            error = "ERROR_EMAIL_PASSWORD";
         }
 
         return correcte;
@@ -160,7 +162,7 @@ public class GestorLogin {
 
         if(!correcte){
 
-            error = "Email o clau incorrecta";
+            error = ERROR_EMAIL_PASSWORD;
         }
 
         return correcte;
@@ -174,7 +176,7 @@ public class GestorLogin {
     public void dirigirUsuariSegonsRole(String role, Context context, String message) {
         Intent intent;
 
-        if(role.equals("ROLE_ADMIN")){
+        if(role.equals(ROLE_ADMIN)){
 
             intent = new Intent(context, AdministratorActivity.class);
         }else{

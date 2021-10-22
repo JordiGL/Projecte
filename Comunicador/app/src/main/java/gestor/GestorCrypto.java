@@ -2,22 +2,26 @@ package gestor;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.security.keystore.KeyGenParameterSpec;
 
-import androidx.security.crypto.EncryptedFile;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 
+/**
+ * Classe per encriptar dades, com ara el token.
+ * @author Jordi Gómez Lozano.
+ */
 public class GestorCrypto {
 
     private static final String ARXIU = "InfoObt";
 
+    /**
+     * Crea l'arxiu on es guardaran les dades encriptades.
+     * @param context
+     * @return retorna l'arxiu on s'encriptaran les dades.
+     */
     public SharedPreferences getEncryptedSharedPreferences(Context context){
 
         try {

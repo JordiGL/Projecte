@@ -7,6 +7,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Classe gestora de la petició al servidor per a fer proves amb aquest.
+ * @author Jordi Gómez Lozano
+ */
 public class GestorTestServidor {
 
     public void TestServidor(String username, String clau, ServerResponseCallBack serverResponseCallBack){

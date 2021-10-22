@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,6 +18,8 @@ import gestor.GestorCrypto;
  */
 public class ClientActivity extends AppCompatActivity {
 
+    public static final String SHARED_PREFERENCES_TOKEN_KEY = "token";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +31,7 @@ public class ClientActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         TextView textEmailClient = findViewById(R.id.textEmailClient);
-        Button btnLogout = findViewById(R.id.btn_tancarClient);
+        Button btnLogout = findViewById(R.id.btn_LogoutClient);
 
         Intent intent = getIntent();
         textEmailClient.setText(intent.getStringExtra(LoginActivity.EXTRA_MESSAGE));
@@ -42,7 +42,7 @@ public class ClientActivity extends AppCompatActivity {
             GestorCrypto gestorCrypto = new GestorCrypto();
 
             SharedPreferences sharedPreferences =  gestorCrypto.getEncryptedSharedPreferences(this);
-            sharedPreferences.edit().remove("token").apply();
+            sharedPreferences.edit().remove(SHARED_PREFERENCES_TOKEN_KEY).apply();
 
             Intent intent1 = new Intent(ClientActivity.this, LoginActivity.class);
             startActivity(intent1);

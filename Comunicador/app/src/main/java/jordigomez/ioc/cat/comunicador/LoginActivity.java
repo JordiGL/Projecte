@@ -28,6 +28,9 @@ public class LoginActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     public final static String ROLE_USER = "ROLE_USER";
     public final static int AFFIRMATIVE = 200;
+    public static final String TEST_INPUT = "test";
+    public static final String SHARED_PREFERENCES_TOKEN_KEY = "token";
+    public static final String SHARED_PREFERENCES_EXPIRATION_KEY = "expired_time";
     private EditText email, password;
     private GestorLogin gestorLogin;
 
@@ -47,12 +50,12 @@ public class LoginActivity extends AppCompatActivity {
         email = findViewById(R.id.inputEmailLogin);
         password = findViewById(R.id.inputPasswordLogin);
 
-        btnAlta.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
+        btnAlta.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, SignUpActivity.class)));
 
         btnIniciSessio.setOnClickListener(view -> {
 
             //Per a fer tests al servidor.-----------------------------------------------------------------//
-            if(email.getText().toString().equals("test") && password.getText().toString().equals("test")){
+            if(email.getText().toString().equals(TEST_INPUT) && password.getText().toString().equals(TEST_INPUT)){
                 Intent intent = new Intent(LoginActivity.this, ServerTestsActivity.class);
                 startActivity(intent);
                 finish();
@@ -92,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                                         //Si la resposta és negativa, es mostra un error
                                         password.setBackgroundResource(R.drawable.bg_edittext_error);
                                         email.setBackgroundResource(R.drawable.bg_edittext_error);
-                                        StyleableToast.makeText(LoginActivity.this, getResources().getString(R.string.errorEmailOClau), Toast.LENGTH_SHORT, R.style.toastError).show();
+                                        StyleableToast.makeText(LoginActivity.this, getResources().getString(R.string.errorEmailPassword), Toast.LENGTH_SHORT, R.style.toastError).show();
                                     }
                                 });
                             }
@@ -124,8 +127,8 @@ public class LoginActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences =  gestorCrypto.getEncryptedSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("token", token);
-        editor.putString("expired_time", String.valueOf(expiredDate));
+        editor.putString(SHARED_PREFERENCES_TOKEN_KEY, token);
+        editor.putString(SHARED_PREFERENCES_EXPIRATION_KEY, String.valueOf(expiredDate));
         editor.apply();
     }
 
@@ -174,82 +177,3 @@ public class LoginActivity extends AppCompatActivity {
     }
 }
 
-// RELACIONAT AMB FIREBASE QUE NO ESTEM UTILITZANT
-//    /**
-//     * Comprova l'usuari a Firebase i inicia sessió.
-//     * @param usuari a comprovar a Firebase.
-//     * @see FirebaseAuth
-//     * @author Jordi Gómez Lozano
-//     */
-//    private void iniciarSessio(Usuari usuari) {
-//        FirebaseAuth autentificacio = FirebaseAuth.getInstance();
-//
-//        autentificacio.signInWithEmailAndPassword(usuari.getEmail(), usuari.getPassword())
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//
-//                        if(task.isSuccessful()){
-//
-//                            direccionarUsuari();
-//
-//                        }else{
-//
-//                            password.setBackgroundResource(R.drawable.bg_edittext_error);
-//                            email.setBackgroundResource(R.drawable.bg_edittext_error);
-//                            StyleableToast.makeText(LoginActivity.this, getResources().getString(R.string.errorEmailOClau), Toast.LENGTH_SHORT, R.style.toastError).show();
-//                        }
-//                    }
-//                });
-//    }
-
-//    /**
-//     * Obtè el token de l'usuari i el guarda al SharedPreferences
-//     * @see SharedPreferences
-//     * @see FirebaseUser
-//     * @author Jordi Gómez Lozano
-//     */
-//    private void obtenirToken() {
-//        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-//
-//        mUser.getIdToken(true)
-//                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-//                    public void onComplete(@NonNull Task<GetTokenResult> task) {
-//                        if (task.isSuccessful()) {
-//
-//                            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-//                            SharedPreferences.Editor editor = pref.edit();
-//                            String idToken = task.getResult().getToken();
-//                            editor.putString("token", idToken);
-//                            editor.apply();
-//
-//                            Log.i("LoginToken", "Token: " + idToken);
-//                        } else {
-//                            Log.w("Error", "Error en guardar el token.");
-//                        }
-//                    }
-//                });
-//    }
-
-//    /**
-//     *Indico a la base de dades que està connectat per a que ningú es pugui connectar des d’un altre
-//     * dispositiu i dirigeixo a l'usuari segons si és administrador o client.
-//     * @author Jordi Gómez Lozano.
-//     */
-//    private void direccionarUsuari() {
-//        Intent intent;
-//
-//        dao.updateEnable(usuari.getEmail(), false);
-//        usuari.setEnabled(false);
-//
-//        if(usuari.getAdministrator() == 2){
-//
-//            intent = new Intent(LoginActivity.this, AdministratorActivity.class);
-//        }else{
-//
-//            intent = new Intent(LoginActivity.this, ClientActivity.class);
-//        }
-//        intent.putExtra(EXTRA_MESSAGE, gestorLogin.getEmail());
-//        startActivity(intent);
-//    }

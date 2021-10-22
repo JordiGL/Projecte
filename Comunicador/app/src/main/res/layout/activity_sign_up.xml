@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity"
-    android:background="@drawable/fondo3">
+    tools:context=".SignUpActivity"
+    android:background="@drawable/fondo">
 
     <EditText
         android:id="@+id/inputEmail"
-        android:layout_width="0dp"
+        android:layout_width="325dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
@@ -17,7 +17,7 @@
         android:drawableLeft="@drawable/ic_email"
         android:drawablePadding="10dp"
         android:ems="10"
-        android:hint="Email"
+        android:hint="@string/emailEditTextHint"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
         android:paddingLeft="20dp"
@@ -41,7 +41,7 @@
         android:drawableLeft="@drawable/ic_lock"
         android:drawablePadding="10dp"
         android:ems="10"
-        android:hint="Clau"
+        android:hint="@string/clauEditTextHint"
         android:inputType="textPassword"
         android:minHeight="48dp"
         android:paddingLeft="20dp"
@@ -63,7 +63,7 @@
         android:drawableLeft="@drawable/ic_lock"
         android:drawablePadding="10dp"
         android:ems="10"
-        android:hint="Confirmar clau"
+        android:hint="@string/confClauEditTextHint"
         android:inputType="textPassword"
         android:minHeight="48dp"
         android:paddingLeft="20dp"
@@ -82,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:background="@drawable/btn_bg"
-        android:text="@string/txt_registrar"
+        android:text="@string/txtButtonSignUpUI"
         app:layout_constraintEnd_toEndOf="@+id/linearLayoutVeu"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/linearLayoutVeu"
@@ -105,7 +105,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ja tens un compte? "
+            android:text="@string/textInfoAlreadyAccountSignUpUI"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
@@ -113,9 +113,9 @@
             android:id="@+id/textTornarLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Torna al login"
             android:clickable="true"
             android:focusable="true"
+            android:text="@string/textInfoLoginSignUpUI"
             android:textColor="@color/blue"
             android:textSize="22sp" />
 
@@ -123,13 +123,13 @@
 
     <LinearLayout
         android:id="@+id/linearLayoutVeu"
-        android:layout_width="0dp"
+        android:layout_width="325dp"
 
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@drawable/bg_edittext"
-        app:layout_constraintEnd_toEndOf="@+id/inputConformPassword"
-        app:layout_constraintStart_toStartOf="@+id/inputConformPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputConformPassword">
 
         <TextView
@@ -161,7 +161,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/gray"
                 android:paddingRight="10dp"
-                android:text="Femenina"
+                android:text="@string/textRadioButtonFemaleSignUpUI"
                 android:textColor="@color/gray"
                 android:textSize="18sp" />
 
@@ -171,7 +171,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/gray"
                 android:paddingEnd="10dp"
-                android:text="Masculina"
+                android:text="@string/textRadioButtonMaleSignUpUI"
                 android:textColor="@color/gray"
                 android:textSize="18sp" />
 

@@ -7,6 +7,9 @@ import android.util.Log;
  * @author Jordi Gómez Lozano.
  */
 public class GestorForgotPaswword {
+    public static final String ERROR_UNACCEPTABLE_EMAIL = "Correu inacceptable";
+    public static final String ERROR_EMPTY_EMAIL = "Introdueix l'email";
+    public static final String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     private String error;
     private String email;
 
@@ -37,16 +40,15 @@ public class GestorForgotPaswword {
      */
     public boolean emailChecker(){
         boolean correcte = true;
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
         if(email.trim().length() == 0){
-            Log.i("Error", "curt");
-            error = "Introdueix l'email";
+
+            error = ERROR_EMPTY_EMAIL;
             correcte = false;
 
-        } else if (!email.matches(emailPattern)){
-            Log.i("Error", "patern");
-            error = "Correu inacceptable";
+        } else if (!email.matches(EMAIL_PATTERN)){
+
+            error = ERROR_UNACCEPTABLE_EMAIL;
             correcte = false;
 
         }

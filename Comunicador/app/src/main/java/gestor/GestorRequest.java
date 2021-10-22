@@ -20,6 +20,13 @@ import java.nio.charset.StandardCharsets;
  * @author Jordi Gómez Lozano
  */
 public class GestorRequest {
+    public static final String ROLE = "authorities";
+    public static final String TOKEN_EXPIRATION = "exp";
+    public static final String EMAIL = "user_name";
+    public static final String USER_TOKEN = "access_token";
+    public static final String CHARSET_NAME = "UTF-8";
+    public static final String METODE_PETICIO = "POST";
+    public static final String URL = "http://10.0.2.2:8080/oauth/token";
     private String token;
 
     public GestorRequest() {}
@@ -36,12 +43,10 @@ public class GestorRequest {
     public int requestToken(String username, String clau){
         int responseCode = 0;
         Connexio conn = new Connexio();
-        String metodeDeLaPeticio = "POST";
-        String requestUrl = "http://10.0.2.2:8080/oauth/token";
         String urlParameters = "username="+username+"&password="+clau+"&grant_type=password";
         byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
         int postDataLength = postData.length;
-        conn.setConn(conn.postRequest(postDataLength, metodeDeLaPeticio, requestUrl));
+        conn.setConn(conn.postRequest(postDataLength, METODE_PETICIO, URL));
         HttpURLConnection connexio = conn.getConn();
 
         try( DataOutputStream wr = new DataOutputStream(connexio.getOutputStream())) {
@@ -75,7 +80,7 @@ public class GestorRequest {
             into.write(buf, 0, n);
         }
         into.close();
-        return into.toString("UTF-8");
+        return into.toString(CHARSET_NAME);
     }
 
     /**
@@ -87,7 +92,7 @@ public class GestorRequest {
      */
     private String obtenirToken(String data) throws JSONException {
         JSONObject access_token = new JSONObject(data);
-        return access_token.getString("access_token");
+        return access_token.getString(USER_TOKEN);
     }
 
     /**
@@ -99,7 +104,7 @@ public class GestorRequest {
     @Nullable
     public String getEmailFromToken(String token) {
         JWT parsedJWT = new JWT(token);
-        Claim subscriptionMetaData = parsedJWT.getClaim("user_name");
+        Claim subscriptionMetaData = parsedJWT.getClaim(EMAIL);
         return subscriptionMetaData.asString();
     }
 
@@ -112,7 +117,7 @@ public class GestorRequest {
     @Nullable
     public String getRoleFromToken(String token) {
         JWT parsedJWT = new JWT(token);
-        Claim subscriptionMetaData = parsedJWT.getClaim("authorities");
+        Claim subscriptionMetaData = parsedJWT.getClaim(ROLE);
         String[] decodedRole = subscriptionMetaData.asArray(String.class);
         return decodedRole[0];
     }
@@ -126,19 +131,7 @@ public class GestorRequest {
     @Nullable
     public long getExpireTimeFromToken(String token) {
         JWT parsedJWT = new JWT(token);
-        Claim subscriptionMetaData = parsedJWT.getClaim("exp");
+        Claim subscriptionMetaData = parsedJWT.getClaim(TOKEN_EXPIRATION);
         return subscriptionMetaData.asLong();
     }
-
-    //    /**
-//     * Obtinc la dada del token del JSON que rebo, aquest té altres dades.
-//     * @param data
-//     * @return
-//     * @throws JSONException
-//     * @author Jordi Gómez Lozano.
-//     */
-//    private int obtenirExpiresIn(String data) throws JSONException {
-//        JSONObject access_token = new JSONObject(data);
-//        return access_token.getInt("expires_in");
-//    }
 }

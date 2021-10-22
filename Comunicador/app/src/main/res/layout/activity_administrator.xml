@@ -7,12 +7,12 @@
     tools:context=".AdministratorActivity">
 
     <Button
-        android:id="@+id/btn_tancarAdministrador"
+        android:id="@+id/btn_LogoutAdministrador"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:text="tancar"
+        android:text="@string/textLogoutButtonAdministrator"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -20,7 +20,7 @@
         android:id="@+id/administradorTitleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Administrador"
+        android:text="@string/titleAdministratorUI"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
