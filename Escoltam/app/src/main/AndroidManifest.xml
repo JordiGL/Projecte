@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="jordigomez.ioc.cat.escoltam">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Comunicador">
+        <activity
+            android:name="testservidor.ServerTestsActivity"
+            android:exported="true"/>
+        <activity
+            android:name="controlador.ForgotPasswordActivity"
+            android:exported="true"
+            android:parentActivityName="controlador.LoginActivity" />
+        <activity
+            android:name="controlador.AdministratorActivity"
+            android:exported="true" />
+        <activity
+            android:name="controlador.SignUpActivity"
+            android:exported="true"
+            android:parentActivityName="controlador.LoginActivity"/>
+        <activity
+            android:name="controlador.ClientActivity"
+            android:exported="true" />
+        <activity
+            android:name="controlador.LoginActivity"
+            android:exported="true"
+            android:parentActivityName="controlador.MainActivity" />
+        <activity
+            android:name="controlador.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
