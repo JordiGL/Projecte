@@ -1,4 +1,4 @@
-package controlador;
+package controlador.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
@@ -17,11 +17,11 @@ import jordigomez.ioc.cat.escoltam.R;
  * @author Jordi Gómez Lozano.
  */
 public class ForgotPasswordActivity extends AppCompatActivity {
-    public static final String EMAIL_SENT = "Correu enviat";
-    Button btnRecuperar;
-    EditText inputEmail;
-    TextView btnTornarLogin;
-    GestorForgotPaswword gestorForgotPaswword;
+    private static final String EMAIL_SENT = "Correu enviat";
+    private Button btnRecuperar;
+    private EditText inputEmail;
+    private TextView btnTornarLogin;
+    private GestorForgotPaswword gestorForgotPaswword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -2,20 +2,19 @@ package controlador.gestor;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import java.util.Date;
-import controlador.AdministratorActivity;
-import controlador.ClientActivity;
+
+import controlador.activity.AdministratorActivity;
+import controlador.activity.ClientActivity;
 
 /**
  * Classe gestora de l'activitat amb la qual inicia el programa.
  * @author Jordi Gómez Lozano
  */
 public class GestorMain {
-    public static final String SHARED_PREFERENCES_TOKEN_KEY = "token";
-    public static final String SHARED_PREFERENCES_EXPIRED_KEY = "expired_time";
-    public static final String ROLE_ADMIN = "ROLE_ADMIN";
-    Context context;
+    private static final String SHARED_PREFERENCES_TOKEN_KEY = "token";
+    private static final String SHARED_PREFERENCES_EXPIRED_KEY = "expired_time";
+    private static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private Context context;
 
     public GestorMain(Context context){
         this.context = context;

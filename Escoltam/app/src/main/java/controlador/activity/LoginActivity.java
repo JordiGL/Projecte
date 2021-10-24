@@ -1,4 +1,4 @@
-package controlador;
+package controlador.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,13 +13,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.net.HttpURLConnection;
+
 import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.GestorLogin;
-import controlador.gestor.GestorRequest;
+import controlador.server.RequestToken;
 
 import io.github.muddz.styleabletoast.StyleableToast;
 import jordigomez.ioc.cat.escoltam.R;
-import testservidor.ServerTestsActivity;
+import controlador.server.test.RequestTokenTestActivity;
 
 /**
  * Classe que permet iniciar sessió.
@@ -28,14 +30,12 @@ import testservidor.ServerTestsActivity;
  */
 public class LoginActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
-    public final static String ROLE_USER = "ROLE_USER";
-    public final static int AFFIRMATIVE = 200;
-    public static final String TEST_INPUT = "test";
-    private static final int TIMEOUT_MILLS = 3000;
+    private final static String ROLE_USER = "ROLE_USER";
+    private static final String TEST_INPUT = "test";
 
     private EditText email, password;
     private GestorLogin gestorLogin;
-
+    RequestToken gestorRequest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
 
             //Per a fer tests al servidor.-----------------------------------------------------------------//
             if(email.getText().toString().equals(TEST_INPUT) && password.getText().toString().equals(TEST_INPUT)){
-                Intent intent = new Intent(LoginActivity.this, ServerTestsActivity.class);
+                Intent intent = new Intent(LoginActivity.this, RequestTokenTestActivity.class);
                 startActivity(intent);
                 finish();
 
@@ -72,14 +72,14 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         public void run() {
-                            GestorRequest gestorRequest = new GestorRequest(LoginActivity.this);
+                            gestorRequest = new RequestToken(LoginActivity.this);
                             GestorLogin gestorLogin = new GestorLogin();
                             GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(LoginActivity.this);
 
                             //Faig la petició i obtinc el token i el codi de resposta
                             int responseCode = gestorRequest.requestToken(email.getText().toString(), password.getText().toString());
                             Log.i("Error", String.valueOf(responseCode));
-                            if (responseCode == AFFIRMATIVE) {
+                            if (responseCode == HttpURLConnection.HTTP_OK) {
 
                                 //Si la resposta es afirmativa(200) obtinc el rol del token i dirigeixo a l'usuari a la corresponent pantalla.
                                 String token = gestorRequest.getToken();
@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                                     public void run() {
 
                                         //Si el servidor triga en contestar, mostrem error de servidor. En cas contrari, mostrem error de credencials.
-                                        if((System.currentTimeMillis() - time) >= TIMEOUT_MILLS){
+                                        if(gestorRequest.connectionProblems(time)){
 
                                             StyleableToast.makeText(LoginActivity.this, getResources().getString(R.string.errorServidor), Toast.LENGTH_SHORT, R.style.toastError).show();
                                         }else{

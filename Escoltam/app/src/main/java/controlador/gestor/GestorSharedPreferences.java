@@ -15,8 +15,8 @@ import java.util.Date;
  * @author Jordi Gómez Lozano.
  */
 public class GestorSharedPreferences {
-    public static final String SHARED_PREFERENCES_TOKEN_KEY = "token";
-    public static final String SHARED_PREFERENCES_EXPIRED_TIME_KEY = "expired_time";
+    private static final String SHARED_PREFERENCES_TOKEN_KEY = "token";
+    private static final String SHARED_PREFERENCES_EXPIRED_TIME_KEY = "expired_time";
     private static final String ARXIU = "InfoObt";
     private Context context;
 

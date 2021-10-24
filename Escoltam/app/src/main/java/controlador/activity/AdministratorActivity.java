@@ -1,4 +1,4 @@
-package controlador;
+package controlador.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,9 +17,6 @@ import jordigomez.ioc.cat.escoltam.R;
  * @author Jordi Gómez Lozano
  */
 public class AdministratorActivity extends AppCompatActivity {
-
-
-    public static final String SHARED_PREFERENCES_TOKEN_KEY = "token";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

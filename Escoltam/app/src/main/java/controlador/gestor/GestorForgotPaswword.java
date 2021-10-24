@@ -1,15 +1,14 @@
 package controlador.gestor;
 
-import android.util.Log;
 
 /**
  * Classe gestora per a recuperar la clau.
  * @author Jordi Gómez Lozano.
  */
 public class GestorForgotPaswword {
-    public static final String ERROR_UNACCEPTABLE_EMAIL = "Correu inacceptable";
-    public static final String ERROR_EMPTY_EMAIL = "Introdueix l'email";
-    public static final String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    private static final String ERROR_UNACCEPTABLE_EMAIL = "Correu inacceptable";
+    private static final String ERROR_EMPTY_EMAIL = "Introdueix l'email";
+    private static final String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     private String error;
     private String email;
 
@@ -52,7 +51,7 @@ public class GestorForgotPaswword {
             correcte = false;
 
         }
-        Log.i("Error", String.valueOf(correcte));
+
         return correcte;
     }
 }

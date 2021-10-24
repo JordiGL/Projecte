@@ -1,4 +1,4 @@
-package controlador.gestor;
+package controlador.server;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -7,16 +7,16 @@ import java.net.URL;
  * Classe que estableix la connexió amb el servidor.
  * @author Jordi Gómez Lozano
  */
-public class gestorConnexio {
-
-    public static final String AUTHORIZATION_KEY = "Authorization";
-    public static final String CONTENT_TYPE_KEY = "Content-Type";
-    public static final String CHARSET_KEY = "charset";
-    public static final String CONTENT_LENGTH_KEY = "Content-Length";
-    public static final String AUTHORIZATION_VALUE = "Basic YW5kcm9pZGFwcDoxMjM0NQ==";
-    public static final String CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded";
-    public static final String CHARSET_VALUE = "utf-8";
-    HttpURLConnection conn;
+public class Connexio {
+    private static final int TIMEOUT_MILLS = 4000;
+    private static final String AUTHORIZATION_KEY = "Authorization";
+    private static final String CONTENT_TYPE_KEY = "Content-Type";
+    private static final String CHARSET_KEY = "charset";
+    private static final String CONTENT_LENGTH_KEY = "Content-Length";
+    private static final String AUTHORIZATION_VALUE = "Basic YW5kcm9pZGFwcDoxMjM0NQ==";
+    private static final String CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded";
+    private static final String CHARSET_VALUE = "utf-8";
+    private HttpURLConnection conn;
 
     public HttpURLConnection getConn() {
         return conn;
@@ -46,12 +46,22 @@ public class gestorConnexio {
             conn.setRequestProperty(CONTENT_LENGTH_KEY, Integer.toString( postDataLength ));
             conn.setUseCaches( false );
 
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
+            conn.setConnectTimeout(TIMEOUT_MILLS);
+            conn.setReadTimeout(TIMEOUT_MILLS);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         return conn;
+    }
+
+    /**
+     * Comprovació de possibles problemes amb el servidor.
+     * @param time temps actual en mil·lisegons
+     * @return Torna true si s'està tardant a establir connexió, fals en cas contrari.
+     */
+    public boolean connectionProblems(long time){
+
+        return (System.currentTimeMillis() - time) >= TIMEOUT_MILLS;
     }
 }

@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 
 import java.util.List;
 
-import controlador.AdministratorActivity;
-import controlador.ClientActivity;
+import controlador.activity.AdministratorActivity;
+import controlador.activity.ClientActivity;
 import model.Usuari;
 
 /**
@@ -16,11 +16,11 @@ import model.Usuari;
  * @author Jordi Gómez Lozano.
  */
 public class GestorLogin {
-    public static final String ROLE_ADMIN = "ROLE_ADMIN";
-    public static final String ERROR_EMAIL_PASSWORD = "Email o clau incorrecta";
-    public static final String ERROR_EMPTY_PASSWORD = "Introdueix la clau";
-    public static final String ERROR_EMPTY_EMAIL = "Introdueix l'email";
-    public static final String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    private static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String ERROR_EMAIL_PASSWORD = "Email o clau incorrecta";
+    private static final String ERROR_EMPTY_PASSWORD = "Introdueix la clau";
+    private static final String ERROR_EMPTY_EMAIL = "Introdueix l'email";
+    private static final String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     private String email;
     private String password;
     private String error;

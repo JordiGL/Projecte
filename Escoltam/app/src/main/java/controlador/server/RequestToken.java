@@ -1,4 +1,4 @@
-package controlador.gestor;
+package controlador.server;
 
 import android.content.Context;
 
@@ -18,23 +18,25 @@ import java.net.HttpURLConnection;
 
 import java.nio.charset.StandardCharsets;
 
+import controlador.server.interfaces.RequestTokenImpl;
+
 
 /**
  * Classe que fa al servidor la petició del token.
  * @author Jordi Gómez Lozano
  */
-public class GestorRequest {
-    public static final String ROLE = "authorities";
-    public static final String TOKEN_EXPIRATION = "exp";
-    public static final String EMAIL = "user_name";
-    public static final String USER_TOKEN = "access_token";
-    public static final String CHARSET_NAME = "UTF-8";
-    public static final String METODE_PETICIO = "POST";
-    public static final String URL = "http://10.0.2.2:8080/oauth/token";
+public class RequestToken extends Connexio implements RequestTokenImpl {
+    private static final String ROLE = "authorities";
+    private static final String TOKEN_EXPIRATION = "exp";
+    private static final String EMAIL = "user_name";
+    private static final String USER_TOKEN = "access_token";
+    private static final String CHARSET_NAME = "UTF-8";
+    private static final String METODE_PETICIO = "POST";
+    private static final String URL = "http://10.0.2.2:8080/oauth/token";
     private String token;
     private Context context;
 
-    public GestorRequest( Context context) {
+    public RequestToken(Context context) {
         this.context = context;
     }
 
@@ -49,12 +51,11 @@ public class GestorRequest {
      */
     public int requestToken(String username, String clau){
         int responseCode = 0;
-        gestorConnexio conn = new gestorConnexio();
+
         String urlParameters = "username="+username+"&password="+clau+"&grant_type=password";
         byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
         int postDataLength = postData.length;
-        conn.setConn(conn.postRequest(postDataLength, METODE_PETICIO, URL));
-        HttpURLConnection connexio = conn.getConn();
+        HttpURLConnection connexio = postRequest(postDataLength, METODE_PETICIO, URL);
 
         try( DataOutputStream wr = new DataOutputStream(connexio.getOutputStream())) {
 
@@ -79,7 +80,7 @@ public class GestorRequest {
      * @throws IOException
      * @author Jordi Gómez Lozano.
      */
-    public String bytesToString(InputStream resposta) throws IOException {
+    private String bytesToString(InputStream resposta) throws IOException {
 
         ByteArrayOutputStream into = new ByteArrayOutputStream();
         byte[] buf = new byte[4096];

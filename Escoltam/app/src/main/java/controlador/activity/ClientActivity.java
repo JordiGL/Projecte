@@ -1,4 +1,4 @@
-package controlador;
+package controlador.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,8 +17,6 @@ import jordigomez.ioc.cat.escoltam.R;
  * @author Jordi Gómez Lozano
  */
 public class ClientActivity extends AppCompatActivity {
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

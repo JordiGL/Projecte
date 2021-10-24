@@ -14,28 +14,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Comunicador">
         <activity
-            android:name="testservidor.ServerTestsActivity"
+            android:name="controlador.server.test.RequestTokenTestActivity"
             android:exported="true"/>
         <activity
-            android:name="controlador.ForgotPasswordActivity"
+            android:name="controlador.activity.ForgotPasswordActivity"
             android:exported="true"
-            android:parentActivityName="controlador.LoginActivity" />
+            android:parentActivityName="controlador.activity.LoginActivity" />
         <activity
-            android:name="controlador.AdministratorActivity"
+            android:name="controlador.activity.AdministratorActivity"
             android:exported="true" />
         <activity
-            android:name="controlador.SignUpActivity"
+            android:name="controlador.activity.SignUpActivity"
             android:exported="true"
-            android:parentActivityName="controlador.LoginActivity"/>
+            android:parentActivityName="controlador.activity.LoginActivity"/>
         <activity
-            android:name="controlador.ClientActivity"
+            android:name="controlador.activity.ClientActivity"
             android:exported="true" />
         <activity
-            android:name="controlador.LoginActivity"
+            android:name="controlador.activity.LoginActivity"
             android:exported="true"
-            android:parentActivityName="controlador.MainActivity" />
+            android:parentActivityName="controlador.activity.MainActivity" />
         <activity
-            android:name="controlador.MainActivity"
+            android:name="controlador.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

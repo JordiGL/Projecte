@@ -1,4 +1,4 @@
-package controlador;
+package controlador.activity;
 
 
 import androidx.annotation.NonNull;
@@ -16,11 +16,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-
 import dao.DAOUsuariImpl;
 import controlador.gestor.GestorException;
 import controlador.gestor.GestorSignUp;
@@ -35,11 +30,11 @@ import model.Usuari;
  * @see AppCompatActivity
  */
 public class SignUpActivity extends AppCompatActivity {
-    public static final String USER_CREATED_SUCCESSFULLY = "Usuari creat correctament";
-    public static final String ERROR_EMAIL_ALREADY_ASSIGNED = "Email ja assignat a un usuari";
-    public static final String RADIO_BUTTON_COMPARED_TEXT = "Masculina";
-    public static final String MALE = "male";
-    public static final String FEMALE = "female";
+    private static final String USER_CREATED_SUCCESSFULLY = "Usuari creat correctament";
+    private static final String ERROR_EMAIL_ALREADY_ASSIGNED = "Email ja assignat a un usuari";
+    private static final String RADIO_BUTTON_COMPARED_TEXT = "Masculina";
+    private static final String MALE = "male";
+    private static final String FEMALE = "female";
     private EditText email, password, conformPassword;
     private RadioGroup radioGroupVeu;
     private LinearLayout ln_radioGroup;

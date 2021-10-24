@@ -1,4 +1,4 @@
-package controlador;
+package controlador.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.ActivityOptions;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.Date;
 
 import controlador.gestor.GestorMain;
-import controlador.gestor.GestorRequest;
+import controlador.server.RequestToken;
 import controlador.gestor.GestorSharedPreferences;
 import jordigomez.ioc.cat.escoltam.R;
 
@@ -24,10 +24,10 @@ import jordigomez.ioc.cat.escoltam.R;
  * @author Jordi Gómez Lozano.
  */
 public class MainActivity extends AppCompatActivity {
-    public final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
-    public static final String LOGO_TO_TRANSITION_ID = "logoTextTransition";
+    private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
+    private static final String LOGO_TO_TRANSITION_ID = "logoTextTransition";
     private TextView logo;
-    private GestorRequest gestorRequest;
+    private RequestToken gestorRequest;
     private GestorMain gestorMain;
     private GestorSharedPreferences gestorSharedPreferences;
 
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             String email;
             Date expiredData;
             gestorMain = new GestorMain(this);
-            gestorRequest = new GestorRequest(this);
+            gestorRequest = new RequestToken(this);
             gestorSharedPreferences = new GestorSharedPreferences(this);
 
             String token = gestorSharedPreferences.getToken();

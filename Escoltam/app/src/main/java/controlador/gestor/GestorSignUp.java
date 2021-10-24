@@ -10,23 +10,24 @@ import model.Usuari;
  */
 public class GestorSignUp {
 
-    public static final String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-    public static final String PASSWORD_NUMBER_PATTERN = "[0-9]";
-    public static final String MALE = "male";
-    public static final String FEMALE = "female";
-    public static final String ERROR_VOICE = "Selecciona la veu";
-    public static final String ERROR_MATCH_PASSWORD = "La clau no coincideix";
-    public static final String ERROR_CONFIRMATION_KEY = "Confirma la clau";
-    public static final String ERROR_CONTAIN_NUMBER = "Ha de contenir un número";
-    public static final String ERROR_MINIMUM_NUMBERS = "Mínim de vuit caràcters";
-    public static final String ERROR_EMPTY_PASSWORD = "Introdueix la clau";
-    public static final String ERROR_UNACCEPTABLE_EMAIL = "Correu inacceptable";
-    public static final String ERROR_EMPTY_EMAIL = "Introdueix l'email";
+    private static final String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    private static final String MALE = "male";
+    private static final String FEMALE = "female";
+    private static final String ERROR_VOICE = "Selecciona la veu";
+    private static final String ERROR_MATCH_PASSWORD = "La clau no coincideix";
+    private static final String ERROR_CONFIRMATION_KEY = "Confirma la clau";
+    private static final String ERROR_EMPTY_PASSWORD = "Introdueix la clau";
+    private static final String ERROR_UNACCEPTABLE_EMAIL = "Correu inacceptable";
+    private static final String ERROR_EMPTY_EMAIL = "Introdueix l'email";
     private String email;
     private String password;
     private String conformPassword;
     private String voice;
     private String error;
+//Desactivate de moment.
+//    private static final String PASSWORD_NUMBER_PATTERN = "[0-9]";
+//    private static final String ERROR_CONTAIN_NUMBER = "Ha de contenir un número";
+//    private static final String ERROR_MINIMUM_NUMBERS = "Mínim de vuit caràcters";
 
     public GestorSignUp(){}
 
@@ -116,6 +117,7 @@ public class GestorSignUp {
             correcte = false;
 
         }
+//Desactivat de moment.
 //        else if(password.length() < 8 ){
 //
 //            error = ERROR_MINIMUM_NUMBERS;
