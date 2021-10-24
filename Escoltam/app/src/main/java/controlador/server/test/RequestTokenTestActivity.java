@@ -49,24 +49,24 @@ public class RequestTokenTestActivity extends AppCompatActivity {
                         RequestToken gestorRequest = new RequestToken(RequestTokenTestActivity.this);
 
 
-                        //Faig la petició i obtinc el token i el codi de resposta
+                        //Faig la petició i obtinc el codi de resposta
                         int responseCode = gestorRequest.requestToken(email.getText().toString(), clau.getText().toString());
 
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-
+                                //Servidor NO iniciat.
                                 if(gestorRequest.connectionProblems(time)){
 
                                     textResponse.setText(ERROR_SERVIDOR);
                                 } else {
-
+                                    //Resposta correcta
                                     if(responseCode == HttpURLConnection.HTTP_OK){
 
                                         textResponse.setText(CORRECTE);
 
                                     }else{
-
+                                        //Resposta incorrecta
                                         textResponse.setText(BAD_CREDENTIALS);
                                     }
                                 }

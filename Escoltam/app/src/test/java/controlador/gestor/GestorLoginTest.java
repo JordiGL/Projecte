@@ -46,14 +46,12 @@ public class GestorLoginTest {
 
         gestorLogin.setPassword("");
         assertFalse(gestorLogin.passwordChecker());
-        gestorLogin.setPassword("password");
+        gestorLogin.setPassword("curt");
+        assertFalse(gestorLogin.passwordChecker());
+        gestorLogin.setPassword("cinccaracters");
+        assertFalse(gestorLogin.passwordChecker());
+        gestorLogin.setPassword("5caracters");
         assertTrue(gestorLogin.passwordChecker());
-
-//Desactivat de moment.
-//        gestorLogin.setPassword("curta");
-//        assertFalse(gestorLogin.passwordChecker());
-//        gestorLogin.setPassword("vuitDigitsSenseNumero");
-//        assertFalse(gestorLogin.passwordChecker());
     }
 
     /**
@@ -68,7 +66,7 @@ public class GestorLoginTest {
                 "jogomloz@gmail.com",
                 1,
                 "male",
-                "123456789",
+                "ioc56789",
                 false
         );
         basededades.add(usuari);
@@ -78,7 +76,7 @@ public class GestorLoginTest {
         assertFalse(gestorLogin.checkAuthenticationForTest(basededades));
 
         gestorLogin.setEmail("jogomloz@gmail.com");
-        gestorLogin.setPassword("123456789");
+        gestorLogin.setPassword("ioc56789");
         assertTrue(gestorLogin.checkAuthenticationForTest(basededades));
     }
 }

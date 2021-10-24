@@ -6,6 +6,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import controlador.activity.AdministratorActivity;
 import controlador.activity.ClientActivity;
@@ -21,6 +22,8 @@ public class GestorLogin {
     private static final String ERROR_EMPTY_PASSWORD = "Introdueix la clau";
     private static final String ERROR_EMPTY_EMAIL = "Introdueix l'email";
     private static final String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    private static final String MÍNIM_DE_CINC_CARACTERS = "Mínim de cinc caràcters";
+    private static final String HA_DE_CONTENIR_UN_NUMERO = "Ha de contenir un número";
     private String email;
     private String password;
     private String error;
@@ -103,18 +106,16 @@ public class GestorLogin {
             error = ERROR_EMPTY_PASSWORD;
             correcte = false;
 
+        }else if(password.length() < 5  ){
+
+            error = MÍNIM_DE_CINC_CARACTERS;
+            correcte = false;
+
+        }else if(!Pattern.compile("[0-9]").matcher(password).find()) {
+
+            error = HA_DE_CONTENIR_UN_NUMERO;
+            correcte = false;
         }
-// Ho he tret per a fer proves amb el servidor.
-//        else if(password.length() < 8 ){
-//
-//            error = "Mínim de vuit caràcters";
-//            correcte = false;
-//
-//        }else if(!Pattern.compile("[0-9]").matcher(password).find()) {
-//
-//            error = "Ha de contenir un número";
-//            correcte = false;
-//        }
 
         return correcte;
     }
