@@ -29,9 +29,9 @@ public class GestorSignUpTest {
     public void testPasswordChecker() {
         gestorSignUp.setPassword("");
         assertFalse(gestorSignUp.passwordChecker());
-        gestorSignUp.setPassword("curta");
-        assertFalse(gestorSignUp.passwordChecker());
-        gestorSignUp.setPassword("vuitdigitssensenumero");
+//        gestorSignUp.setPassword("curta");
+//        assertFalse(gestorSignUp.passwordChecker());
+//        gestorSignUp.setPassword("vuitdigitssensenumero");
         assertFalse(gestorSignUp.passwordChecker());
         gestorSignUp.setPassword("8digits8");
         assertTrue(gestorSignUp.passwordChecker());

@@ -3,13 +3,12 @@ package controlador;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import controlador.gestor.GestorCrypto;
+import controlador.gestor.GestorSharedPreferences;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**
@@ -19,7 +18,7 @@ import jordigomez.ioc.cat.escoltam.R;
  */
 public class ClientActivity extends AppCompatActivity {
 
-    public static final String SHARED_PREFERENCES_TOKEN_KEY = "token";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +39,8 @@ public class ClientActivity extends AppCompatActivity {
 
         btnLogout.setOnClickListener(view -> {
             //Borrar token
-            GestorCrypto gestorCrypto = new GestorCrypto();
-
-            SharedPreferences sharedPreferences =  gestorCrypto.getEncryptedSharedPreferences(this);
-            sharedPreferences.edit().remove(SHARED_PREFERENCES_TOKEN_KEY).apply();
+            GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
+            gestorSharedPreferences.deleteData();
 
             Intent intent1 = new Intent(ClientActivity.this, LoginActivity.class);
             startActivity(intent1);

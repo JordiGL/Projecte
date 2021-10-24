@@ -1,5 +1,7 @@
 package controlador.gestor;
 
+import android.content.Context;
+
 import androidx.annotation.Nullable;
 
 import com.auth0.android.jwt.Claim;
@@ -13,7 +15,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+
 import java.nio.charset.StandardCharsets;
+
 
 /**
  * Classe que fa al servidor la petició del token.
@@ -28,8 +32,11 @@ public class GestorRequest {
     public static final String METODE_PETICIO = "POST";
     public static final String URL = "http://10.0.2.2:8080/oauth/token";
     private String token;
+    private Context context;
 
-    public GestorRequest() {}
+    public GestorRequest( Context context) {
+        this.context = context;
+    }
 
     public String getToken() {
         return token;
@@ -42,7 +49,7 @@ public class GestorRequest {
      */
     public int requestToken(String username, String clau){
         int responseCode = 0;
-        Connexio conn = new Connexio();
+        gestorConnexio conn = new gestorConnexio();
         String urlParameters = "username="+username+"&password="+clau+"&grant_type=password";
         byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
         int postDataLength = postData.length;

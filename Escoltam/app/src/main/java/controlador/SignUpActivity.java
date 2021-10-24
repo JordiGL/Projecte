@@ -95,24 +95,9 @@ public class SignUpActivity extends AppCompatActivity {
 
             if (dao.insertar(usuari)) {
 
-                FirebaseAuth autentificacio = FirebaseAuth.getInstance();
-
-                autentificacio.createUserWithEmailAndPassword(usuari.getEmail(), usuari.getPassword())
-                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-
-                                    Toast.makeText(SignUpActivity.this, USER_CREATED_SUCCESSFULLY, Toast.LENGTH_LONG).show();
-                                    cleanFields();
-                                    startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
-
-                                } else {
-                                    StyleableToast.makeText(SignUpActivity.this, getResources().getString(R.string.errorUserSignUp), Toast.LENGTH_SHORT, R.style.toastError).show();
-                                }
-                            }
-                        });
+                Toast.makeText(SignUpActivity.this, USER_CREATED_SUCCESSFULLY, Toast.LENGTH_LONG).show();
+                cleanFields();
+                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
 
             } else {
                 StyleableToast.makeText(SignUpActivity.this, getResources().getString(R.string.errorUserSignUp), Toast.LENGTH_SHORT, R.style.toastError).show();

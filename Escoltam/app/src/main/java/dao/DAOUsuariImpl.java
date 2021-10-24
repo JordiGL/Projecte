@@ -8,6 +8,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.util.Locale;
+
 import controlador.gestor.GestorException;
 import model.Usuari;
 
@@ -39,7 +41,7 @@ public class DAOUsuariImpl extends Database implements DAOUsuari {
             SQLiteDatabase db = database.getWritableDatabase();
 
             ContentValues values = new ContentValues();
-            values.put("username", usuari.getEmail());
+            values.put("username", usuari.getEmail().toLowerCase());
             values.put("voice", usuari.getVoice());
             values.put("password", usuari.getPassword());
             values.put("enabled", usuari.isEnabled());

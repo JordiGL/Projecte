@@ -115,16 +115,17 @@ public class GestorSignUp {
             error = ERROR_EMPTY_PASSWORD;
             correcte = false;
 
-        } else if(password.length() < 8 ){
-
-            error = ERROR_MINIMUM_NUMBERS;
-            correcte = false;
-
-        }else if(!Pattern.compile(PASSWORD_NUMBER_PATTERN).matcher(password).find()) {
-
-            error = ERROR_CONTAIN_NUMBER;
-            correcte = false;
         }
+//        else if(password.length() < 8 ){
+//
+//            error = ERROR_MINIMUM_NUMBERS;
+//            correcte = false;
+//
+//        }else if(!Pattern.compile(PASSWORD_NUMBER_PATTERN).matcher(password).find()) {
+//
+//            error = ERROR_CONTAIN_NUMBER;
+//            correcte = false;
+//        }
 
         return correcte;
     }

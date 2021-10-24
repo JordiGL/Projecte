@@ -3,19 +3,20 @@ package controlador;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Date;
 
-import controlador.gestor.GestorCrypto;
+import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.GestorLogin;
 import controlador.gestor.GestorRequest;
+
 import io.github.muddz.styleabletoast.StyleableToast;
 import jordigomez.ioc.cat.escoltam.R;
 import testservidor.ServerTestsActivity;
@@ -30,8 +31,8 @@ public class LoginActivity extends AppCompatActivity {
     public final static String ROLE_USER = "ROLE_USER";
     public final static int AFFIRMATIVE = 200;
     public static final String TEST_INPUT = "test";
-    public static final String SHARED_PREFERENCES_TOKEN_KEY = "token";
-    public static final String SHARED_PREFERENCES_EXPIRATION_KEY = "expired_time";
+    private static final int TIMEOUT_MILLS = 3000;
+
     private EditText email, password;
     private GestorLogin gestorLogin;
 
@@ -62,25 +63,29 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
 
             }else {
-            //----------------------------------------------------------------------------------------------//
+                //----------------------------------------------------------------------------------------------//
                 if (emailAndPasswordChecker()) {
 
                     Thread thread = new Thread(new Runnable() {
 
+                        long time = System.currentTimeMillis();
+
                         @Override
                         public void run() {
-                            GestorRequest gestorRequest = new GestorRequest();
+                            GestorRequest gestorRequest = new GestorRequest(LoginActivity.this);
                             GestorLogin gestorLogin = new GestorLogin();
+                            GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(LoginActivity.this);
 
                             //Faig la petició i obtinc el token i el codi de resposta
                             int responseCode = gestorRequest.requestToken(email.getText().toString(), password.getText().toString());
-
+                            Log.i("Error", String.valueOf(responseCode));
                             if (responseCode == AFFIRMATIVE) {
 
                                 //Si la resposta es afirmativa(200) obtinc el rol del token i dirigeixo a l'usuari a la corresponent pantalla.
                                 String token = gestorRequest.getToken();
                                 long expiredTime = gestorRequest.getExpireTimeFromToken(token);
-                                savingData(token, expiredTime);
+                                gestorSharedPreferences.saveData(token, expiredTime);
+
 
                                 String role = gestorRequest.getRoleFromToken(token);
                                 if (role == null) {
@@ -89,14 +94,21 @@ public class LoginActivity extends AppCompatActivity {
                                 gestorLogin.dirigirUsuariSegonsRole(role, LoginActivity.this, EXTRA_MESSAGE);
 
                             } else {
-
+                                //Si la resposta és negativa, es mostra un error
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        //Si la resposta és negativa, es mostra un error
-                                        password.setBackgroundResource(R.drawable.bg_edittext_error);
-                                        email.setBackgroundResource(R.drawable.bg_edittext_error);
-                                        StyleableToast.makeText(LoginActivity.this, getResources().getString(R.string.errorEmailPassword), Toast.LENGTH_SHORT, R.style.toastError).show();
+
+                                        //Si el servidor triga en contestar, mostrem error de servidor. En cas contrari, mostrem error de credencials.
+                                        if((System.currentTimeMillis() - time) >= TIMEOUT_MILLS){
+
+                                            StyleableToast.makeText(LoginActivity.this, getResources().getString(R.string.errorServidor), Toast.LENGTH_SHORT, R.style.toastError).show();
+                                        }else{
+
+                                            password.setBackgroundResource(R.drawable.bg_edittext_error);
+                                            email.setBackgroundResource(R.drawable.bg_edittext_error);
+                                            StyleableToast.makeText(LoginActivity.this, getResources().getString(R.string.errorEmailPassword), Toast.LENGTH_SHORT, R.style.toastError).show();
+                                        }
                                     }
                                 });
                             }
@@ -114,23 +126,6 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         });
 
-    }
-
-    /**
-     * Guarda les dades mentre duri la sessió de l'usuari.
-     * @param token token de l'usuari
-     * @param expiredTime data d'expiració del token
-     * @author Jordi Gómez Lozano
-     */
-    private void savingData(String token, long expiredTime) {
-        GestorCrypto gestorCrypto = new GestorCrypto();
-        Date expiredDate = new Date(expiredTime *1000);
-
-        SharedPreferences sharedPreferences =  gestorCrypto.getEncryptedSharedPreferences(this);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(SHARED_PREFERENCES_TOKEN_KEY, token);
-        editor.putString(SHARED_PREFERENCES_EXPIRATION_KEY, String.valueOf(expiredDate));
-        editor.apply();
     }
 
     /**

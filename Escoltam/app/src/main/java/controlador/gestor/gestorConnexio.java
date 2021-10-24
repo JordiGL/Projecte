@@ -7,7 +7,7 @@ import java.net.URL;
  * Classe que estableix la connexió amb el servidor.
  * @author Jordi Gómez Lozano
  */
-public class Connexio {
+public class gestorConnexio {
 
     public static final String AUTHORIZATION_KEY = "Authorization";
     public static final String CONTENT_TYPE_KEY = "Content-Type";
@@ -27,10 +27,10 @@ public class Connexio {
     }
 
     /**
-     * Estableix la conexio amb el servidor per a fer una petició.
+     * Estableix la connexió amb el servidor per a fer una petició.
      * @param postDataLength la allargada del Content-length.
      * @param requestUrl la url de connexió per a fer la petició.
-     * @return la conexió amb el servidor
+     * @return la connexió amb el servidor
      * @author Jordi Gómez Lozano
      */
     public HttpURLConnection postRequest(int postDataLength, String method, String requestUrl){
@@ -45,6 +45,10 @@ public class Connexio {
             conn.setRequestProperty(CHARSET_KEY, CHARSET_VALUE);
             conn.setRequestProperty(CONTENT_LENGTH_KEY, Integer.toString( postDataLength ));
             conn.setUseCaches( false );
+
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

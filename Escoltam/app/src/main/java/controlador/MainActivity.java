@@ -15,6 +15,7 @@ import java.util.Date;
 
 import controlador.gestor.GestorMain;
 import controlador.gestor.GestorRequest;
+import controlador.gestor.GestorSharedPreferences;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**
@@ -25,9 +26,10 @@ import jordigomez.ioc.cat.escoltam.R;
 public class MainActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     public static final String LOGO_TO_TRANSITION_ID = "logoTextTransition";
-    GestorRequest gestorRequest;
-    TextView logo;
-    GestorMain gestorMain;
+    private TextView logo;
+    private GestorRequest gestorRequest;
+    private GestorMain gestorMain;
+    private GestorSharedPreferences gestorSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +51,13 @@ public class MainActivity extends AppCompatActivity {
             String email;
             Date expiredData;
             gestorMain = new GestorMain(this);
-            gestorRequest = new GestorRequest();
+            gestorRequest = new GestorRequest(this);
+            gestorSharedPreferences = new GestorSharedPreferences(this);
 
-            String token = gestorMain.tokenFromSharedPreferences(this);
-
+            String token = gestorSharedPreferences.getToken();
             if(token != null){
-                expiredData = gestorMain.expiredDateFromSharedPreferences(this);
+
+                expiredData = gestorSharedPreferences.getExpiredDate();
 
                 if(expiredData.after(new Date())) {
 
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                     gestorMain.dirigirUsuari(role, email, EXTRA_MESSAGE);
 
                 } else {
-
+                    gestorSharedPreferences.deleteData();
                     dirigirALogin();
                 }
             }else{

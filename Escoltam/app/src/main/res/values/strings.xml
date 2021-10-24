@@ -16,9 +16,7 @@
     <string name="titleLoginUI">Escolta\'m</string>
     <string name="textForgotPasswordLoginUI">Has oblidat la teva clau?</string>
     <string name="textEntrarButtonLoginUI">Entrar</string>
-    <string name="textInfoNewUserLoginUI">Ets nou usuari? Si és així, </string>
-    <string name="errorEmailPassword">Email o clau incorrecta</string>
-    <string name="errorUserSignUp">No s\'ha pogut dur a terme el registre.</string>
+    <string name="textInfoNewUserLoginUI">Ets nou usuari? Si és així,</string>
 
     //Forgot Password UI
     <string name="textButtonForgotPasswordUI">Recuperar</string>
@@ -43,5 +41,10 @@
     //Generals UI
     <string name="emailEditTextHint">Email</string>
     <string name="clauEditTextHint">Clau</string>
+
+    //Altres
+    <string name="errorServidor">Problemes amb el servidor</string>
+    <string name="errorEmailPassword">Email o clau incorrecta</string>
+    <string name="errorUserSignUp">No s\'ha pogut dur a terme el registre.</string>
 
 </resources>
