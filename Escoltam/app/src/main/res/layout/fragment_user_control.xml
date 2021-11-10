@@ -1,0 +1,89 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/user_control_layout_width_portrait"
+    android:layout_height="@dimen/user_control_layout_height_portrait"
+    tools:context="controlador.fragment.UserControlFragment">
+
+    <ImageView
+        android:id="@+id/control_second_bg_user"
+        android:layout_width="@dimen/user_control_second_bg_width"
+        android:layout_height="@dimen/user_control_second_bg_height"
+        android:src="@drawable/control_bg_second"
+        android:contentDescription="@string/user_second_background_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/control_first_bg_user"
+        android:layout_width="@dimen/user_control_first_bg_width"
+        android:layout_height="@dimen/user_control_first_bg_height"
+        android:src="@drawable/control_bg"
+        android:contentDescription="@string/user_first_background_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/control_second_bg_user"
+        app:layout_constraintStart_toStartOf="@+id/control_second_bg_user" />
+
+    <LinearLayout
+        android:id="@+id/icon_control_layout_user"
+        android:layout_width="@dimen/control_dimen_linearlayout_width_portrait"
+        android:layout_height="@dimen/control_dimen_linearlayout_height_portrait"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/control_first_bg_user"
+        app:layout_constraintStart_toStartOf="@+id/control_first_bg_user"
+        app:layout_constraintTop_toTopOf="@+id/control_second_bg_user">
+
+
+        <ImageButton
+            android:layout_width="@dimen/control_dimen_button"
+            android:layout_height="@dimen/control_dimen_button_height_portrait"
+            android:layout_marginEnd="@dimen/control_dimen_basic_margin"
+            android:layout_weight=".45"
+            android:contentDescription="@string/user_add_page_description"
+            android:background="@drawable/button_middle"
+            android:src="@drawable/ic_action_add_screen"/>
+
+        <ImageButton
+            android:layout_width="@dimen/control_dimen_button"
+            android:layout_height="@dimen/control_dimen_button_height_portrait"
+            android:layout_weight=".45"
+            android:contentDescription="@string/user_control_icons_description"
+            android:background="@drawable/button_top_right"
+            android:src="@drawable/ic_action_icon_number"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/control_dimen_linearlayout_width_portrait"
+        android:layout_height="@dimen/control_dimen_linearlayout_height_portrait"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="@dimen/control_dimen_basic_margin"
+        android:layout_marginBottom="@dimen/control_dimen_basic_margin"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/control_first_bg_user"
+        app:layout_constraintEnd_toEndOf="@+id/control_first_bg_user"
+        app:layout_constraintStart_toStartOf="@+id/control_first_bg_user"
+        app:layout_constraintTop_toTopOf="@+id/control_first_bg_user">
+
+        <ImageButton
+            android:layout_width="@dimen/control_dimen_large_button"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/control_dimen_basic_margin"
+            android:layout_weight=".45"
+            android:background="@drawable/button_top_right"
+            android:contentDescription="@string/user_control_stop_description"
+            android:src="@drawable/ic_action_play" />
+
+        <ImageButton
+            android:layout_width="@dimen/control_dimen_large_button"
+            android:layout_height="match_parent"
+            android:layout_weight=".45"
+            android:background="@drawable/button_bottom_right"
+            android:contentDescription="@string/user_control_play_description"
+            android:src="@drawable/ic_action_stop" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

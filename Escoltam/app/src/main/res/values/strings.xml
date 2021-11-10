@@ -46,5 +46,27 @@
     <string name="errorServidor">Problemes amb el servidor</string>
     <string name="errorEmailPassword">Email o clau incorrecta</string>
     <string name="errorUserSignUp">No s\'ha pogut dur a terme el registre.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="user_second_background_description">user second background</string>
+    <string name="user_first_background_description">user first background</string>
+    <string name="user_add_page_description">user add page</string>
+    <string name="user_control_icons_description">user control icons description</string>
+    <string name="user_control_stop_description">user control stop description</string>
+    <string name="user_control_play_description">user control play description</string>
+    <string name="user_toolbar_delete_all_description">user toolbar delete all description</string>
+    <string name="user_toolbar_settings_description">user toolbar settings description</string>
+    <string name="user_toolbar_delete_description">user toolbar delete description</string>
+    <string name="user_toolbar_translate_description">user toolbar translate description</string>
+    <string name="user_toolbar_add_icon_description">user toolbar add icon description</string>
+    <string name="user_toolbar_forward_description">user toolbar forward description</string>
+    <string name="user_toolbar_edtittext_description">user toolbar edtittext description</string>
+
+    <string-array name="search_options">
+        <item>Tot</item>
+        <item>Email</item>
+        <item>Veu</item>
+        <item>Rol</item>
+    </string-array>
 
 </resources>

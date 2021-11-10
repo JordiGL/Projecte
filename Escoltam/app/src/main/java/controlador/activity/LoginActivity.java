@@ -1,17 +1,15 @@
 package controlador.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import io.github.muddz.styleabletoast.StyleableToast;
 
 import java.net.HttpURLConnection;
 
@@ -19,7 +17,6 @@ import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.GestorLogin;
 import controlador.server.RequestToken;
 
-import io.github.muddz.styleabletoast.StyleableToast;
 import jordigomez.ioc.cat.escoltam.R;
 import controlador.server.test.RequestTokenTestActivity;
 

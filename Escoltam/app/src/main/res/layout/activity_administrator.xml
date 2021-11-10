@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context="controlador.activity.AdministratorActivity">
 
+    <FrameLayout
+        android:id="@+id/fragment_admin_toolbar_container"
+        android:name="AdminToolbarFragmentContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_admin_toolbar">
+
+    </FrameLayout>
+
     <Button
         android:id="@+id/btn_LogoutAdministrador"
         android:layout_width="wrap_content"
@@ -21,10 +33,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/titleAdministratorUI"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/btn_LogoutAdministrador"
+        app:layout_constraintEnd_toStartOf="@+id/btn_LogoutAdministrador"
+        app:layout_constraintTop_toTopOf="@+id/btn_LogoutAdministrador" />
 
     <TextView
         android:id="@+id/textCorreuAdministrador"

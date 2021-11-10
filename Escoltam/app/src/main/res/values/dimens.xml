@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="control_dimen_button">48dp</dimen>
+    <dimen name="control_dimen_large_button_land">126dp</dimen>
+    <dimen name="control_dimen_large_button">100dp</dimen>
+    <dimen name="user_control_second_bg_width">120dp</dimen>
+    <dimen name="user_control_second_bg_height">166dp</dimen>
+    <dimen name="user_control_first_bg_width">120dp</dimen>
+    <dimen name="user_control_first_bg_height">130dp</dimen>
+    <dimen name="user_control_second_bg_width_land">53dp</dimen>
+    <dimen name="user_control_first_bg_width_land">145dp</dimen>
+    <dimen name="control_dimen_button_height_portrait">30dp</dimen>
+    <dimen name="control_dimen_linearlayout_width_portrait">100dp</dimen>
+    <dimen name="control_dimen_linearlayout_height_portrait">0dp</dimen>
+    <dimen name="user_control_layout_width_portrait">150dp</dimen>
+    <dimen name="user_control_layout_height_portrait">170dp</dimen>
+    <dimen name="user_control_second_bg_height_land">0dp</dimen>
+    <dimen name="user_control_first_bg_height_land">0dp</dimen>
+    <dimen name="control_dimen_basic_margin">4dp</dimen>
+</resources>

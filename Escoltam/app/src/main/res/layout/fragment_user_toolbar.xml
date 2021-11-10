@@ -1,0 +1,102 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    tools:context="controlador.fragment.UserToolbarFragment">
+
+
+    <ImageButton
+        android:id="@+id/button_top_left"
+        android:layout_width="@dimen/control_dimen_button"
+        android:layout_height="@dimen/control_dimen_button"
+        android:layout_marginStart="@dimen/control_dimen_basic_margin"
+        android:background="@drawable/button_top_left"
+        app:layout_constraintEnd_toStartOf="@+id/appCompatEditText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/appCompatEditText"
+        android:src="@drawable/ic_action_delete_all"
+        android:contentDescription="@string/user_toolbar_delete_all_description" />
+
+
+    <ImageButton
+        android:id="@+id/button_top_right"
+        android:layout_width="@dimen/control_dimen_button"
+        android:layout_height="@dimen/control_dimen_button"
+        android:layout_marginEnd="@dimen/control_dimen_basic_margin"
+        android:background="@drawable/button_top_right"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/appCompatEditText"
+        app:layout_constraintTop_toTopOf="@+id/appCompatEditText"
+        android:src="@drawable/ic_action_settings"
+        android:contentDescription="@string/user_toolbar_settings_description"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="3.5dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="@dimen/control_dimen_basic_margin"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/button_top_right"
+        app:layout_constraintStart_toStartOf="@+id/button_top_left"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatEditText">
+
+        <ImageButton
+            android:id="@+id/button_delete_back"
+            android:background="@drawable/button_bottom_left"
+            style="@style/control_outer_button"
+            android:src="@drawable/ic_action_delete"
+            android:contentDescription="@string/user_toolbar_delete_description"/>
+
+        <ImageButton
+            android:id="@+id/button_stop"
+            style="@style/control_middle_buttons"
+            android:src="@drawable/ic_action_translate"
+            android:contentDescription="@string/user_toolbar_translate_description"/>
+
+        <ImageButton
+            android:id="@+id/button_translator"
+            android:layout_marginEnd="6dp"
+            style="@style/control_middle_buttons"
+            android:src="@drawable/ic_action_add_icon"
+            android:contentDescription="@string/user_toolbar_add_icon_description"/>
+
+        <ImageButton
+            android:id="@+id/button_button_play"
+            android:background="@drawable/button_bottom_right"
+            style="@style/control_outer_button"
+            android:src="@drawable/ic_action_forward"
+            android:contentDescription="@string/user_toolbar_forward_description"/>
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/appCompatEditText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/control_dimen_button"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="58dp"
+        android:autofillHints="none"
+        android:background="@color/white"
+        android:contentDescription="@string/user_toolbar_edtittext_description"
+        android:ems="1"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:labelFor="@id/appCompatEditText"
+        android:lines="2"
+        android:maxLines="10"
+        android:minLines="2"
+        android:paddingStart="3dp"
+        android:paddingEnd="3dp"
+        android:scrollbars="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="EditableContentDescCheck" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

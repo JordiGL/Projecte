@@ -14,4 +14,11 @@
     <color name="light_grey">#8F8F8F</color>
     <color name="stroke">#FFFFFF</color>
     <color name="darkerGray">#6C6C6C</color>
+
+    <color name="colorPrimary">#6079B8</color>
+    <color name="colorPrimaryDark">#000F6E</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="my_fragment_color">#ffa500</color>
+    <color name="light_blue">#FFFFFF</color>
+    <color name="darker_light_blue">#769DCD</color>
 </resources>
