@@ -31,9 +31,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         inputEmail = findViewById(R.id.inputEmailRecuperar);
         btnTornarLogin = findViewById(R.id.textTornarLoginForgotPassword);
 
-        //Amagar barra superior del layout.
-        getSupportActionBar().hide();
-
         btnRecuperar.setOnClickListener(view -> validar());
 
         btnTornarLogin.setOnClickListener(view -> {

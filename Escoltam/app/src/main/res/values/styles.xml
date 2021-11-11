@@ -17,8 +17,7 @@
     <style name="control_middle_buttons">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">@dimen/control_dimen_button</item>
-        <item name="android:layout_marginStart">6dp</item>
-        <item name="android:layout_weight">.25</item>
+        <item name="android:layout_weight">.15</item>
         <item name="android:background">@drawable/button_middle</item>
     </style>
 

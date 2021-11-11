@@ -21,7 +21,7 @@ import jordigomez.ioc.cat.escoltam.R;
  * @see AppCompatActivity
  * @author Jordi Gómez Lozano
  */
-public class ClientActivity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity {
 
     UserToolbarFragment toolbarFragment;
     UserFavoritesFragment favoritesFragment;
@@ -32,10 +32,8 @@ public class ClientActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_client);
+        setContentView(R.layout.activity_user);
 
-        //Amagar barra superior del layout.
-        getSupportActionBar().hide();
         //Amagar barra superior de la info del dispositiu.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -66,7 +64,7 @@ public class ClientActivity extends AppCompatActivity {
             GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
             gestorSharedPreferences.deleteData();
 
-            Intent intent1 = new Intent(ClientActivity.this, LoginActivity.class);
+            Intent intent1 = new Intent(UserActivity.this, LoginActivity.class);
             startActivity(intent1);
             finish();
         });

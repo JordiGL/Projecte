@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import controlador.activity.AdministratorActivity;
-import controlador.activity.ClientActivity;
+import controlador.activity.UserActivity;
 
 /**
  * Classe gestora de l'activitat amb la qual inicia el programa.
@@ -35,7 +35,7 @@ public class GestorMain {
             intent = new Intent(context, AdministratorActivity.class);
         } else {
 
-            intent = new Intent(context, ClientActivity.class);
+            intent = new Intent(context, UserActivity.class);
         }
 
         intent.putExtra(message, email);

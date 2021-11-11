@@ -12,6 +12,7 @@
         android:layout_width="@dimen/control_dimen_button"
         android:layout_height="@dimen/control_dimen_button"
         android:layout_marginStart="@dimen/control_dimen_basic_margin"
+        android:layout_marginEnd="@dimen/control_dimen_basic_margin"
         android:background="@drawable/button_top_left"
         app:layout_constraintEnd_toStartOf="@+id/appCompatEditText"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,10 +22,11 @@
 
 
     <ImageButton
-        android:id="@+id/button_top_right"
+        android:id="@+id/user_button_top_right"
         android:layout_width="@dimen/control_dimen_button"
         android:layout_height="@dimen/control_dimen_button"
-        android:layout_marginEnd="@dimen/control_dimen_basic_margin"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="@dimen/control_dimen_basic_margin"
         android:background="@drawable/button_top_right"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/appCompatEditText"
@@ -35,13 +37,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="3.5dp"
-        android:layout_marginEnd="7dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="6dp"
         android:layout_marginBottom="@dimen/control_dimen_basic_margin"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/button_top_right"
+        app:layout_constraintEnd_toEndOf="@+id/user_button_top_right"
         app:layout_constraintStart_toStartOf="@+id/button_top_left"
         app:layout_constraintTop_toBottomOf="@+id/appCompatEditText">
 
@@ -49,18 +51,20 @@
             android:id="@+id/button_delete_back"
             android:background="@drawable/button_bottom_left"
             style="@style/control_outer_button"
+            android:layout_marginEnd="4dp"
             android:src="@drawable/ic_action_delete"
             android:contentDescription="@string/user_toolbar_delete_description"/>
 
         <ImageButton
             android:id="@+id/button_stop"
             style="@style/control_middle_buttons"
+            android:layout_marginEnd="4dp"
             android:src="@drawable/ic_action_translate"
             android:contentDescription="@string/user_toolbar_translate_description"/>
 
         <ImageButton
             android:id="@+id/button_translator"
-            android:layout_marginEnd="6dp"
+            android:layout_marginEnd="4dp"
             style="@style/control_middle_buttons"
             android:src="@drawable/ic_action_add_icon"
             android:contentDescription="@string/user_toolbar_add_icon_description"/>
@@ -78,9 +82,9 @@
         android:id="@+id/appCompatEditText"
         android:layout_width="match_parent"
         android:layout_height="@dimen/control_dimen_button"
-        android:layout_marginStart="58dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="58dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="60dp"
         android:autofillHints="none"
         android:background="@color/white"
         android:contentDescription="@string/user_toolbar_edtittext_description"

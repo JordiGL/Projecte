@@ -41,20 +41,16 @@ public class SignUpActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        //Amagar barra superior del layout.
-        getSupportActionBar().hide();
         //Amagar barra superior de la info del dispositiu.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
         Button btnRegistrar = findViewById(R.id.btnRegister);
         TextView tornarLogin = findViewById(R.id.textTornarLogin);
-        email = findViewById(R.id.inputEmail);
+        email = findViewById(R.id.inputPreviousPassword);
         password = findViewById(R.id.inputPassword);
         conformPassword = findViewById(R.id.inputConformPassword);
         radioGroupVeu = findViewById(R.id.rg);

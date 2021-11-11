@@ -8,7 +8,7 @@
     android:background="@drawable/fondolandscape">
 
     <EditText
-        android:id="@+id/inputEmail"
+        android:id="@+id/inputPreviousPassword"
         android:layout_width="325dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -50,9 +50,9 @@
         android:paddingBottom="10dp"
         android:textColor="@color/black"
         android:textColorHint="@color/darkerGray"
-        app:layout_constraintEnd_toEndOf="@+id/inputEmail"
-        app:layout_constraintStart_toStartOf="@+id/inputEmail"
-        app:layout_constraintTop_toBottomOf="@+id/inputEmail" />
+        app:layout_constraintEnd_toEndOf="@+id/inputPreviousPassword"
+        app:layout_constraintStart_toStartOf="@+id/inputPreviousPassword"
+        app:layout_constraintTop_toBottomOf="@+id/inputPreviousPassword" />
 
     <EditText
         android:id="@+id/inputConformPassword"

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import controlador.activity.AdministratorActivity;
-import controlador.activity.ClientActivity;
+import controlador.activity.UserActivity;
 import model.Usuari;
 
 /**
@@ -182,7 +182,7 @@ public class GestorLogin {
             intent = new Intent(context, AdministratorActivity.class);
         }else{
 
-            intent = new Intent(context, ClientActivity.class);
+            intent = new Intent(context, UserActivity.class);
         }
 
         intent.putExtra(message, role);

@@ -4,53 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="controlador.activity.ClientActivity">
+    tools:context="controlador.activity.UserActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <FrameLayout
+        android:id="@+id/toolbar_fragment_container"
+        android:name="ToolbarFragmentContainer"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_user_toolbar">
 
-        <FrameLayout
-            android:id="@+id/control_fragment_container"
-            android:name="ControlFragmentContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            tools:layout="@layout/fragment_user_control">
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/toolbar_fragment_container"
-            android:name="ToolbarFragmentContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout="@layout/fragment_user_toolbar">
-
-        </FrameLayout>
-
-    </LinearLayout>
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/favorites_fragment_container"
         android:name="FavoritesFragmentContainer"
         android:layout_width="0dp"
-        android:layout_height="75dp"
-        android:layout_weight=".50"
-        app:layout_constraintEnd_toStartOf="@+id/textEmailClient"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="130dp"
+        android:layout_marginStart="-40dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/control_fragment_container"
+        app:layout_constraintRight_toRightOf="parent"
         tools:layout="@layout/fragment_user_favorites">
 
     </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/control_fragment_container"
+        android:name="ControlFragmentContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:layout="@layout/fragment_user_control">
+
+    </FrameLayout>
+
 
     <Button
         android:id="@+id/btn_LogoutClient"
