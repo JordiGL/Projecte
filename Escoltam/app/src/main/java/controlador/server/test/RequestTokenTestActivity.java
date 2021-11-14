@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.net.HttpURLConnection;
 
 import controlador.activity.LoginActivity;
-import controlador.server.RequestToken;
+import controlador.server.post.RequestToken;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.Date;
 
 import controlador.gestor.GestorMain;
-import controlador.server.RequestToken;
+import controlador.server.post.RequestToken;
 import controlador.gestor.GestorSharedPreferences;
 import jordigomez.ioc.cat.escoltam.R;
 

@@ -15,7 +15,7 @@ import java.net.HttpURLConnection;
 
 import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.GestorLogin;
-import controlador.server.RequestToken;
+import controlador.server.post.RequestToken;
 
 import jordigomez.ioc.cat.escoltam.R;
 import controlador.server.test.RequestTokenTestActivity;

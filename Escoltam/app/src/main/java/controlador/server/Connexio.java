@@ -79,18 +79,7 @@ public class Connexio {
         return (System.currentTimeMillis() - time) >= TIMEOUT_MILLS;
     }
 
-    public HttpURLConnection getRequest(String token, String url){
-
-        token ="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MzY2NjUxMDMsInVzZXJfbmFtZ" +
-                "SI6IkpvR29tTG96QGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iXSwianRpIjoi" +
-                "MzExYTc2ZjMtYzY3MC00NTk4LTlkOGItOTM0ODVlYzNhMWEwIiwiY2xpZW50X2lkIjoiYW5kcm9pZGFw" +
-                "cCIsInNjb3BlIjpbInJlYWQiLCJ3cml0ZSJdfQ.xnTd8fOl2NrzSQxXb6eaCMmI7hcDhDzfZP_12LEKBR" +
-                "iP5XTV75ZfC1-xXbVcwB3X5h6Q8OrpoAEHju4dV3XtNvKRgS3dDD822Nnpwuv9t32-Pu37to7JV8Avb" +
-                "ukoU7Br-oF1pwU00kNZo618GmrfJan-N2Ah61rAEV8DYgdRI3tmstO0V6iZUJEgbC7tiin0sakStldfZ5" +
-                "s8bIxZZAUjZli0SuUeYKzdv9DUVtpjHpOfU9jKsDnFBK07jA-KZVYTtYKZJwlnDckxffk2ytCUKWKQn" +
-                "q2dqhHd8DjSkf69Ck371MhHl_4I0qIwzTmb6vY6l1IQmMdUzZ7RRexMBiSidg";
-
-        Log.d("Info", "1");
+    public static HttpURLConnection getRequest(String token, String url){
 
         try{
             URL requestURL = new URL(url);

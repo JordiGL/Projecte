@@ -130,15 +130,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                 queryBundle.putString("veu", voiceUsuari);
                 getSupportLoaderManager().restartLoader(0, queryBundle, this);
             }
-//            if (requestAddUser.addNewUser(usuari)) {
-//
-//                Toast.makeText(SignUpActivity.this, USER_CREATED_SUCCESSFULLY, Toast.LENGTH_LONG).show();
-//                cleanFields();
-//                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
-//
-//            } else {
-//                StyleableToast.makeText(SignUpActivity.this, getResources().getString(R.string.errorUserSignUp), Toast.LENGTH_SHORT, R.style.toastError).show();
-//            }
         }
 
     }

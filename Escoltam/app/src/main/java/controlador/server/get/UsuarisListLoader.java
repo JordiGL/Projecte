@@ -1,4 +1,4 @@
-package controlador.server.post;
+package controlador.server.get;
 
 import android.content.Context;
 
@@ -7,24 +7,25 @@ import androidx.annotation.Nullable;
 import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
-import model.Usuari;
 
-public class SignUpLoader extends AsyncTaskLoader<Integer> {
-    private Usuari usuari;
+public class UsuarisListLoader extends AsyncTaskLoader<String> {
+    private String token;
+    private String opcio;
 
-    public SignUpLoader(@NonNull Context context, Usuari usuari) {
+    public UsuarisListLoader(@NonNull Context context,String token, String opcio) {
         super(context);
-        this.usuari = usuari;
+        this.token = token;
+        this.opcio = opcio;
     }
 
     /**
      * Designem l'operació a fer.
-     * @return l'int amb el codi de resposta del servidor.
+     * @return l'String amb la llista d'usuaris.
      */
     @Nullable
     @Override
-    public Integer loadInBackground() {
-        return NetworkUtils.addNewUser(usuari);
+    public String loadInBackground() {
+        return NetworkUtils.getUsuarisData(token, opcio);
     }
 
     /**

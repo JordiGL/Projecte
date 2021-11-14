@@ -1,4 +1,4 @@
-package controlador.server;
+package controlador.server.post;
 
 import android.content.Context;
 
@@ -18,6 +18,7 @@ import java.net.HttpURLConnection;
 
 import java.nio.charset.StandardCharsets;
 
+import controlador.server.Connexio;
 import controlador.server.interfaces.RequestTokenImpl;
 
 
