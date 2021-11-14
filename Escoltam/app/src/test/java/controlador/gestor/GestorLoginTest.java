@@ -64,10 +64,8 @@ public class GestorLoginTest {
         List<Usuari> basededades = new ArrayList<>();
         Usuari usuari = new Usuari(
                 "jogomloz@gmail.com",
-                1,
                 "male",
-                "ioc56789",
-                false
+                "ioc56789"
         );
         basededades.add(usuari);
 

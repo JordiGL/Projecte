@@ -6,22 +6,28 @@ import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Classe Usuari
  * @author Jordi Gómez Lozano
  */
 public class Usuari {
     private String email;
-    private int administrator;
     private String voice;
     private String password;
     private boolean enabled;
+    private Role role;
 
-    public Usuari(){}
-
-    public Usuari(String email, int administrator, String voice, String password, boolean enabled) {
+    public Usuari(String email, Role role, String voice, String password, boolean enabled) {
         this.email = email;
-        this.administrator = administrator;
+        this.role = role;
         this.voice = voice;
         this.password = password;
         this.enabled = enabled;
@@ -29,10 +35,10 @@ public class Usuari {
 
     public Usuari(String email, String voice, String password) {
         this.email = email;
-        this.administrator = 1;
         this.voice = voice;
         this.password = password;
         this.enabled = true;
+        this.role = new Role(1, "ROLE_USER");
     }
 
     public String getEmail() {
@@ -67,12 +73,27 @@ public class Usuari {
         this.enabled = enabled;
     }
 
-    public int getAdministrator() {
-        return administrator;
+    public Role getRole() {
+        return role;
     }
 
-    public void setAdministrator(int administrator) {
-        this.administrator = administrator;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
+    @Override
+    public String toString(){
+
+        String usuari =
+                "{\"username\":\""+getEmail()+"\"," +
+                "\"password\":\""+getPassword()+"\"," +
+                "\"enabled\":"+isEnabled()+"," +
+                "\"voice\":\""+getVoice()+"\"," +
+                "\"roles\":[{\"id\":" +getRole().getId()+"," +
+                "\"name\":\""+getRole().getName()+ "\""+
+                "}]" +
+                "}";
+
+        return usuari;
+    }
 }

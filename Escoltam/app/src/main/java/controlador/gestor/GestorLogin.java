@@ -27,7 +27,6 @@ public class GestorLogin {
     private String email;
     private String password;
     private String error;
-    private int isAdministrator;
 
     public GestorLogin(){}
 
@@ -58,15 +57,6 @@ public class GestorLogin {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-
-    public int isAdministrator() {
-        return isAdministrator;
-    }
-
-    public void setAdministrator(int administrator) {
-        isAdministrator = administrator;
     }
 
     /**
@@ -128,11 +118,9 @@ public class GestorLogin {
      */
     public boolean checkAuthenticationForTest(@NonNull List<Usuari> usuaris){
         boolean correcte = false;
-        isAdministrator = 1;
 
         for(Usuari usuari: usuaris){
             if(usuari.getEmail().equals(email) && usuari.getPassword().equals(password)){
-                isAdministrator = usuari.getAdministrator();
                 correcte = true;
             }
         }

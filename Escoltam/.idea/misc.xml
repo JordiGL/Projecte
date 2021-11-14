@@ -55,7 +55,7 @@
         <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout-land/activity_user.xml" value="0.49895833333333334" />
         <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout-land/fragment_user_control.xml" value="0.33" />
         <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/activity_admin_settings.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/activity_administrator.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/activity_administrator.xml" value="0.25" />
         <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/activity_client.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/activity_forgot_password.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/activity_login.xml" value="0.25" />
@@ -65,9 +65,10 @@
         <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/activity_sign_up.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/activity_user.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/activity_user_settings.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/fragment_admin_toolbar.xml" value="0.25" />
+        <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/fragment_admin_toolbar.xml" value="0.1" />
         <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/fragment_user_control.xml" value="0.5" />
         <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/fragment_user_toolbar.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/recyclerview_item.xml" value="0.36102564102564105" />
         <entry key="..\:/Users/Jordi/AndroidStudioProjects/Projecte/Escoltam/app/src/main/res/layout/user_fragment_favorites.xml" value="0.36666666666666664" />
       </map>
     </option>

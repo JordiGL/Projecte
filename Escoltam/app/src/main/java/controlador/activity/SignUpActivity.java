@@ -2,12 +2,19 @@ package controlador.activity;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -16,10 +23,12 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import dao.DAOUsuariImpl;
+import java.net.HttpURLConnection;
+
+import controlador.server.post.SignUpLoader;
+
 import controlador.gestor.GestorException;
 import controlador.gestor.GestorSignUp;
-import dao.DAOUsuari;
 import io.github.muddz.styleabletoast.StyleableToast;
 import jordigomez.ioc.cat.escoltam.R;
 import model.Usuari;
@@ -29,12 +38,12 @@ import model.Usuari;
  * @author Jordi Gómez Lozano.
  * @see AppCompatActivity
  */
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Integer> {
     private static final String USER_CREATED_SUCCESSFULLY = "Usuari creat correctament";
     private static final String ERROR_EMAIL_ALREADY_ASSIGNED = "Email ja assignat a un usuari";
     private static final String RADIO_BUTTON_COMPARED_TEXT = "Masculina";
-    private static final String MALE = "male";
-    private static final String FEMALE = "female";
+    private static final String MALE = "MALE";
+    private static final String FEMALE = "FEMALE";
     private EditText email, password, conformPassword;
     private RadioGroup radioGroupVeu;
     private LinearLayout ln_radioGroup;
@@ -55,6 +64,10 @@ public class SignUpActivity extends AppCompatActivity {
         conformPassword = findViewById(R.id.inputConformPassword);
         radioGroupVeu = findViewById(R.id.rg);
         ln_radioGroup = findViewById(R.id.linearLayoutVeu);
+
+        if(getSupportLoaderManager().getLoader(0)!=null){
+            getSupportLoaderManager().initLoader(0,null,this);
+        }
 
         btnRegistrar.setOnClickListener(view -> {
             try {
@@ -78,21 +91,54 @@ public class SignUpActivity extends AppCompatActivity {
      */
     public void registerUser() throws GestorException {
 
-        DAOUsuari dao = new DAOUsuariImpl(SignUpActivity.this);
-
         if(checkFields()) {
 
-            Usuari usuari = createUsuari();
+//            Usuari usuari = createUsuari();
+//            RequestAddUser requestAddUser = new RequestAddUser(this);
 
-            if (dao.insertar(usuari)) {
 
-                Toast.makeText(SignUpActivity.this, USER_CREATED_SUCCESSFULLY, Toast.LENGTH_LONG).show();
-                cleanFields();
-                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+            //Control del teclat per amagarlo en efectual la busqueda.
+            InputMethodManager inputManager = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
 
-            } else {
-                StyleableToast.makeText(SignUpActivity.this, getResources().getString(R.string.errorUserSignUp), Toast.LENGTH_SHORT, R.style.toastError).show();
+            //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
+            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo networkInfo = null;
+            if (connMgr != null) {
+                networkInfo = connMgr.getActiveNetworkInfo();
             }
+
+            if (networkInfo != null && networkInfo.isConnected()) {
+
+                String voiceUsuari = " ";
+                int selectedId = radioGroupVeu.getCheckedRadioButtonId();
+                RadioButton radioButton = findViewById(selectedId);
+
+                String emailUsuari = email.getText().toString();
+                String clauUsuari = password.getText().toString();
+
+                if(radioButton != null){
+
+                    voiceUsuari = radioButton.getText().toString();
+                    voiceUsuari = (voiceUsuari.equals(RADIO_BUTTON_COMPARED_TEXT) ? MALE : FEMALE);
+                }
+
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString("email", emailUsuari);
+                queryBundle.putString("clau", clauUsuari);
+                queryBundle.putString("veu", voiceUsuari);
+                getSupportLoaderManager().restartLoader(0, queryBundle, this);
+            }
+//            if (requestAddUser.addNewUser(usuari)) {
+//
+//                Toast.makeText(SignUpActivity.this, USER_CREATED_SUCCESSFULLY, Toast.LENGTH_LONG).show();
+//                cleanFields();
+//                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+//
+//            } else {
+//                StyleableToast.makeText(SignUpActivity.this, getResources().getString(R.string.errorUserSignUp), Toast.LENGTH_SHORT, R.style.toastError).show();
+//            }
         }
 
     }
@@ -131,7 +177,6 @@ public class SignUpActivity extends AppCompatActivity {
      */
     private boolean checkFields() {
         boolean correcte = true;
-        DAOUsuari dao = new DAOUsuariImpl(SignUpActivity.this);
         Usuari usuari = createUsuari();
 
         GestorSignUp gestorSignUp = new GestorSignUp(usuari, conformPassword.getText().toString());
@@ -143,15 +188,6 @@ public class SignUpActivity extends AppCompatActivity {
 
             correcte = false;
 
-        } else if (dao.comprovar(usuari.getEmail())) {
-
-            correcte = false;
-            email.setBackgroundResource(R.drawable.bg_edittext_error);
-            email.setError(ERROR_EMAIL_ALREADY_ASSIGNED);
-
-        } else {
-
-            email.setBackgroundResource(R.drawable.bg_edittext);
         }
 
         if (!gestorSignUp.passwordChecker()) {
@@ -202,4 +238,41 @@ public class SignUpActivity extends AppCompatActivity {
         conformPassword.setText("");
     }
 
+    @NonNull
+    @Override
+    public Loader<Integer> onCreateLoader(int id, @Nullable Bundle args) {
+        String emailUsuari ="";
+        String passwordUsuari ="";
+        String voiceUsuari ="";
+
+        if (args != null) {
+           emailUsuari = args.getString("email");
+           passwordUsuari = args.getString("clau");
+           voiceUsuari = args.getString("veu");
+        }
+
+        return new SignUpLoader(this, new Usuari(emailUsuari, voiceUsuari, passwordUsuari));
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Integer> loader, Integer data) {
+
+        Log.i("Info", String.valueOf(data));
+
+        if (data == HttpURLConnection.HTTP_CREATED) {
+
+            Toast.makeText(SignUpActivity.this, USER_CREATED_SUCCESSFULLY, Toast.LENGTH_LONG).show();
+            cleanFields();
+            startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+
+        }else{
+            StyleableToast.makeText(SignUpActivity.this, getResources().getString(R.string.errorUserSignUp), Toast.LENGTH_SHORT, R.style.toastError).show();
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Integer> loader) {
+
+    }
 }

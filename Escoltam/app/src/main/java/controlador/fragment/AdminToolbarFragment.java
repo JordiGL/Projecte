@@ -51,6 +51,8 @@ public class AdminToolbarFragment extends Fragment {
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
+        String text = spinner.getSelectedItem().toString();
+
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

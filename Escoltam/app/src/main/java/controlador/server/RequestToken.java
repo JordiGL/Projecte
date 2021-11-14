@@ -55,7 +55,7 @@ public class RequestToken extends Connexio implements RequestTokenImpl {
         String urlParameters = "username="+username+"&password="+clau+"&grant_type=password";
         byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
         int postDataLength = postData.length;
-        HttpURLConnection connexio = postRequest(postDataLength, METODE_PETICIO, URL);
+        HttpURLConnection connexio = postRequest(postDataLength, METODE_PETICIO, URL, "application/x-www-form-urlencoded");
 
         try( DataOutputStream wr = new DataOutputStream(connexio.getOutputStream())) {
 
@@ -68,6 +68,10 @@ public class RequestToken extends Connexio implements RequestTokenImpl {
 
         }catch (Exception e){
             e.printStackTrace();
+        } finally{
+            if (connexio != null) {
+                connexio.disconnect();
+            }
         }
 
         return responseCode;
@@ -81,13 +85,28 @@ public class RequestToken extends Connexio implements RequestTokenImpl {
      * @author Jordi Gómez Lozano.
      */
     private String bytesToString(InputStream resposta) throws IOException {
+        ByteArrayOutputStream into = null;
+        try {
+            into = new ByteArrayOutputStream();
+            byte[] buf = new byte[4096];
+            for (int n; 0 < (n = resposta.read(buf));) {
+                into.write(buf, 0, n);
+            }
 
-        ByteArrayOutputStream into = new ByteArrayOutputStream();
-        byte[] buf = new byte[4096];
-        for (int n; 0 < (n = resposta.read(buf));) {
-            into.write(buf, 0, n);
+        } catch (IOException e){
+
+            e.printStackTrace();
+
+        } finally{
+            if (into != null) {
+                try {
+                    into.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        into.close();
+
         return into.toString(CHARSET_NAME);
     }
 

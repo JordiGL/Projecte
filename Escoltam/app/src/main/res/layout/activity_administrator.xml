@@ -6,18 +6,66 @@
     android:layout_height="match_parent"
     tools:context="controlador.activity.AdministratorActivity">
 
-    <FrameLayout
-        android:id="@+id/fragment_admin_toolbar_container"
-        android:name="AdminToolbarFragmentContainer"
+    <ImageButton
+        android:id="@+id/searchButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/button_right"
+        android:src="@drawable/ic_action_search"
+        app:layout_constraintEnd_toStartOf="@+id/imageMore"
+        app:layout_constraintTop_toTopOf="@+id/editTextBuscador"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextBuscador" />
+
+    <EditText
+        android:id="@+id/editTextBuscador"
         android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/white"
+        android:includeFontPadding="true"
+        android:paddingStart="1dp"
+        android:paddingEnd="1dp"
+        app:layout_constraintEnd_toStartOf="@+id/searchButton"
+        app:layout_constraintStart_toEndOf="@+id/spinner_layout"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/spinner_layout"
+        android:layout_width="86dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="6dp"
+        android:layout_weight=".28"
+        android:background="@drawable/spinner_bg"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="@+id/editTextBuscador"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_admin_toolbar">
+        app:layout_constraintBottom_toBottomOf="@+id/editTextBuscador">
 
-    </FrameLayout>
+        <Spinner
+            android:id="@+id/spinner_object"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:gravity="end"
+            android:paddingEnd="30dp"
+            android:spinnerMode="dropdown" />
 
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/imageMore"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="4dp"
+        android:src="@drawable/ic_action_more"
+        android:background="@drawable/button_middle_round"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextBuscador"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/editTextBuscador"
+        app:tint="@color/white" />
     <Button
         android:id="@+id/btn_LogoutAdministrador"
         android:layout_width="wrap_content"

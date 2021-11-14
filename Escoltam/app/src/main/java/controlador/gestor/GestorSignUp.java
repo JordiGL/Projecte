@@ -11,8 +11,8 @@ import model.Usuari;
 public class GestorSignUp {
 
     private static final String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-    private static final String MALE = "male";
-    private static final String FEMALE = "female";
+    private static final String MALE = "MALE";
+    private static final String FEMALE = "FEMALE";
     private static final String ERROR_VOICE = "Selecciona la veu";
     private static final String ERROR_MATCH_PASSWORD = "La clau no coincideix";
     private static final String ERROR_CONFIRMATION_KEY = "Confirma la clau";
