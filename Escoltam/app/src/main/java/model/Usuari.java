@@ -19,15 +19,13 @@ import java.util.Map;
  * @author Jordi Gómez Lozano
  */
 public class Usuari {
-    private int idUsuari;
     private String email;
     private String voice;
     private String password;
     private boolean enabled;
     private Role role;
 
-    public Usuari(int idUsuari, String email, Role role, String voice, String password, boolean enabled) {
-        this.idUsuari = idUsuari;
+    public Usuari(String email, Role role, String voice, String password, boolean enabled) {
         this.email = email;
         this.role = role;
         this.voice = voice;
@@ -36,7 +34,6 @@ public class Usuari {
     }
 
     public Usuari(String email, String voice, String password) {
-        this.idUsuari = 0;
         this.email = email;
         this.voice = voice;
         this.password = password;
@@ -82,14 +79,6 @@ public class Usuari {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public int getIdUsuari() {
-        return idUsuari;
-    }
-
-    public void setIdUsuari(int idUsuari) {
-        this.idUsuari = idUsuari;
     }
 
     @Override

@@ -78,4 +78,15 @@
         <item>ROLE_USER</item>
     </string-array>
 
+    <string-array name="autocomplete_voice_options">
+        <item>FEMALE</item>
+        <item>MALE</item>
+    </string-array>
+
+    <string-array name="autocomplete_role_options">
+        <item>ROLE_ADMIN</item>
+        <item>ROLE_USER</item>
+    </string-array>
+
+
 </resources>

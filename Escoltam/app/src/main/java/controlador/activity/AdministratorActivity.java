@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -18,8 +19,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -74,11 +77,6 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
         //Afegir al menu
         registerForContextMenu(settings);
 
-        //Autocomplete del cercador.
-        ArrayAdapter<CharSequence> adapterET = ArrayAdapter.createFromResource(this,  R.array.autocomplete_options, android.R.layout.simple_list_item_1);
-        cercador.setThreshold(4);
-        cercador.setAdapter(adapterET);
-
         //Objecte selector.
         Spinner spinner = findViewById(R.id.spinner_object);
         //Creem l'ArrayAdapter utilitzant l'Array i l'spinner predeterminat
@@ -100,6 +98,24 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
         String spinnerSelection = spinner.getSelectedItem().toString();
         obtenirInformacio(spinnerSelection, token);
 
+        cercador.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = spinner.getSelectedItemPosition();
+                dropDownOptions(position);
+            }
+        });
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                dropDownOptions(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,6 +124,40 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
             }
         });
 
+    }
+
+    private void dropDownOptions(int position) {
+        ArrayAdapter<CharSequence> adapterET;
+        switch (position) {
+            case 0:
+                cercador.setText("");
+                cercador.setEnabled(false);
+                break;
+            case 1:
+                cercador.setText("");
+                cercador.setEnabled(true);
+                break;
+            case 2:
+                cercador.setEnabled(true);
+                cercador.setText("");
+                //Autocomplete del cercador.
+                adapterET = ArrayAdapter.createFromResource(AdministratorActivity.this, R.array.autocomplete_voice_options, android.R.layout.simple_list_item_1);
+                cercador.setAdapter(adapterET);
+                cercador.showDropDown();
+                break;
+            case 3:
+                cercador.setEnabled(true);
+                cercador.setText("");
+                //Autocomplete del cercador.
+                adapterET = ArrayAdapter.createFromResource(AdministratorActivity.this, R.array.autocomplete_role_options, android.R.layout.simple_list_item_1);
+                cercador.setAdapter(adapterET);
+                cercador.showDropDown();
+                break;
+            default:
+                cercador.setEnabled(true);
+                cercador.setText("");
+                break;
+        }
     }
 
     /**
@@ -136,7 +186,6 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
                         );
 
                         Usuari usuari = new Usuari(
-                                jsonObject.getInt("id"),
                                 jsonObject.getString("username"),
                                 role,
                                 jsonObject.getString("voice"),
@@ -156,7 +205,6 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
                     );
 
                     Usuari usuari = new Usuari(
-                            jsonObject.getInt("id"),
                             jsonObject.getString("username"),
                             role,
                             jsonObject.getString("voice"),
