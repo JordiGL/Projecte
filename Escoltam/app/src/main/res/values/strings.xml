@@ -61,12 +61,21 @@
     <string name="user_toolbar_add_icon_description">user toolbar add icon description</string>
     <string name="user_toolbar_forward_description">user toolbar forward description</string>
     <string name="user_toolbar_edtittext_description">user toolbar edtittext description</string>
+    <string name="canvi_de_clau">Canvi de clau</string>
+    <string name="canvi_de_veu">Canvi de veu</string>
 
     <string-array name="search_options">
         <item>Tot</item>
         <item>Email</item>
         <item>Veu</item>
         <item>Rol</item>
+    </string-array>
+
+    <string-array name="autocomplete_options">
+        <item>FEMALE</item>
+        <item>MALE</item>
+        <item>ROLE_ADMIN</item>
+        <item>ROLE_USER</item>
     </string-array>
 
 </resources>

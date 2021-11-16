@@ -7,143 +7,41 @@
     android:background="@color/colorPrimary"
     tools:context="controlador.activity.UserSettingsActivity">
 
-    <EditText
-        android:id="@+id/inputPreviousPassword"
-        android:layout_width="325dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/bg_edittext"
-        android:drawableLeft="@drawable/ic_lock"
-        android:drawablePadding="10dp"
-        android:ems="10"
-        android:hint="Clau actual"
-        android:inputType="textPassword"
-        android:minHeight="48dp"
-        android:paddingLeft="20dp"
-        android:paddingTop="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="10dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/darkerGray"
+    <FrameLayout
+        android:id="@+id/user_settings_fragment_container"
+        android:name="FavoritesFragmentContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/settings_bg_frame"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintTop_toBottomOf="@+id/btnChangePasswordUser"
+        tools:layout="@layout/fragment_user_favorites">
 
-    <EditText
-        android:id="@+id/inputPassword"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_edittext"
-        android:drawableLeft="@drawable/ic_lock"
-        android:drawablePadding="10dp"
-        android:ems="10"
-        android:hint="Clau nova"
-        android:inputType="textPassword"
-        android:minHeight="48dp"
-        android:paddingLeft="20dp"
-        android:paddingTop="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="10dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/darkerGray"
-        app:layout_constraintEnd_toEndOf="@+id/inputPreviousPassword"
-        app:layout_constraintStart_toStartOf="@+id/inputPreviousPassword"
-        app:layout_constraintTop_toBottomOf="@+id/inputPreviousPassword" />
-
-    <EditText
-        android:id="@+id/inputConformPassword"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_edittext"
-        android:drawableLeft="@drawable/ic_lock"
-        android:drawablePadding="10dp"
-        android:ems="10"
-        android:hint="Repetir clau nova"
-        android:inputType="textPassword"
-        android:minHeight="48dp"
-        android:paddingLeft="20dp"
-        android:paddingTop="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="10dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/darkerGray"
-        app:layout_constraintEnd_toEndOf="@+id/inputPassword"
-        app:layout_constraintStart_toStartOf="@+id/inputPassword"
-        app:layout_constraintTop_toBottomOf="@+id/inputPassword" />
-
-    <LinearLayout
-        android:id="@+id/linearLayoutVeu"
-        android:layout_width="325dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_edittext"
-        app:layout_constraintEnd_toEndOf="@+id/inputConformPassword"
-        app:layout_constraintStart_toStartOf="@+id/inputConformPassword"
-        app:layout_constraintTop_toBottomOf="@+id/inputConformPassword">
-
-        <TextView
-            android:id="@+id/textGenere"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="20dp"
-            android:drawableLeft="@drawable/ic_voice_over"
-            android:drawablePadding="10dp"
-            android:paddingStart="20dp"
-            app:layout_constraintBottom_toBottomOf="@+id/rg"
-            app:layout_constraintEnd_toStartOf="@+id/rg"
-            app:layout_constraintStart_toStartOf="@+id/inputConformPassword"
-            app:layout_constraintTop_toBottomOf="@+id/textErrorConfirmarClauRegistre" />
-
-        <RadioGroup
-            android:id="@+id/rg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textGenere"
-            android:orientation="horizontal"
-            android:layout_gravity="center_vertical"
-            app:layout_constraintEnd_toEndOf="@+id/inputConformPassword"
-            app:layout_constraintTop_toBottomOf="@+id/textErrorConfirmarClauRegistre">
-
-            <RadioButton
-                android:id="@+id/rb_femenina"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/gray"
-                android:paddingRight="10dp"
-                android:text="@string/textRadioButtonFemaleSignUpUI"
-                android:textColor="@color/gray"
-                android:textSize="18sp" />
-
-            <RadioButton
-                android:id="@+id/rb_masculina"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/gray"
-                android:paddingEnd="10dp"
-                android:text="@string/textRadioButtonMaleSignUpUI"
-                android:textColor="@color/gray"
-                android:textSize="18sp" />
-
-        </RadioGroup>
-    </LinearLayout>
+    </FrameLayout>
 
     <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="0dp"
+        android:id="@+id/btnChangePasswordUser"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:background="@drawable/btn_bg"
-        android:text="Acceptar"
+        android:layout_marginTop="16dp"
+        android:text=" Canviar clau "
+        android:background="@drawable/principal_button_settings_top_round"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/canvi_de_clau" />
+
+    <Button
+        android:id="@+id/btnChangeVoiceUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" Canviar veu "
         android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayoutVeu"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/linearLayoutVeu"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutVeu" />
+        app:layout_constraintBottom_toBottomOf="@+id/btnChangePasswordUser"
+        app:layout_constraintStart_toEndOf="@+id/btnChangePasswordUser"
+        app:layout_constraintTop_toTopOf="@+id/btnChangePasswordUser"
+        android:background="@drawable/button_middle_top_round"
+        android:contentDescription="@string/canvi_de_veu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

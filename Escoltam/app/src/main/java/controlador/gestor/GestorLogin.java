@@ -22,7 +22,7 @@ public class GestorLogin {
     private static final String ERROR_EMPTY_PASSWORD = "Introdueix la clau";
     private static final String ERROR_EMPTY_EMAIL = "Introdueix l'email";
     private static final String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-    private static final String MÍNIM_DE_CINC_CARACTERS = "Mínim de cinc caràcters";
+    private static final String MINIM_DE_CINC_CARACTERS = "Mínim de cinc caràcters";
     private static final String HA_DE_CONTENIR_UN_NUMERO = "Ha de contenir un número";
     private String email;
     private String password;
@@ -98,7 +98,7 @@ public class GestorLogin {
 
         }else if(password.length() < 5  ){
 
-            error = MÍNIM_DE_CINC_CARACTERS;
+            error = MINIM_DE_CINC_CARACTERS;
             correcte = false;
 
         }else if(!Pattern.compile("[0-9]").matcher(password).find()) {

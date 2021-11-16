@@ -32,7 +32,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText email, password;
     private GestorLogin gestorLogin;
-    RequestToken gestorRequest;
+    private RequestToken gestorRequest;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,13 +80,15 @@ public class LoginActivity extends AppCompatActivity {
                                 //Si la resposta es afirmativa(200) obtinc el rol del token i dirigeixo a l'usuari a la corresponent pantalla.
                                 String token = gestorRequest.getToken();
                                 long expiredTime = gestorRequest.getExpireTimeFromToken(token);
-                                gestorSharedPreferences.saveData(token, expiredTime);
-
+                                String email = gestorRequest.getEmailFromToken(token);
+                                gestorSharedPreferences.saveData(token, expiredTime, email, password.getText().toString());
 
                                 String role = gestorRequest.getRoleFromToken(token);
                                 if (role == null) {
                                     role = ROLE_USER;
                                 }
+
+
                                 gestorLogin.dirigirUsuariSegonsRole(role, LoginActivity.this, EXTRA_MESSAGE);
 
                             } else {

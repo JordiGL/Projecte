@@ -35,7 +35,6 @@ public class UsuariAdapter extends RecyclerView.Adapter<UsuariAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if(mUsuaris != null){
             Usuari currentUsuari = mUsuaris.get(position);
-//            holder.bindTo(currentUsuari);
             holder.mUsuariText.setText(currentUsuari.getEmail());
             holder.mVoiceText.setText(currentUsuari.getVoice());
             holder.mRoleText.setText(currentUsuari.getRole().getName());

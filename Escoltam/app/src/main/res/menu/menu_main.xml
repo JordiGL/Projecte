@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".AdministratorActivity">
+    <!--    <item-->
+    <!--        android:id="@+id/action_settings"-->
+    <!--        android:orderInCategory="100"-->
+    <!--        android:title="@string/action_settings"-->
+    <!--        app:showAsAction="never" />-->
+    <item
+        android:id="@+id/action_contact"
+        android:orderInCategory="100"
+        android:title="1"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_order"
+        android:orderInCategory="10"
+        android:title="2"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_status"
+        android:orderInCategory="20"
+        android:title="3"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_favorites"
+        android:orderInCategory="30"
+        android:title="4"
+        app:showAsAction="never" />
+
+</menu>

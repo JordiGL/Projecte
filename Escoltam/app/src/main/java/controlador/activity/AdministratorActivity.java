@@ -3,6 +3,7 @@ package controlador.activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,16 +14,15 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -43,11 +43,12 @@ import model.Usuari;
  * @see AppCompatActivity
  * @author Jordi Gómez Lozano
  */
-public class AdministratorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
-    private EditText capsaDeText;
+public class AdministratorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>,PopupMenu.OnMenuItemClickListener {
+    private AutoCompleteTextView cercador;
     private List<Usuari> mUsuaris;
     private RecyclerView mRecyclerView;
     private UsuariAdapter mAdapter;
+    private GestorSharedPreferences  gestorSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,27 +58,29 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
         //Amagar barra superior de la info del dispositiu.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        TextView correuAdministrador = findViewById(R.id.textCorreuAdministrador);
-        Button btnLogout = findViewById(R.id.btn_LogoutAdministrador);
         ImageButton btnSearch = findViewById(R.id.searchButton);
-        capsaDeText = findViewById(R.id.editTextBuscador);
+        cercador = findViewById(R.id.editTextBuscador);
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //Obtenim el correu
         Intent intent = getIntent();
-        correuAdministrador.setText(intent.getStringExtra(LoginActivity.EXTRA_MESSAGE));
 
-        ImageView settings = findViewById(R.id.imageMore);
+        ImageView settings = findViewById(R.id.buttonMore);
+        //Afegir al menu
+        registerForContextMenu(settings);
+
+        //Autocomplete del cercador.
+        ArrayAdapter<CharSequence> adapterET = ArrayAdapter.createFromResource(this,  R.array.autocomplete_options, android.R.layout.simple_list_item_1);
+        cercador.setThreshold(4);
+        cercador.setAdapter(adapterET);
 
         //Objecte selector.
         Spinner spinner = findViewById(R.id.spinner_object);
-        // Create an ArrayAdapter using the string array and a default spinner layout
+        //Creem l'ArrayAdapter utilitzant l'Array i l'spinner predeterminat
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(AdministratorActivity.this,
                 R.array.search_options, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
 
@@ -86,7 +89,7 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
         }
 
         //Obtenir el token from EncryptedSharedPreferences
-        GestorSharedPreferences  gestorSharedPreferences = new GestorSharedPreferences(this);
+        gestorSharedPreferences = new GestorSharedPreferences(this);
         String token = gestorSharedPreferences.getToken();
 
         //Mostrar tots els usuaris per pantalla al iniciar la pantalla.
@@ -95,32 +98,12 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
+            public void onClick(View view) {
                 String spinnerSelection = spinner.getSelectedItem().toString();
                 obtenirInformacio(spinnerSelection, token);
             }
         });
 
-        //Boto per anar a la configuració d'usuari
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(AdministratorActivity.this, AdminSettingsActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        //Boto per a fer el logout.
-        btnLogout.setOnClickListener(view -> {
-            //Borrar token
-            gestorSharedPreferences.deleteData();
-
-            Intent intent1 = new Intent(AdministratorActivity.this, LoginActivity.class);
-            startActivity(intent1);
-            finish();
-        });
     }
 
     /**
@@ -188,11 +171,7 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
 
     private void obtenirInformacio(String selection, String token) {
         Bundle queryBundle = null;
-        String textIntroduit = capsaDeText.getText().toString();
-
-        //Control del teclat per amagarlo en efectual la busqueda.
-        InputMethodManager inputManager = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
+        String textIntroduit = cercador.getText().toString();
 
         //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -279,5 +258,51 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
 
     @Override
     public void onLoaderReset(@NonNull Loader<String> loader) {}
-    
+
+    /**
+     * Displays a Toast with the message.
+     *
+     * @param message Message to display.
+     */
+    public void displayToast(String message) {
+        Toast.makeText(getApplicationContext(), message,
+                Toast.LENGTH_SHORT).show();
+    }
+
+    public void openMoreMenu(View view) {
+
+        PopupMenu popup = new PopupMenu(AdministratorActivity.this, view);
+        popup.setOnMenuItemClickListener(this);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_admin_context, popup.getMenu());
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.context_settings:
+                Intent intentAdmin = new Intent(AdministratorActivity.this, AdminSettingsActivity.class);
+                startActivity(intentAdmin);
+                return true;
+
+            case R.id.context_logout:
+
+                gestorSharedPreferences.deleteData();
+                Intent intentLogin = new Intent(AdministratorActivity.this, LoginActivity.class);
+                startActivity(intentLogin);
+                finish();
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
 }

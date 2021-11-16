@@ -1,13 +1,53 @@
 package controlador.activity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
+
+import controlador.fragment.ChangePasswordFragment;
+import controlador.fragment.ChangeVoiceFragment;
+import controlador.gestor.GestorSettings;
+import controlador.gestor.GestorSharedPreferences;
+import controlador.gestor.OnFragmentInteractionListener;
+import controlador.server.get.UsuarisListLoader;
+import controlador.server.post.ChangePasswordLoader;
+import controlador.server.post.RequestToken;
+import io.github.muddz.styleabletoast.StyleableToast;
 import jordigomez.ioc.cat.escoltam.R;
 
-public class AdminSettingsActivity extends AppCompatActivity {
+public class AdminSettingsActivity extends AppCompatActivity implements OnFragmentInteractionListener, LoaderManager.LoaderCallbacks<Integer> {
+
+    public static final String BUNDLE_TOKEN_KEY = "token";
+    public static final String BUNDLE_EMAIL_KEY = "email";
+    public static final String JSON_PASSWORD_KEY = "password";
+    public static final String BUNDLE_PASSWORD_KEY = "password";
+    ChangePasswordFragment changePasswordFragment;
+    ChangeVoiceFragment changeVoiceFragment;
+    FragmentTransaction fragmentTransaction;
+    FragmentManager fragmentManager;
+    String receivedPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,5 +56,295 @@ public class AdminSettingsActivity extends AppCompatActivity {
 
         //Amagar barra superior de la info del dispositiu.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        Button btnChangePassword = findViewById(R.id.btnChangePasswordAdmin);
+        Button btnChangeVoice = findViewById(R.id.btnChangeVoiceAdmin);
+
+        //Fragments
+        changePasswordFragment = ChangePasswordFragment.newInstance();
+        changeVoiceFragment = ChangeVoiceFragment.newInstance();
+        fragmentManager = getSupportFragmentManager();
+
+        fragmentTransaction =  fragmentManager.beginTransaction();
+
+        fragmentTransaction.add(R.id.admin_settings_fragment_container, changePasswordFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
+        if(getSupportLoaderManager().getLoader(0)!=null){
+            getSupportLoaderManager().initLoader(0,null,this);
+        }
+
+
+        btnChangeVoice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(changePasswordFragment.isAdded()) {
+                    fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.remove(changePasswordFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                    fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.add(R.id.admin_settings_fragment_container, changeVoiceFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+
+                    btnChangeVoice.setBackground(getDrawable(R.drawable.principal_button_settings_top_round));
+                    btnChangePassword.setBackground(getDrawable(R.drawable.button_middle_top_round));
+                    btnChangeVoice.setTextColor(getColor(R.color.black));
+                    btnChangePassword.setTextColor(getColor(R.color.white));
+                }
+            }
+        });
+
+        btnChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(changeVoiceFragment.isAdded()) {
+                    fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.remove(changeVoiceFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                    fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.add(R.id.admin_settings_fragment_container, changePasswordFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                    btnChangeVoice.setBackground(getDrawable(R.drawable.button_middle_top_round));
+                    btnChangePassword.setBackground(getDrawable(R.drawable.principal_button_settings_top_round));
+                    btnChangeVoice.setTextColor(getColor(R.color.white));
+                    btnChangePassword.setTextColor(getColor(R.color.black));
+                }
+            }
+        });
+
     }
+
+    @Override
+    public void onButtonPressed(EditText previousPasswordEntered, EditText newPassword, EditText conformPassword) {
+        if(checkPasswordChangedFields(previousPasswordEntered, newPassword, conformPassword)){
+            sendPasswordToServer(newPassword.getText().toString());
+        }
+    }
+
+    @Override
+    public void onButtonPressed(EditText passwordEntered, String choice, LinearLayout radioGroupLayout) {
+        if(checkVoiceChangedFields(passwordEntered, choice, radioGroupLayout)){
+            Intent intentAdmin = new Intent(AdminSettingsActivity.this, AdministratorActivity.class);
+            startActivity(intentAdmin);
+            finish();
+        }
+    }
+
+    private boolean checkVoiceChangedFields(EditText passwordEntered, String choice, LinearLayout radioGroupLayout) {
+        boolean correcte = true;
+
+//        obtenirInformacio();
+
+        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(AdminSettingsActivity.this);
+        String actualPassword = gestorSharedPreferences.getPassword();
+
+        GestorSettings gestorSettings = new GestorSettings(
+                passwordEntered.getText().toString(),
+                actualPassword,
+                choice);
+
+        if (!gestorSettings.previousPasswordChecker()) {
+
+            passwordEntered.setBackgroundResource(R.drawable.bg_edittext_error);
+            passwordEntered.setError(gestorSettings.getError());
+
+            correcte = false;
+
+        } else {
+
+            passwordEntered.setBackgroundResource(R.drawable.bg_edittext);
+        }
+
+        if (!gestorSettings.voiceChecker()) {
+
+            radioGroupLayout.setBackgroundResource(R.drawable.bg_edittext_error);
+
+            correcte = false;
+
+        } else {
+
+            radioGroupLayout.setBackgroundResource(R.drawable.bg_edittext);
+        }
+
+        return correcte;
+    }
+
+    /**
+     * Obté el valor introduït per l'usuari en els diferents camps del registre i comprova que no hi hagi errors.
+     * @return Un booleà: true si ha trobat error, i false en cas contrari.
+     * @author Jordi Gómez Lozano.
+     */
+    private boolean checkPasswordChangedFields(EditText previousPasswordEntered, EditText newPassword, EditText conformPassword) {
+        boolean correcte = true;
+
+//        obtenirInformacio();
+
+        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(AdminSettingsActivity.this);
+        String receivedPassword = gestorSharedPreferences.getPassword();
+
+        GestorSettings gestorSettings = new GestorSettings(
+                previousPasswordEntered.getText().toString(),
+                receivedPassword,
+                newPassword.getText().toString(),
+                conformPassword.getText().toString());
+
+        if (!gestorSettings.previousPasswordChecker()) {
+
+            previousPasswordEntered.setBackgroundResource(R.drawable.bg_edittext_error);
+            previousPasswordEntered.setError(gestorSettings.getError());
+
+            correcte = false;
+
+        } else {
+
+            previousPasswordEntered.setBackgroundResource(R.drawable.bg_edittext);
+        }
+
+        if (!gestorSettings.newPasswordChecker()) {
+
+            newPassword.setBackgroundResource(R.drawable.bg_edittext_error);
+            newPassword.setError(gestorSettings.getError());
+
+            correcte = false;
+
+        } else {
+
+            newPassword.setBackgroundResource(R.drawable.bg_edittext);
+        }
+
+        if (!gestorSettings.conformPasswordChecker()) {
+
+            conformPassword.setBackgroundResource(R.drawable.bg_edittext_error);
+            conformPassword.setError(gestorSettings.getError());
+
+            correcte = false;
+
+        } else {
+
+            conformPassword.setBackgroundResource(R.drawable.bg_edittext);
+        }
+
+        return correcte;
+    }
+
+//    private void obtenirInformacio() {
+//        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(AdminSettingsActivity.this);
+//        String email = gestorSharedPreferences.getEmail();
+//        String token = gestorSharedPreferences.getToken();
+//
+//        //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
+//        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        NetworkInfo networkInfo = null;
+//        if (connMgr != null) {
+//            networkInfo = connMgr.getActiveNetworkInfo();
+//        }
+//
+//        if (networkInfo != null && networkInfo.isConnected()) {
+//            Bundle queryBundle = new Bundle();
+//            queryBundle.putCharSequence("opcio", "GET");
+//            queryBundle.putString(BUNDLE_TOKEN_KEY, token);
+//            queryBundle.putString(BUNDLE_URL_KEY, "/"+email);
+//            getSupportLoaderManager().restartLoader(0, queryBundle, this);
+//        }
+//    }
+
+    private void sendPasswordToServer(String novaClau) {
+
+        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(AdminSettingsActivity.this);
+        String email = gestorSharedPreferences.getEmail();
+        String token = gestorSharedPreferences.getToken();
+
+        //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = null;
+        if (connMgr != null) {
+            networkInfo = connMgr.getActiveNetworkInfo();
+        }
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Bundle queryBundle = new Bundle();
+            queryBundle.putString(BUNDLE_TOKEN_KEY, token);
+            queryBundle.putString(BUNDLE_EMAIL_KEY, email);
+            queryBundle.putString(BUNDLE_PASSWORD_KEY, novaClau);
+            getSupportLoaderManager().restartLoader(0, queryBundle, this);
+        }
+    }
+
+    @NonNull
+    @Override
+    public Loader<Integer> onCreateLoader(int id, @Nullable Bundle args) {
+        String token ="";
+        String email ="";
+        String novaClau ="";
+
+        if (args != null) {
+
+            token = args.getString(BUNDLE_TOKEN_KEY);
+            email = args.getString(BUNDLE_EMAIL_KEY);
+            novaClau = args.getString(BUNDLE_PASSWORD_KEY);
+        }
+        return new ChangePasswordLoader(this, novaClau ,email, token);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Integer> loader, Integer data) {
+
+
+        Log.i("Info", String.valueOf(data));
+
+        if (data == HttpURLConnection.HTTP_CREATED) {
+            Intent intentAdmin = new Intent(AdminSettingsActivity.this, AdministratorActivity.class);
+            startActivity(intentAdmin);
+            finish();
+        }else{
+            StyleableToast.makeText(AdminSettingsActivity.this, "Error, no s'ha pogut canviar la clau", Toast.LENGTH_SHORT, R.style.toastError).show();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Integer> loader) {
+
+    }
+
+//    @NonNull
+//    @Override
+//    public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
+//        String token ="";
+//        String opcioUrl ="";
+//
+//        if (args != null) {
+//
+//            token = args.getString(BUNDLE_TOKEN_KEY);
+//            opcioUrl = args.getString(BUNDLE_URL_KEY);
+//        }
+//
+//        return new UsuarisListLoader(this, opcioUrl, token);
+//    }
+//
+//    @Override
+//    public void onLoadFinished(@NonNull Loader<String> loader, String data) {
+//        try {
+//            JSONObject jsonObject = new JSONObject(data);
+//            receivedPassword = jsonObject.getString(JSON_PASSWORD_KEY);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    @Override
+//    public void onLoaderReset(@NonNull Loader<String> loader) {
+//    }
+//
+//    @Override
+//    public void onBackPressed() {
+//        moveTaskToBack(true);
+//    }
+
 }

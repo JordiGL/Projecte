@@ -22,6 +22,7 @@ public class Connexio {
     private static final String AUTHORIZATION_VALUE = "Basic YW5kcm9pZGFwcDoxMjM0NQ==";
     private static final String CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded";
     private static final String CHARSET_VALUE = "utf-8";
+    public static final String BEARER = "Bearer ";
     private static HttpURLConnection conn;
 
     public HttpURLConnection getConn() {
@@ -55,14 +56,49 @@ public class Connexio {
 
             conn.setConnectTimeout(TIMEOUT_MILLS);
             conn.setReadTimeout(TIMEOUT_MILLS);
-            Log.i("Info", "1");
-        } catch (Exception e) {
-            e.printStackTrace();
 
-        } finally{
+        } catch (Exception e) {
+
+            e.printStackTrace();
             if (conn != null) {
                 conn.disconnect();
             }
+        }
+
+        return conn;
+    }
+
+
+    /**
+     * Estableix la connexió amb el servidor per a fer una petició.
+     * @param postDataLength la allargada del Content-length.
+     * @param requestUrl la url de connexió per a fer la petició.
+     * @return la connexió amb el servidor
+     * @author Jordi Gómez Lozano
+     */
+    public static HttpURLConnection putRequest(int postDataLength, String method, String requestUrl, String contentType, String token){
+        try {
+            URL url = new URL( requestUrl );
+            conn= (HttpURLConnection) url.openConnection();
+            conn.setDoOutput( true );
+            conn.setInstanceFollowRedirects( false );
+            conn.setRequestMethod( method );
+            conn.setRequestProperty(AUTHORIZATION_KEY, BEARER + token);
+            conn.setRequestProperty(CONTENT_TYPE_KEY, contentType);
+            conn.setRequestProperty(CHARSET_KEY, CHARSET_VALUE);
+            conn.setRequestProperty(CONTENT_LENGTH_KEY, Integer.toString( postDataLength ));
+            conn.setUseCaches( false );
+
+            conn.setConnectTimeout(TIMEOUT_MILLS);
+            conn.setReadTimeout(TIMEOUT_MILLS);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            if (conn != null) {
+                conn.disconnect();
+            }
+
         }
 
 
@@ -94,6 +130,10 @@ public class Connexio {
         } catch (IOException e){
 
             e.printStackTrace();
+            if (conn != null) {
+                conn.disconnect();
+            }
+
 
         }
 

@@ -17,6 +17,8 @@ import java.util.Date;
 public class GestorSharedPreferences {
     private static final String SHARED_PREFERENCES_TOKEN_KEY = "token";
     private static final String SHARED_PREFERENCES_EXPIRED_TIME_KEY = "expired_time";
+    private static final String SHARED_PREFERENCES_EMAIL_KEY = "user_name";
+    private static final String SHARED_PREFERENCES_PASSWORD_KEY = "password";
     private static final String ARXIU = "InfoObt";
     private Context context;
 
@@ -63,13 +65,15 @@ public class GestorSharedPreferences {
      * @param expiredTime data d'expiració del token
      * @author Jordi Gómez Lozano
      */
-    public void saveData(String token, long expiredTime) {
+    public void saveData(String token, long expiredTime, String email, String password) {
         Date expiredDate = new Date(expiredTime *1000);
 
         SharedPreferences sharedPreferences =  getEncryptedSharedPreferences();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(SHARED_PREFERENCES_TOKEN_KEY, token);
         editor.putString(SHARED_PREFERENCES_EXPIRED_TIME_KEY, String.valueOf(expiredDate));
+        editor.putString(SHARED_PREFERENCES_EMAIL_KEY, email);
+        editor.putString(SHARED_PREFERENCES_PASSWORD_KEY, password);
         editor.apply();
     }
 
@@ -92,6 +96,36 @@ public class GestorSharedPreferences {
     public String getToken() {
         SharedPreferences sharedPreferences =  getEncryptedSharedPreferences();
         return sharedPreferences.getString(SHARED_PREFERENCES_TOKEN_KEY, null);
+    }
+
+    /**
+     * Obte l'email de l'arxiu.
+     * @return l'string corresponent del token
+     * @author Jordi Gómez Lozano
+     */
+    public String getEmail() {
+        SharedPreferences sharedPreferences =  getEncryptedSharedPreferences();
+        return sharedPreferences.getString(SHARED_PREFERENCES_EMAIL_KEY, null);
+    }
+
+    /**
+     * Obte la clau de l'arxiu.
+     * @return l'string corresponent del token
+     * @author Jordi Gómez Lozano
+     */
+    public String getPassword() {
+        SharedPreferences sharedPreferences =  getEncryptedSharedPreferences();
+        return sharedPreferences.getString(SHARED_PREFERENCES_PASSWORD_KEY, null);
+    }
+
+    /**
+     * Obte la clau de l'arxiu.
+     * @return l'string corresponent del token
+     * @author Jordi Gómez Lozano
+     */
+    public void setPassword(String newPassword) {
+        SharedPreferences sharedPreferences =  getEncryptedSharedPreferences();
+        sharedPreferences.edit().putString(SHARED_PREFERENCES_PASSWORD_KEY, newPassword).apply();
     }
 
 }

@@ -96,11 +96,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 //            Usuari usuari = createUsuari();
 //            RequestAddUser requestAddUser = new RequestAddUser(this);
 
-
-            //Control del teclat per amagarlo en efectual la busqueda.
-            InputMethodManager inputManager = (InputMethodManager)
-                    getSystemService(Context.INPUT_METHOD_SERVICE);
-
             //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 

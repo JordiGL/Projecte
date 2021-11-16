@@ -68,6 +68,10 @@ public class UserActivity extends AppCompatActivity {
             startActivity(intent1);
             finish();
         });
+    }
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }

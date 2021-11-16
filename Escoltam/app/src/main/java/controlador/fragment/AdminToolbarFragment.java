@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
@@ -41,7 +40,7 @@ public class AdminToolbarFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView =  inflater.inflate(R.layout.fragment_admin_toolbar, container, false);
-        final ImageView settings = rootView.findViewById(R.id.imageMore);
+        final ImageView settings = rootView.findViewById(R.id.buttonMore);
         final Spinner spinner = rootView.findViewById(R.id.spinner_object);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(rootView.getContext(),
