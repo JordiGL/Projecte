@@ -14,7 +14,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -38,12 +37,18 @@ import model.Usuari;
  * @author Jordi Gómez Lozano.
  * @see AppCompatActivity
  */
-public class SignUpActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Integer> {
+public class SignUpActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Bundle> {
     private static final String USER_CREATED_SUCCESSFULLY = "Usuari creat correctament";
-    private static final String ERROR_EMAIL_ALREADY_ASSIGNED = "Email ja assignat a un usuari";
     private static final String RADIO_BUTTON_COMPARED_TEXT = "Masculina";
     private static final String MALE = "MALE";
     private static final String FEMALE = "FEMALE";
+    private static final String SERVER_DUPLICATED_EMAIL_MATCHED = "Detail: Ya existe la llave (username)";
+    private static final String ERROR_EMAIL_ALREADY_ASSIGNED = "Email ja assignat a un usuari";
+    private static final String SERVER_INFO_KEY = "serverInfo";
+    private static final String RESPONSE_CODE_KEY = "responseCode";
+    private static final String EMAIL_KEY = "email";
+    private static final String CLAU_KEY = "clau";
+    private static final String VEU_KEY = "veu";
     private EditText email, password, conformPassword;
     private RadioGroup radioGroupVeu;
     private LinearLayout ln_radioGroup;
@@ -120,9 +125,9 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                 }
 
                 Bundle queryBundle = new Bundle();
-                queryBundle.putString("email", emailUsuari);
-                queryBundle.putString("clau", clauUsuari);
-                queryBundle.putString("veu", voiceUsuari);
+                queryBundle.putString(EMAIL_KEY, emailUsuari);
+                queryBundle.putString(CLAU_KEY, clauUsuari);
+                queryBundle.putString(VEU_KEY, voiceUsuari);
                 getSupportLoaderManager().restartLoader(0, queryBundle, this);
             }
         }
@@ -226,39 +231,53 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
     @NonNull
     @Override
-    public Loader<Integer> onCreateLoader(int id, @Nullable Bundle args) {
+    public Loader<Bundle> onCreateLoader(int id, @Nullable Bundle args) {
         String emailUsuari ="";
         String passwordUsuari ="";
         String voiceUsuari ="";
 
         if (args != null) {
-           emailUsuari = args.getString("email");
-           passwordUsuari = args.getString("clau");
-           voiceUsuari = args.getString("veu");
+           emailUsuari = args.getString(EMAIL_KEY);
+           passwordUsuari = args.getString(CLAU_KEY);
+           voiceUsuari = args.getString(VEU_KEY);
         }
 
         return new SignUpLoader(this, new Usuari(emailUsuari, voiceUsuari, passwordUsuari));
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<Integer> loader, Integer data) {
+    public void onLoadFinished(@NonNull Loader<Bundle> loader, Bundle data) {
+        String serverInfo = "";
+        int responseCode = 0;
+        
+        if (data != null) {
+            serverInfo = data.getString(SERVER_INFO_KEY);
+            responseCode = data.getInt(RESPONSE_CODE_KEY);
+        }
 
-        Log.i("Info", String.valueOf(data));
-
-        if (data == HttpURLConnection.HTTP_CREATED) {
+        if (responseCode == HttpURLConnection.HTTP_CREATED) {
 
             Toast.makeText(SignUpActivity.this, USER_CREATED_SUCCESSFULLY, Toast.LENGTH_LONG).show();
             cleanFields();
             startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
 
         }else{
-            StyleableToast.makeText(SignUpActivity.this, getResources().getString(R.string.errorUserSignUp), Toast.LENGTH_SHORT, R.style.toastError).show();
+
+            if(serverInfo.contains(SERVER_DUPLICATED_EMAIL_MATCHED)){
+
+                email.setBackgroundResource(R.drawable.bg_edittext_error);
+                email.setError(ERROR_EMAIL_ALREADY_ASSIGNED);
+
+            } else{
+                StyleableToast.makeText(SignUpActivity.this, getResources().getString(R.string.errorUserSignUp), Toast.LENGTH_SHORT, R.style.toastError).show();
+            }
+
         }
 
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<Integer> loader) {
+    public void onLoaderReset(@NonNull Loader<Bundle> loader) {
 
     }
 }

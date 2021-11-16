@@ -1,8 +1,14 @@
 package controlador.server;
 
+import android.os.Bundle;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +27,7 @@ public class NetworkUtils extends Connexio{
     private static final String AUTHORIZATION_VALUE = "Basic YW5kcm9pZGFwcDoxMjM0NQ==";
     private static final String CONTENT_TYPE_VALUE = "application/json";
     private static final String CHARSET_VALUE = "utf-8";
+    private static final String CHARSET_NAME = "UTF-8";
     private static final String METODE_PETICIO_POST = "POST";
     private static final String METODE_PETICIO_PUT = "PUT";
     private static final String SIGN_UP_URL = "http://10.0.2.2:8080/signin";
@@ -28,7 +35,9 @@ public class NetworkUtils extends Connexio{
     private static final String BASIC_GET_URL = "http://10.0.2.2:8080/api/usuaris";
     public static final String APPLICATION_JSON = "application/json";
 
-    public static int addNewUser(Usuari usuari){
+    public static Bundle addNewUser(Usuari usuari){
+        Bundle queryBundle = null;
+        String serverInfo = "";
         HttpURLConnection connexio = null;
         int responseCode = 0;
         try{
@@ -40,7 +49,18 @@ public class NetworkUtils extends Connexio{
 
             wr.write(postData);
 
+            InputStream error = connexio.getErrorStream();
+
+            if(error != null){
+                serverInfo = getInfo(bytesToString(error));
+            }
+
             responseCode = connexio.getResponseCode();
+
+            queryBundle = new Bundle();
+            queryBundle.putInt("responseCode", responseCode);
+            queryBundle.putString("serverInfo", serverInfo);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,7 +70,7 @@ public class NetworkUtils extends Connexio{
             }
         }
 
-        return responseCode;
+        return queryBundle;
     }
 
     public static int sendPassword(String password, String email, String token){
@@ -153,5 +173,51 @@ public class NetworkUtils extends Connexio{
 
         return usersJSONString;
 
+    }
+
+
+    /**
+     * Obté l'estring a partir dels bytes.
+     * @param resposta la resposta del servidor.
+     * @return l'estring a partir dels bytes.
+     * @throws IOException
+     * @author Jordi Gómez Lozano.
+     */
+    private static String bytesToString(InputStream resposta) throws IOException {
+        ByteArrayOutputStream into = null;
+        try {
+            into = new ByteArrayOutputStream();
+            byte[] buf = new byte[4096];
+            for (int n; 0 < (n = resposta.read(buf));) {
+                into.write(buf, 0, n);
+            }
+
+        } catch (IOException e){
+
+            e.printStackTrace();
+
+        } finally{
+            if (into != null) {
+                try {
+                    into.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return into.toString(CHARSET_NAME);
+    }
+
+    /**
+     * Obtinc la dada del token del JSON que rebo, aquest té altres dades.
+     * @param data
+     * @return
+     * @throws JSONException
+     * @author Jordi Gómez Lozano.
+     */
+    private static String getInfo(String data) throws JSONException {
+        JSONObject access_token = new JSONObject(data);
+        return access_token.getString("Error");
     }
 }

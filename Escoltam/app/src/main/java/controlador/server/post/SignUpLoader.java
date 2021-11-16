@@ -1,6 +1,7 @@
 package controlador.server.post;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,7 +10,7 @@ import androidx.loader.content.AsyncTaskLoader;
 import controlador.server.NetworkUtils;
 import model.Usuari;
 
-public class SignUpLoader extends AsyncTaskLoader<Integer> {
+public class SignUpLoader extends AsyncTaskLoader<Bundle> {
     private Usuari usuari;
 
     public SignUpLoader(@NonNull Context context, Usuari usuari) {
@@ -23,7 +24,7 @@ public class SignUpLoader extends AsyncTaskLoader<Integer> {
      */
     @Nullable
     @Override
-    public Integer loadInBackground() {
+    public Bundle loadInBackground() {
         return NetworkUtils.addNewUser(usuari);
     }
 
