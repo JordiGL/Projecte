@@ -18,9 +18,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
 
 import controlador.fragment.ChangePasswordFragment;
 import controlador.fragment.ChangeVoiceFragment;
@@ -28,17 +31,23 @@ import controlador.gestor.GestorSettings;
 import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.OnFragmentInteractionListener;
 import controlador.server.get.UsuarisListLoader;
+import controlador.server.put.ChangePasswordLoader;
+import controlador.server.put.ChangeVoiceLoader;
+import io.github.muddz.styleabletoast.StyleableToast;
 import jordigomez.ioc.cat.escoltam.R;
 
-public class UserSettingsActivity extends AppCompatActivity implements OnFragmentInteractionListener{
+public class UserSettingsActivity extends AppCompatActivity implements OnFragmentInteractionListener, LoaderManager.LoaderCallbacks<Integer>{
 
-    public static final String BUNDLE_TOKEN_KEY = "token";
-    public static final String BUNDLE_URL_KEY = "url";
-    public static final String JSON_PASSWORD_KEY = "password";
-    ChangePasswordFragment changePasswordFragment;
-    ChangeVoiceFragment changeVoiceFragment;
-    FragmentTransaction fragmentTransaction;
-    FragmentManager fragmentManager;
+    private static final String BUNDLE_TOKEN_KEY = "token";
+    private static final String BUNDLE_EMAIL_KEY = "email";
+    private static final String BUNDLE_PASSWORD_KEY = "password";
+    private static final String BUNDLE_VOICE_KEY = "voice";
+
+    private ChangePasswordFragment changePasswordFragment;
+    private ChangeVoiceFragment changeVoiceFragment;
+    private FragmentTransaction fragmentTransaction;
+    private FragmentManager fragmentManager;
+    private String passwordChanged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,46 +117,39 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
     @Override
     public void onButtonPressed(EditText previousPasswordEntered, EditText newPassword, EditText conformPassword) {
         if(checkPasswordChangedFields(previousPasswordEntered, newPassword, conformPassword)){
-            //Guardem el nou password.
-            GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(UserSettingsActivity.this);
-            gestorSharedPreferences.setPassword(newPassword.getText().toString());
-
-            Intent intentAdmin = new Intent(UserSettingsActivity.this, UserActivity.class);
-            startActivity(intentAdmin);
-            finish();
+            passwordChanged = newPassword.getText().toString();
+            sendPasswordToServer(newPassword.getText().toString());
         }
     }
 
     @Override
     public void onButtonPressed(EditText passwordEntered, String choice, LinearLayout radioGroupLayout) {
         if(checkVoiceChangedFields(passwordEntered, choice, radioGroupLayout)){
-            Intent intentAdmin = new Intent(UserSettingsActivity.this, UserActivity.class);
-            startActivity(intentAdmin);
-            finish();
+            sendVoiceToServer(choice);
         }
     }
 
-    private boolean checkVoiceChangedFields(EditText previousPassword, String choice, LinearLayout radioGroupLayout) {
+    private boolean checkVoiceChangedFields(EditText passwordEntered, String choice, LinearLayout radioGroupLayout) {
         boolean correcte = true;
 
         GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(UserSettingsActivity.this);
-        String receivedPassword = gestorSharedPreferences.getPassword();
+        String actualPassword = gestorSharedPreferences.getPassword();
 
         GestorSettings gestorSettings = new GestorSettings(
-                previousPassword.getText().toString(),
-                receivedPassword,
+                passwordEntered.getText().toString(),
+                actualPassword,
                 choice);
 
         if (!gestorSettings.previousPasswordChecker()) {
 
-            previousPassword.setBackgroundResource(R.drawable.bg_edittext_error);
-            previousPassword.setError(gestorSettings.getError());
+            passwordEntered.setBackgroundResource(R.drawable.bg_edittext_error);
+            passwordEntered.setError(gestorSettings.getError());
 
             correcte = false;
 
         } else {
 
-            previousPassword.setBackgroundResource(R.drawable.bg_edittext);
+            passwordEntered.setBackgroundResource(R.drawable.bg_edittext);
         }
 
         if (!gestorSettings.voiceChecker()) {
@@ -169,28 +171,28 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
      * @return Un booleà: true si ha trobat error, i false en cas contrari.
      * @author Jordi Gómez Lozano.
      */
-    private boolean checkPasswordChangedFields(EditText previousPassword, EditText newPassword, EditText conformPassword) {
+    private boolean checkPasswordChangedFields(EditText previousPasswordEntered, EditText newPassword, EditText conformPassword) {
         boolean correcte = true;
 
         GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(UserSettingsActivity.this);
         String receivedPassword = gestorSharedPreferences.getPassword();
 
         GestorSettings gestorSettings = new GestorSettings(
-                previousPassword.getText().toString(),
+                previousPasswordEntered.getText().toString(),
                 receivedPassword,
                 newPassword.getText().toString(),
                 conformPassword.getText().toString());
 
         if (!gestorSettings.previousPasswordChecker()) {
 
-            previousPassword.setBackgroundResource(R.drawable.bg_edittext_error);
-            previousPassword.setError(gestorSettings.getError());
+            previousPasswordEntered.setBackgroundResource(R.drawable.bg_edittext_error);
+            previousPasswordEntered.setError(gestorSettings.getError());
 
             correcte = false;
 
         } else {
 
-            previousPassword.setBackgroundResource(R.drawable.bg_edittext);
+            previousPasswordEntered.setBackgroundResource(R.drawable.bg_edittext);
         }
 
         if (!gestorSettings.newPasswordChecker()) {
@@ -219,6 +221,108 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
 
         return correcte;
     }
+
+    private void sendPasswordToServer(String novaClau) {
+
+        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(UserSettingsActivity.this);
+        String email = gestorSharedPreferences.getEmail();
+        String token = gestorSharedPreferences.getToken();
+
+        //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = null;
+        if (connMgr != null) {
+            networkInfo = connMgr.getActiveNetworkInfo();
+        }
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Bundle queryBundle = new Bundle();
+            queryBundle.putString(BUNDLE_TOKEN_KEY, token);
+            queryBundle.putString(BUNDLE_EMAIL_KEY, email);
+            queryBundle.putString(BUNDLE_PASSWORD_KEY, novaClau);
+            getSupportLoaderManager().restartLoader(0, queryBundle, this);
+        }
+    }
+
+    private void sendVoiceToServer(String novaVeu) {
+
+        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(UserSettingsActivity.this);
+        String email = gestorSharedPreferences.getEmail();
+        String token = gestorSharedPreferences.getToken();
+        String passwordActual = gestorSharedPreferences.getPassword();
+
+        //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = null;
+        if (connMgr != null) {
+            networkInfo = connMgr.getActiveNetworkInfo();
+        }
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Bundle queryBundle = new Bundle();
+            queryBundle.putString(BUNDLE_TOKEN_KEY, token);
+            queryBundle.putString(BUNDLE_EMAIL_KEY, email);
+            queryBundle.putString(BUNDLE_PASSWORD_KEY, passwordActual);
+            queryBundle.putString(BUNDLE_VOICE_KEY, novaVeu);
+            getSupportLoaderManager().restartLoader(0, queryBundle, this);
+        }
+    }
+
+    @NonNull
+    @Override
+    public Loader<Integer> onCreateLoader(int id, @Nullable Bundle args) {
+        String token ="";
+        String email ="";
+        String novaClau ="";
+        String novaVeu ="";
+
+        if (args != null) {
+
+            if(args.size() == 4){
+
+                token = args.getString(BUNDLE_TOKEN_KEY);
+                email = args.getString(BUNDLE_EMAIL_KEY);
+                novaClau = args.getString(BUNDLE_PASSWORD_KEY);
+                novaVeu = args.getString(BUNDLE_VOICE_KEY);
+
+                return new ChangeVoiceLoader(this, novaClau , novaVeu, email, token);
+
+            }else{
+                token = args.getString(BUNDLE_TOKEN_KEY);
+                email = args.getString(BUNDLE_EMAIL_KEY);
+                novaClau = args.getString(BUNDLE_PASSWORD_KEY);
+
+                return new ChangePasswordLoader(this, novaClau ,email, token);
+            }
+
+        }
+
+        return new ChangePasswordLoader(this, novaClau ,email, token);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Integer> loader, Integer data) {
+
+        if (data == HttpURLConnection.HTTP_CREATED) {
+
+            if(passwordChanged != null){
+                GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(UserSettingsActivity.this);
+                gestorSharedPreferences.setPassword(passwordChanged);
+            }
+
+            Intent intentAdmin = new Intent(UserSettingsActivity.this, UserActivity.class);
+            startActivity(intentAdmin);
+            finish();
+        }else{
+            StyleableToast.makeText(UserSettingsActivity.this, "Error, no s'ha pogut canviar la clau", Toast.LENGTH_SHORT, R.style.toastError).show();
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Integer> loader) {}
 
     @Override
     public void onBackPressed() {

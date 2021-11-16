@@ -41,7 +41,6 @@ public class NetworkUtils extends Connexio{
             wr.write(postData);
 
             responseCode = connexio.getResponseCode();
-            Log.i("Info", String.valueOf(responseCode));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +68,6 @@ public class NetworkUtils extends Connexio{
             wr.write(postData);
 
             responseCode = connexio.getResponseCode();
-            Log.i("Info", String.valueOf(responseCode));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,14 +88,13 @@ public class NetworkUtils extends Connexio{
             String body = "{\"password\": \""+password+"\",\"voice\": \""+voice+"\"}";
             byte[] postData = body.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
-            connexio = putRequest(postDataLength, METODE_PETICIO_PUT, CHANGE_PASS_URL+email, APPLICATION_JSON, token);
+            connexio = putRequest(postDataLength, METODE_PETICIO_PUT, BASIC_GET_URL+"/profile/"+email, APPLICATION_JSON, token);
 
             DataOutputStream wr = new DataOutputStream(connexio.getOutputStream());
 
             wr.write(postData);
 
             responseCode = connexio.getResponseCode();
-            Log.i("Info", String.valueOf(responseCode));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,7 +117,6 @@ public class NetworkUtils extends Connexio{
             connexio = getRequest(token, BASIC_GET_URL+opcio);
 
             int responseCode = connexio.getResponseCode();
-            Log.d("Info", String.valueOf(responseCode));
 
             InputStream inputStream = connexio.getInputStream();
             reader = new BufferedReader(new InputStreamReader(inputStream));

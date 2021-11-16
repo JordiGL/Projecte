@@ -60,8 +60,12 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
 
         ImageButton btnSearch = findViewById(R.id.searchButton);
         cercador = findViewById(R.id.editTextBuscador);
+
+        //RecyclerView i adapter.
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new UsuariAdapter(mUsuaris, AdministratorActivity.this);
+        mRecyclerView.setAdapter(mAdapter);
 
         //Obtenim el correu
         Intent intent = getIntent();
@@ -252,7 +256,7 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
             mRecyclerView.setAdapter(mAdapter);
 
         } else{
-            Toast.makeText(AdministratorActivity.this, "Error", Toast.LENGTH_LONG).show();
+            displayToast("Error");
         }
     }
 
@@ -260,13 +264,12 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
     public void onLoaderReset(@NonNull Loader<String> loader) {}
 
     /**
-     * Displays a Toast with the message.
-     *
-     * @param message Message to display.
+     * Mostra informació per pantalla.
+     * @param message missatge que es mostrara per pantalla.
      */
     public void displayToast(String message) {
         Toast.makeText(getApplicationContext(), message,
-                Toast.LENGTH_SHORT).show();
+                Toast.LENGTH_LONG).show();
     }
 
     public void openMoreMenu(View view) {

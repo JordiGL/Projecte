@@ -1,4 +1,4 @@
-package controlador.server.post;
+package controlador.server.put;
 
 import android.content.Context;
 
@@ -7,18 +7,19 @@ import androidx.annotation.Nullable;
 import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
-import model.Usuari;
 
-public class ChangePasswordLoader extends AsyncTaskLoader<Integer> {
+public class ChangeVoiceLoader extends AsyncTaskLoader<Integer> {
     private String password;
     private String email;
     private String token;
+    private String voice;
 
-    public ChangePasswordLoader(@NonNull Context context, String password, String email, String token) {
+    public ChangeVoiceLoader(@NonNull Context context, String password, String voice, String email, String token) {
         super(context);
         this.password = password;
         this.email = email;
         this.token = token;
+        this.voice = voice;
     }
 
     /**
@@ -28,7 +29,7 @@ public class ChangePasswordLoader extends AsyncTaskLoader<Integer> {
     @Nullable
     @Override
     public Integer loadInBackground() {
-        return NetworkUtils.sendPassword(password, email, token);
+        return NetworkUtils.sendVoice(password, voice, email, token);
     }
 
     /**

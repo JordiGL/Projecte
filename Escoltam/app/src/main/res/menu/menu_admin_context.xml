@@ -3,7 +3,7 @@
     <item
         android:id="@+id/context_settings"
         android:orderInCategory="10"
-        android:title="Perfil d'usuari"/>
+        android:title="Configuració"/>
 
     <item
         android:id="@+id/context_logout"

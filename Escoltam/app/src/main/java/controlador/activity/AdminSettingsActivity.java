@@ -21,9 +21,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.net.HttpURLConnection;
 
 import controlador.fragment.ChangePasswordFragment;
@@ -31,23 +28,22 @@ import controlador.fragment.ChangeVoiceFragment;
 import controlador.gestor.GestorSettings;
 import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.OnFragmentInteractionListener;
-import controlador.server.get.UsuarisListLoader;
-import controlador.server.post.ChangePasswordLoader;
-import controlador.server.post.RequestToken;
+import controlador.server.put.ChangePasswordLoader;
+import controlador.server.put.ChangeVoiceLoader;
 import io.github.muddz.styleabletoast.StyleableToast;
 import jordigomez.ioc.cat.escoltam.R;
 
 public class AdminSettingsActivity extends AppCompatActivity implements OnFragmentInteractionListener, LoaderManager.LoaderCallbacks<Integer> {
 
-    public static final String BUNDLE_TOKEN_KEY = "token";
-    public static final String BUNDLE_EMAIL_KEY = "email";
-    public static final String JSON_PASSWORD_KEY = "password";
-    public static final String BUNDLE_PASSWORD_KEY = "password";
-    ChangePasswordFragment changePasswordFragment;
-    ChangeVoiceFragment changeVoiceFragment;
-    FragmentTransaction fragmentTransaction;
-    FragmentManager fragmentManager;
-    String receivedPassword;
+    private static final String BUNDLE_TOKEN_KEY = "token";
+    private static final String BUNDLE_EMAIL_KEY = "email";
+    private static final String BUNDLE_PASSWORD_KEY = "password";
+    private static final String BUNDLE_VOICE_KEY = "voice";
+    private ChangePasswordFragment changePasswordFragment;
+    private ChangeVoiceFragment changeVoiceFragment;
+    private FragmentTransaction fragmentTransaction;
+    private FragmentManager fragmentManager;
+    private String passwordChanged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +118,7 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
     @Override
     public void onButtonPressed(EditText previousPasswordEntered, EditText newPassword, EditText conformPassword) {
         if(checkPasswordChangedFields(previousPasswordEntered, newPassword, conformPassword)){
+            passwordChanged = newPassword.getText().toString();
             sendPasswordToServer(newPassword.getText().toString());
         }
     }
@@ -129,9 +126,7 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
     @Override
     public void onButtonPressed(EditText passwordEntered, String choice, LinearLayout radioGroupLayout) {
         if(checkVoiceChangedFields(passwordEntered, choice, radioGroupLayout)){
-            Intent intentAdmin = new Intent(AdminSettingsActivity.this, AdministratorActivity.class);
-            startActivity(intentAdmin);
-            finish();
+            sendVoiceToServer(choice);
         }
     }
 
@@ -277,29 +272,73 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
         }
     }
 
+    private void sendVoiceToServer(String novaVeu) {
+
+        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(AdminSettingsActivity.this);
+        String email = gestorSharedPreferences.getEmail();
+        String token = gestorSharedPreferences.getToken();
+        String passwordActual = gestorSharedPreferences.getPassword();
+
+        //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = null;
+        if (connMgr != null) {
+            networkInfo = connMgr.getActiveNetworkInfo();
+        }
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Bundle queryBundle = new Bundle();
+            queryBundle.putString(BUNDLE_TOKEN_KEY, token);
+            queryBundle.putString(BUNDLE_EMAIL_KEY, email);
+            queryBundle.putString(BUNDLE_PASSWORD_KEY, passwordActual);
+            queryBundle.putString(BUNDLE_VOICE_KEY, novaVeu);
+            getSupportLoaderManager().restartLoader(0, queryBundle, this);
+        }
+    }
+
     @NonNull
     @Override
     public Loader<Integer> onCreateLoader(int id, @Nullable Bundle args) {
         String token ="";
         String email ="";
         String novaClau ="";
+        String novaVeu ="";
 
         if (args != null) {
 
-            token = args.getString(BUNDLE_TOKEN_KEY);
-            email = args.getString(BUNDLE_EMAIL_KEY);
-            novaClau = args.getString(BUNDLE_PASSWORD_KEY);
+            if(args.size() == 4){
+
+                token = args.getString(BUNDLE_TOKEN_KEY);
+                email = args.getString(BUNDLE_EMAIL_KEY);
+                novaClau = args.getString(BUNDLE_PASSWORD_KEY);
+                novaVeu = args.getString(BUNDLE_VOICE_KEY);
+
+                return new ChangeVoiceLoader(this, novaClau , novaVeu, email, token);
+
+            }else{
+                token = args.getString(BUNDLE_TOKEN_KEY);
+                email = args.getString(BUNDLE_EMAIL_KEY);
+                novaClau = args.getString(BUNDLE_PASSWORD_KEY);
+
+                return new ChangePasswordLoader(this, novaClau ,email, token);
+            }
+
         }
+
         return new ChangePasswordLoader(this, novaClau ,email, token);
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<Integer> loader, Integer data) {
 
-
-        Log.i("Info", String.valueOf(data));
-
         if (data == HttpURLConnection.HTTP_CREATED) {
+
+            if(passwordChanged != null){
+                GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(AdminSettingsActivity.this);
+                gestorSharedPreferences.setPassword(passwordChanged);
+            }
+
             Intent intentAdmin = new Intent(AdminSettingsActivity.this, AdministratorActivity.class);
             startActivity(intentAdmin);
             finish();

@@ -16,10 +16,12 @@
 
         <activity
             android:name="controlador.activity.AdminSettingsActivity"
+            android:label="Configuració"
             android:exported="true"
             android:parentActivityName="controlador.activity.AdministratorActivity"/>
         <activity
             android:name="controlador.activity.UserSettingsActivity"
+            android:label="Configuració"
             android:exported="true"
             android:parentActivityName="controlador.activity.UserActivity"/>
         <activity
