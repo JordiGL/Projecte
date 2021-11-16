@@ -5,6 +5,7 @@ import android.widget.LinearLayout;
 
 /**
  * Interficie callback per a passar informacio d'un fragment a la activity
+ * @author Jordi Gómez Lozano
  */
 public interface OnFragmentInteractionListener {
     void onButtonPressed(EditText previousPasswordEntered, EditText newPassword, EditText conformPassword);

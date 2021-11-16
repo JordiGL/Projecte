@@ -14,6 +14,11 @@ import java.util.List;
 import jordigomez.ioc.cat.escoltam.R;
 import model.Usuari;
 
+/**
+ * Classe de l'adapter amb el Holder que gestiona la informació a mostrar del recyclerview.
+ * @see RecyclerView
+ * @author Jordi Gómez Lozano.
+ */
 public class UsuariAdapter extends RecyclerView.Adapter<UsuariAdapter.ViewHolder> {
 
     private List<Usuari> mUsuaris;
@@ -71,17 +76,6 @@ public class UsuariAdapter extends RecyclerView.Adapter<UsuariAdapter.ViewHolder
             mRoleText = itemView.findViewById(R.id.roleListText);
 
         }
-//
-//        /**
-//         * Carrega la informació  del recyclerview.
-//         * @param currentusuari
-//         */
-//        void bindTo(Usuari currentusuari){
-//
-//            mUsuariText.setText(currentusuari.getEmail());
-//            mVoiceText.setText(currentusuari.getVoice());
-//            mRoleText.setText(currentusuari.getRole().getName());
-//        }
 
     }
 }

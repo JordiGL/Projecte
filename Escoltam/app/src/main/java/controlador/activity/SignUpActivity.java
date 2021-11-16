@@ -34,8 +34,9 @@ import model.Usuari;
 
 /**
  * Classe que permet registrar-se.
- * @author Jordi Gómez Lozano.
  * @see AppCompatActivity
+ * @see LoaderManager
+ * @author Jordi Gómez Lozano.
  */
 public class SignUpActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Bundle> {
     private static final String USER_CREATED_SUCCESSFULLY = "Usuari creat correctament";
@@ -91,15 +92,12 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
     /**
      * Controla que el registre es porti a terme correctament, en cas contrari avisa a l'usuari.
-     * Alhora crea un login al Firebase per a què aquest pugui generar el toquen corresponent.
+     * Alhora crea un Bundle i fa la crida del Loader per a crear el request del servidor.
      * @author Jordi Gómez Lozano.
      */
     public void registerUser() throws GestorException {
 
         if(checkFields()) {
-
-//            Usuari usuari = createUsuari();
-//            RequestAddUser requestAddUser = new RequestAddUser(this);
 
             //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -163,7 +161,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
     /**
      * Obté el valor introduït per l'usuari en els diferents camps del registre i comprova que no hi hagi errors.
-     * @return Un booleà: true si ha trobat error, i false en cas contrari.
+     * @return Un booleà: true si es correcte, false en cas contrari.
      * @author Jordi Gómez Lozano.
      */
     private boolean checkFields() {

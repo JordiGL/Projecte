@@ -10,6 +10,7 @@ import controlador.server.NetworkUtils;
 
 /**
  * Classe per a crear el fil per a connectar amb el servidor.
+ * @see AsyncTaskLoader
  * @author Jordi Gómez Lozano.
  */
 public class ChangePasswordLoader extends AsyncTaskLoader<Integer> {

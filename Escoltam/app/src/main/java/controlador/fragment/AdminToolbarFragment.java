@@ -17,6 +17,7 @@ import jordigomez.ioc.cat.escoltam.R;
 
 /**
  * Classe del fragment que conté la barra de la pantalla de l'administrador.
+ * @see Fragment
  * @author Jordi Gómez Lozano.
  */
 public class AdminToolbarFragment extends Fragment {
@@ -41,7 +42,7 @@ public class AdminToolbarFragment extends Fragment {
         final ImageView settings = rootView.findViewById(R.id.buttonMore);
         final Spinner spinner = rootView.findViewById(R.id.spinner_object);
 
-        //Assignem l'array de l'adapter de l'spinner i l'apliquem.
+        //Assignem l'array a l'adapter de l'spinner i apliquem aquest.
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(rootView.getContext(),
                 R.array.search_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

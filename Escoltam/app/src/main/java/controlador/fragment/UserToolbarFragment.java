@@ -18,6 +18,7 @@ import jordigomez.ioc.cat.escoltam.R;
 
 /**
  * Classe del fragment que conté la barra de la pantalla de l'usuari.
+ * @see Fragment
  * @author Jordi Gómez Lozano.
  */
 public class UserToolbarFragment extends Fragment {

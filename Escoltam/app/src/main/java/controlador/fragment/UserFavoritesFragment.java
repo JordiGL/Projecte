@@ -12,6 +12,7 @@ import jordigomez.ioc.cat.escoltam.R;
 
 /**
  * Classe del fragment que conte els favorits.
+ * @see Fragment
  * @author Jordi Gómez Lozano.
  */
 public class UserFavoritesFragment extends Fragment {

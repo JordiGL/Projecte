@@ -12,6 +12,7 @@ import model.Usuari;
 
 /**
  * Classe per a crear el fil per a connectar amb el servidor.
+ * @see AsyncTaskLoader
  * @author Jordi Gómez Lozano.
  */
 public class SignUpLoader extends AsyncTaskLoader<Bundle> {

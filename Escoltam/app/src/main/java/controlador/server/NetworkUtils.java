@@ -18,6 +18,7 @@ import model.Usuari;
 
 /**
  * Classe d'utilitats per a connectar amb el servidor.
+ * @see Connexio
  * @author Jordi Gómez Lozano.
  */
 public class NetworkUtils extends Connexio{

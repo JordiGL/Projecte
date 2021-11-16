@@ -12,6 +12,7 @@ import jordigomez.ioc.cat.escoltam.R;
 
 /**
  * Classe del fragment que conté el control de la pantalla de l'usuari.
+ * @see Fragment
  * @author Jordi Gómez Lozano.
  */
 public class UserControlFragment extends Fragment {

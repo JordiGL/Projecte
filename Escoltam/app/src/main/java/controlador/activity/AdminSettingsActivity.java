@@ -33,6 +33,12 @@ import controlador.server.put.ChangeVoiceLoader;
 import io.github.muddz.styleabletoast.StyleableToast;
 import jordigomez.ioc.cat.escoltam.R;
 
+/**
+ * Classe de la configuració de l'usuari per a canviar la clau o la veu.
+ * @see OnFragmentInteractionListener
+ * @see LoaderManager
+ * @author Jordi Gómez Lozano.
+ */
 public class AdminSettingsActivity extends AppCompatActivity implements OnFragmentInteractionListener, LoaderManager.LoaderCallbacks<Integer> {
 
     private static final String BUNDLE_TOKEN_KEY = "token";
@@ -130,10 +136,17 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
         }
     }
 
+    /**
+     * Obté el valor introduït per l'usuari en els diferents camps del fragment del canvi
+     * de veu i comprova que no hi hagi errors.
+     * @param passwordEntered EditText del camp de la clau.
+     * @param choice String amb la veu seleccionada.
+     * @param radioGroupLayout LinearLayout del grup de radiobuttons.
+     * @return Un booleà: true si es correcte, false en cas contrari.
+     * @author Jordi Gómez Lozano.
+     */
     private boolean checkVoiceChangedFields(EditText passwordEntered, String choice, LinearLayout radioGroupLayout) {
         boolean correcte = true;
-
-//        obtenirInformacio();
 
         GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(AdminSettingsActivity.this);
         String actualPassword = gestorSharedPreferences.getPassword();
@@ -170,14 +183,14 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
     }
 
     /**
-     * Obté el valor introduït per l'usuari en els diferents camps del registre i comprova que no hi hagi errors.
-     * @return Un booleà: true si ha trobat error, i false en cas contrari.
+     * Obté el valor introduït per l'usuari en els diferents camps del fragment del canvi
+     * de clau i comprova que no hi hagi errors.
+     * @return Un booleà: true si es correcte, false en cas contrari.
      * @author Jordi Gómez Lozano.
      */
     private boolean checkPasswordChangedFields(EditText previousPasswordEntered, EditText newPassword, EditText conformPassword) {
         boolean correcte = true;
 
-//        obtenirInformacio();
 
         GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(AdminSettingsActivity.this);
         String receivedPassword = gestorSharedPreferences.getPassword();
@@ -227,28 +240,11 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
         return correcte;
     }
 
-//    private void obtenirInformacio() {
-//        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(AdminSettingsActivity.this);
-//        String email = gestorSharedPreferences.getEmail();
-//        String token = gestorSharedPreferences.getToken();
-//
-//        //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
-//        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//
-//        NetworkInfo networkInfo = null;
-//        if (connMgr != null) {
-//            networkInfo = connMgr.getActiveNetworkInfo();
-//        }
-//
-//        if (networkInfo != null && networkInfo.isConnected()) {
-//            Bundle queryBundle = new Bundle();
-//            queryBundle.putCharSequence("opcio", "GET");
-//            queryBundle.putString(BUNDLE_TOKEN_KEY, token);
-//            queryBundle.putString(BUNDLE_URL_KEY, "/"+email);
-//            getSupportLoaderManager().restartLoader(0, queryBundle, this);
-//        }
-//    }
-
+    /**
+     * Crea el bundle i crida al Loader per a fer el request al servidor.
+     * @param novaClau la nova clau introduida per l'usuari.
+     * @author Jordi Gómez Lozano.
+     */
     private void sendPasswordToServer(String novaClau) {
 
         GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(AdminSettingsActivity.this);
@@ -272,6 +268,11 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
         }
     }
 
+    /**
+     * Crea el bundle i crida al Loader per a fer el request al servidor.
+     * @param novaVeu la nova veu seleccionada per l'usuari.
+     * @author Jordi Gómez Lozano.
+     */
     private void sendVoiceToServer(String novaVeu) {
 
         GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(AdminSettingsActivity.this);
@@ -351,39 +352,5 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
     public void onLoaderReset(@NonNull Loader<Integer> loader) {
 
     }
-
-//    @NonNull
-//    @Override
-//    public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
-//        String token ="";
-//        String opcioUrl ="";
-//
-//        if (args != null) {
-//
-//            token = args.getString(BUNDLE_TOKEN_KEY);
-//            opcioUrl = args.getString(BUNDLE_URL_KEY);
-//        }
-//
-//        return new UsuarisListLoader(this, opcioUrl, token);
-//    }
-//
-//    @Override
-//    public void onLoadFinished(@NonNull Loader<String> loader, String data) {
-//        try {
-//            JSONObject jsonObject = new JSONObject(data);
-//            receivedPassword = jsonObject.getString(JSON_PASSWORD_KEY);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    @Override
-//    public void onLoaderReset(@NonNull Loader<String> loader) {
-//    }
-//
-//    @Override
-//    public void onBackPressed() {
-//        moveTaskToBack(true);
-//    }
 
 }

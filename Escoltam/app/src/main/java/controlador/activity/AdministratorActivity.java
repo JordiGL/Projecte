@@ -44,6 +44,8 @@ import model.Usuari;
 /**
  * Activitat de l'administrador.
  * @see AppCompatActivity
+ * @see LoaderManager
+ * @see PopupMenu
  * @author Jordi Gómez Lozano
  */
 public class AdministratorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>,PopupMenu.OnMenuItemClickListener {
@@ -126,6 +128,11 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
 
     }
 
+    /**
+     * Gestiona les opcions a mostrar a l'EditText.
+     * @param position Posició de l'espinner.
+     * @author Jordi Gómez Lozano.
+     */
     private void dropDownOptions(int position) {
         ArrayAdapter<CharSequence> adapterET;
         switch (position) {
@@ -164,6 +171,7 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
      * Omplim el List d'usuaris amb les dades obtingudes del servidor.
      * @param obtainedServerData dades rebudes del GET al servidor.
      * @return List d'usuaris.
+     * @author Jordi Gómez Lozano.
      */
     private List<Usuari> createObjectsFromObtainedData(String obtainedServerData) {
         List<Usuari> usuarisObtinguts = new ArrayList<>();
@@ -221,6 +229,12 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
         return usuarisObtinguts;
     }
 
+    /**
+     * Crea el bundle i crida al Loader per a fer el request al servidor.
+     * @param selection L'opció de l'spinner seleccionada.
+     * @param token El token de l'usuari.
+     * @author Jordi Gómez Lozano.
+     */
     private void obtenirInformacio(String selection, String token) {
         Bundle queryBundle = null;
         String textIntroduit = cercador.getText().toString();
@@ -314,12 +328,18 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
     /**
      * Mostra informació per pantalla.
      * @param message missatge que es mostrara per pantalla.
+     * @author Jordi Gómez Lozano.
      */
     public void displayToast(String message) {
         Toast.makeText(getApplicationContext(), message,
                 Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * PopupMenu per a mostrar les diferents opcions del botó.
+     * @param view del component.
+     * @author Jordi Gómez Lozano.
+     */
     public void openMoreMenu(View view) {
 
         PopupMenu popup = new PopupMenu(AdministratorActivity.this, view);

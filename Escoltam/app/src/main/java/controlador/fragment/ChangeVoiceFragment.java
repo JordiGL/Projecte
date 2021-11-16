@@ -21,6 +21,7 @@ import jordigomez.ioc.cat.escoltam.R;
 
 /**
  * Classe del fragment que conté el canvi de veu de la pantalla de configuració.
+ * @see Fragment
  * @author Jordi Gómez Lozano.
  */
 public class ChangeVoiceFragment extends Fragment {

@@ -2,6 +2,7 @@ package controlador.server.interfaces;
 
 /**
  * Interficie del RequestToken
+ * @author Jordi Gómez Lozano
  */
 public interface RequestTokenImpl {
     public int requestToken(String username, String clau);

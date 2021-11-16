@@ -6,6 +6,7 @@ import java.net.URL;
 
 /**
  * Classe que estableix la connexió amb el servidor.
+ * @see HttpURLConnection
  * @author Jordi Gómez Lozano
  */
 public class Connexio {

@@ -17,6 +17,7 @@ import jordigomez.ioc.cat.escoltam.R;
 
 /**
  * Classe del fragment que conté el canvi de clau de la pantalla de configuració.
+ * @see Fragment
  * @author Jordi Gómez Lozano.
  */
 public class ChangePasswordFragment extends Fragment {

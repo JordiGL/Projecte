@@ -24,6 +24,8 @@ import controlador.server.interfaces.RequestTokenImpl;
 
 /**
  * Classe que fa al servidor la petició del token.
+ * @see Connexio
+ * @see RequestTokenImpl
  * @author Jordi Gómez Lozano
  */
 public class RequestToken extends Connexio implements RequestTokenImpl {
