@@ -1,11 +1,6 @@
 package controlador.server;
 
-import android.util.Log;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -34,9 +29,11 @@ public class Connexio {
     }
 
     /**
-     * Estableix la connexió amb el servidor per a fer una petició.
+     * Estableix la connexió amb el servidor per a fer una petició POST.
      * @param postDataLength la allargada del Content-length.
+     * @param method el metode del request.
      * @param requestUrl la url de connexió per a fer la petició.
+     * @param contentType el tipus de contingut.
      * @return la connexió amb el servidor
      * @author Jordi Gómez Lozano
      */
@@ -70,11 +67,14 @@ public class Connexio {
 
 
     /**
-     * Estableix la connexió amb el servidor per a fer una petició.
+     * Estableix la connexió amb el servidor per a fer una petició PUT.
      * @param postDataLength la allargada del Content-length.
+     * @param method el metode del request.
      * @param requestUrl la url de connexió per a fer la petició.
-     * @return la connexió amb el servidor
-     * @author Jordi Gómez Lozano
+     * @param contentType el tipus de contingut.
+     * @param token token de l'usuari.
+     * @return la connexió amb el servidor.
+     * @author Jordi Gómez Lozano.
      */
     public static HttpURLConnection putRequest(int postDataLength, String method, String requestUrl, String contentType, String token){
         try {
@@ -106,15 +106,12 @@ public class Connexio {
     }
 
     /**
-     * Comprovació de possibles problemes amb el servidor.
-     * @param time temps actual en mil·lisegons
-     * @return Torna true si s'està tardant a establir connexió, fals en cas contrari.
+     * Estableix la connexió amb el servidor per a fer una petició GET.
+     * @param token token de l'usuari.
+     * @param url la url de connexió per a fer la petició.
+     * @return la connexió amb el servidor.
+     * @author Jordi Gómez Lozano.
      */
-    public boolean connectionProblems(long time){
-
-        return (System.currentTimeMillis() - time) >= TIMEOUT_MILLS;
-    }
-
     public static HttpURLConnection getRequest(String token, String url){
 
         try{
@@ -140,5 +137,14 @@ public class Connexio {
         return conn;
     }
 
+    /**
+     * Comprovació de possibles problemes amb el servidor.
+     * @param time temps actual en mil·lisegons
+     * @return Torna true si s'està tardant a establir connexió, fals en cas contrari.
+     */
+    public boolean connectionProblems(long time){
+
+        return (System.currentTimeMillis() - time) >= TIMEOUT_MILLS;
+    }
 
 }

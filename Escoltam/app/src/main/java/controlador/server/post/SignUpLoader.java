@@ -10,6 +10,10 @@ import androidx.loader.content.AsyncTaskLoader;
 import controlador.server.NetworkUtils;
 import model.Usuari;
 
+/**
+ * Classe per a crear el fil per a connectar amb el servidor.
+ * @author Jordi Gómez Lozano.
+ */
 public class SignUpLoader extends AsyncTaskLoader<Bundle> {
     private Usuari usuari;
 
@@ -21,6 +25,7 @@ public class SignUpLoader extends AsyncTaskLoader<Bundle> {
     /**
      * Designem l'operació a fer.
      * @return l'int amb el codi de resposta del servidor.
+     * @author Jordi Gómez Lozano.
      */
     @Nullable
     @Override
@@ -31,6 +36,7 @@ public class SignUpLoader extends AsyncTaskLoader<Bundle> {
     /**
      * El sistema crida aquest metode quan iniciem el loader per a fer
      * l'operació del loadInBackground.
+     * @author Jordi Gómez Lozano.
      */
     @Override
     protected void onStartLoading() {

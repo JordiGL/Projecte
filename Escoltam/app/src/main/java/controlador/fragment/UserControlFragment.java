@@ -11,14 +11,12 @@ import android.view.ViewGroup;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link UserControlFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Classe del fragment que conté el control de la pantalla de l'usuari.
+ * @author Jordi Gómez Lozano.
  */
 public class UserControlFragment extends Fragment {
 
     public UserControlFragment() {
-        // Required empty public constructor
     }
 
     public static UserControlFragment newInstance(){
@@ -33,7 +31,7 @@ public class UserControlFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_user_control, container, false);
     }
 }

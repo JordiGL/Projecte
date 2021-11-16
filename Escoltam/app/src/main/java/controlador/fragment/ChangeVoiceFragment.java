@@ -20,9 +20,8 @@ import controlador.gestor.OnFragmentInteractionListener;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChangeVoiceFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Classe del fragment que conté el canvi de veu de la pantalla de configuració.
+ * @author Jordi Gómez Lozano.
  */
 public class ChangeVoiceFragment extends Fragment {
     private static final String RADIO_BUTTON_COMPARED_TEXT = "Masculina";
@@ -32,7 +31,6 @@ public class ChangeVoiceFragment extends Fragment {
     String voiceUsuari;
 
     public ChangeVoiceFragment() {
-        // Required empty public constructor
     }
 
     public static ChangeVoiceFragment newInstance(){
@@ -47,7 +45,7 @@ public class ChangeVoiceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         final View rootView =  inflater.inflate(R.layout.fragment_change_voice, container, false);
         final EditText passwordEntered = rootView.findViewById(R.id.inputPreviousPasswordChangeVoice);
         final RadioGroup radioGroupVeu = rootView.findViewById(R.id.rgChangeVoice);

@@ -51,6 +51,10 @@ public class GestorSharedPreferences {
         return null;
     }
 
+    /**
+     * Borra el contingut de l'EncryptedSharedPreferences.
+     * @author Jordi Gómez Lozano
+     */
     public void deleteData(){
 
         SharedPreferences sharedPreferences =  getEncryptedSharedPreferences();
@@ -119,8 +123,8 @@ public class GestorSharedPreferences {
     }
 
     /**
-     * Obte la clau de l'arxiu.
-     * @return l'string corresponent del token
+     * Modifica la clau a l'arxiu.
+     * @param newPassword la clau a guardar.
      * @author Jordi Gómez Lozano
      */
     public void setPassword(String newPassword) {

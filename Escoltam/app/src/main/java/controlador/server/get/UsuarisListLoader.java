@@ -8,6 +8,10 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
+/**
+ * Classe per a crear el fil per a connectar amb el servidor.
+ * @author Jordi Gómez Lozano.
+ */
 public class UsuarisListLoader extends AsyncTaskLoader<String> {
     private String token;
     private String opcio;
@@ -21,6 +25,7 @@ public class UsuarisListLoader extends AsyncTaskLoader<String> {
     /**
      * Designem l'operació a fer.
      * @return l'String amb la llista d'usuaris.
+     * @author Jordi Gómez Lozano.
      */
     @Nullable
     @Override
@@ -31,6 +36,7 @@ public class UsuarisListLoader extends AsyncTaskLoader<String> {
     /**
      * El sistema crida aquest metode quan iniciem el loader per a fer
      * l'operació del loadInBackground.
+     * @author Jordi Gómez Lozano.
      */
     @Override
     protected void onStartLoading() {

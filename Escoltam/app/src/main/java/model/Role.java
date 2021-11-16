@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * Classe Role
+ * @author Jordi Gómez Lozano
+ */
 public class Role {
     private int id;
     private String name;

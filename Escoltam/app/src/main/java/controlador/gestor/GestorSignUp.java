@@ -19,15 +19,14 @@ public class GestorSignUp {
     private static final String ERROR_EMPTY_PASSWORD = "Introdueix la clau";
     private static final String ERROR_UNACCEPTABLE_EMAIL = "Correu inacceptable";
     private static final String ERROR_EMPTY_EMAIL = "Introdueix l'email";
+    private static final String PASSWORD_NUMBER_PATTERN = "[0-9]";
+    private static final String ERROR_CONTAIN_NUMBER = "Ha de contenir un número";
+    private static final String ERROR_MINIMUM_NUMBERS = "Mínim de 5 caràcters";
     private String email;
     private String password;
     private String conformPassword;
     private String voice;
     private String error;
-//Desactivate de moment.
-//    private static final String PASSWORD_NUMBER_PATTERN = "[0-9]";
-//    private static final String ERROR_CONTAIN_NUMBER = "Ha de contenir un número";
-//    private static final String ERROR_MINIMUM_NUMBERS = "Mínim de vuit caràcters";
 
     public GestorSignUp(){}
 
@@ -116,18 +115,16 @@ public class GestorSignUp {
             error = ERROR_EMPTY_PASSWORD;
             correcte = false;
 
+        }else if(password.length() < 5 ){
+
+            error = ERROR_MINIMUM_NUMBERS;
+            correcte = false;
+
+        }else if(!Pattern.compile(PASSWORD_NUMBER_PATTERN).matcher(password).find()) {
+
+            error = ERROR_CONTAIN_NUMBER;
+            correcte = false;
         }
-//Desactivat de moment.
-//        else if(password.length() < 8 ){
-//
-//            error = ERROR_MINIMUM_NUMBERS;
-//            correcte = false;
-//
-//        }else if(!Pattern.compile(PASSWORD_NUMBER_PATTERN).matcher(password).find()) {
-//
-//            error = ERROR_CONTAIN_NUMBER;
-//            correcte = false;
-//        }
 
         return correcte;
     }

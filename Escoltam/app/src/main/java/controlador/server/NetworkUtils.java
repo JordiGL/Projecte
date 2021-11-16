@@ -1,12 +1,10 @@
 package controlador.server;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -18,23 +16,25 @@ import java.nio.charset.StandardCharsets;
 
 import model.Usuari;
 
+/**
+ * Classe d'utilitats per a connectar amb el servidor.
+ * @author Jordi Gómez Lozano.
+ */
 public class NetworkUtils extends Connexio{
-    private static final int TIMEOUT_MILLS = 4000;
-    private static final String AUTHORIZATION_KEY = "Authorization";
-    private static final String CONTENT_TYPE_KEY = "Content-Type";
-    private static final String CHARSET_KEY = "charset";
-    private static final String CONTENT_LENGTH_KEY = "Content-Length";
-    private static final String AUTHORIZATION_VALUE = "Basic YW5kcm9pZGFwcDoxMjM0NQ==";
-    private static final String CONTENT_TYPE_VALUE = "application/json";
-    private static final String CHARSET_VALUE = "utf-8";
     private static final String CHARSET_NAME = "UTF-8";
     private static final String METODE_PETICIO_POST = "POST";
     private static final String METODE_PETICIO_PUT = "PUT";
     private static final String SIGN_UP_URL = "http://10.0.2.2:8080/signin";
     private static final String CHANGE_PASS_URL = "http://10.0.2.2:8080/changePassword/";
     private static final String BASIC_GET_URL = "http://10.0.2.2:8080/api/usuaris";
-    public static final String APPLICATION_JSON = "application/json";
+    private static final String APPLICATION_JSON = "application/json";
 
+    /**
+     * Post request al servidor per afegir un nou usuari.
+     * @param usuari usuari a afegir al servidor.
+     * @return un Bundle amb el codi de resposta i possible informació d'error.
+     * @author Jordi Gómez Lozano.
+     */
     public static Bundle addNewUser(Usuari usuari){
         Bundle queryBundle = null;
         String serverInfo = "";
@@ -73,6 +73,14 @@ public class NetworkUtils extends Connexio{
         return queryBundle;
     }
 
+    /**
+     * Put request al servidor per a fer el canvi de clau.
+     * @param password nova clau.
+     * @param email email de l'usuari.
+     * @param token token de l'usuari.
+     * @return un int amb el codi de resposta.
+     * @author Jordi Gómez Lozano.
+     */
     public static int sendPassword(String password, String email, String token){
         HttpURLConnection connexio = null;
         int responseCode = 0;
@@ -100,6 +108,15 @@ public class NetworkUtils extends Connexio{
         return responseCode;
     }
 
+    /**
+     * Put request per a enviar la nova veu al servidor.
+     * @param password clau de l'usuari.
+     * @param voice nova veu de l'usuari.
+     * @param email email de l'usuari.
+     * @param token token de l'usuari.
+     * @return un int amb el codi de resposta.
+     * @author Jordi Gómez Lozano.
+     */
     public static int sendVoice(String password, String voice, String email, String token){
         HttpURLConnection connexio = null;
         int responseCode = 0;
@@ -127,6 +144,13 @@ public class NetworkUtils extends Connexio{
         return responseCode;
     }
 
+    /**
+     * Get request per a obtenir dades dels usuaris o usuari.
+     * @param opcio part de la url del request.
+     * @param token token de l'usuari.
+     * @return dades obtingudes del servidor.
+     * @author Jordi Gómez Lozano.
+     */
     public static String getUsuarisData(String opcio, String token){
         HttpURLConnection connexio = null;
         BufferedReader reader = null;
@@ -136,7 +160,7 @@ public class NetworkUtils extends Connexio{
 
             connexio = getRequest(token, BASIC_GET_URL+opcio);
 
-            int responseCode = connexio.getResponseCode();
+//            int responseCode = connexio.getResponseCode();
 
             InputStream inputStream = connexio.getInputStream();
             reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -210,9 +234,9 @@ public class NetworkUtils extends Connexio{
     }
 
     /**
-     * Obtinc la dada del token del JSON que rebo, aquest té altres dades.
-     * @param data
-     * @return
+     * Obtinc la dada de l'error del JSON que rebo.
+     * @param data dades del servidor.
+     * @return l'error rebut pel servidor.
      * @throws JSONException
      * @author Jordi Gómez Lozano.
      */

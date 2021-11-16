@@ -3,6 +3,10 @@ package controlador.gestor;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
+/**
+ * Classe gestora de la pantalla de configuració.
+ * @author Jordi Gómez Lozano
+ */
 public class GestorSettings {
     private static final String ERROR_VOICE = "Selecciona la veu";
     private static final String ERROR_MATCH_PASSWORD = "La clau no coincideix";
@@ -12,7 +16,7 @@ public class GestorSettings {
     private static final String HA_DE_CONTENIR_UN_NUMERO = "Ha de contenir un número";
     private static final String MALE = "MALE";
     private static final String FEMALE = "FEMALE";
-    public static final String CLAU_INCORRECTA = "Clau incorrecta";
+    private static final String CLAU_INCORRECTA = "Clau incorrecta";
 
     private String receivedPassword;
     private String previousPassword;

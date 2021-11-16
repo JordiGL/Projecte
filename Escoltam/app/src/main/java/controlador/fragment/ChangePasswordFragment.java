@@ -16,9 +16,8 @@ import controlador.gestor.OnFragmentInteractionListener;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChangePasswordFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Classe del fragment que conté el canvi de clau de la pantalla de configuració.
+ * @author Jordi Gómez Lozano.
  */
 public class ChangePasswordFragment extends Fragment {
 
@@ -26,7 +25,6 @@ public class ChangePasswordFragment extends Fragment {
 
 
     public ChangePasswordFragment() {
-        // Required empty public constructor
     }
 
     public static ChangePasswordFragment newInstance(){
@@ -43,7 +41,7 @@ public class ChangePasswordFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         final View rootView =  inflater.inflate(R.layout.fragment_change_password, container, false);
         final EditText previousPasswordEntered = rootView.findViewById(R.id.inputPreviousPasswordChangePassword);
         final EditText newPassword = rootView.findViewById(R.id.inputPasswordChangePassword);

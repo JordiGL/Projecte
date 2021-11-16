@@ -17,14 +17,12 @@ import controlador.activity.UserSettingsActivity;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link UserToolbarFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Classe del fragment que conté la barra de la pantalla de l'usuari.
+ * @author Jordi Gómez Lozano.
  */
 public class UserToolbarFragment extends Fragment {
 
     public UserToolbarFragment() {
-        // Required empty public constructor
     }
 
     public static UserToolbarFragment newInstance(){
@@ -39,7 +37,7 @@ public class UserToolbarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         final View rootView =  inflater.inflate(R.layout.fragment_user_toolbar, container, false);
         final EditText editText = rootView.findViewById(R.id.appCompatEditText);
         final ImageButton settings = (ImageButton) rootView.findViewById(R.id.user_button_top_right);
