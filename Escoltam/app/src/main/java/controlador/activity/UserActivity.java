@@ -23,11 +23,12 @@ import jordigomez.ioc.cat.escoltam.R;
  */
 public class UserActivity extends AppCompatActivity {
 
-    UserToolbarFragment toolbarFragment;
-    UserFavoritesFragment favoritesFragment;
-    UserControlFragment controlFragment;
-    FragmentTransaction fragmentTransaction;
-    FragmentManager fragmentManager;
+    private UserToolbarFragment toolbarFragment;
+    private UserFavoritesFragment favoritesFragment;
+    private UserControlFragment controlFragment;
+    private FragmentTransaction fragmentTransaction;
+    private FragmentManager fragmentManager;
+    private String roleUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +38,12 @@ public class UserActivity extends AppCompatActivity {
         //Amagar barra superior de la info del dispositiu.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        TextView textEmailClient = findViewById(R.id.textEmailClient);
+        TextView textInfo = findViewById(R.id.textEmailClient);
         Button btnLogout = findViewById(R.id.btn_LogoutClient);
 
         Intent intent = getIntent();
-        textEmailClient.setText(intent.getStringExtra(LoginActivity.EXTRA_MESSAGE));
+        textInfo.setText(intent.getStringExtra(LoginActivity.EXTRA_MESSAGE));
+        roleUser = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
 
         //Fragments
         toolbarFragment = UserToolbarFragment.newInstance();

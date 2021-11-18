@@ -49,11 +49,13 @@ import model.Usuari;
  * @author Jordi Gómez Lozano
  */
 public class AdministratorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>,PopupMenu.OnMenuItemClickListener {
+    private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     private AutoCompleteTextView cercador;
     private List<Usuari> mUsuaris;
     private RecyclerView mRecyclerView;
     private UsuariAdapter mAdapter;
     private GestorSharedPreferences  gestorSharedPreferences;
+    private String adminEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,7 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
 
         //Obtenim el correu
         Intent intent = getIntent();
+        adminEmail = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
 
         ImageView settings = findViewById(R.id.buttonMore);
         //Afegir al menu
@@ -357,6 +360,14 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
             case R.id.context_settings:
                 Intent intentAdmin = new Intent(AdministratorActivity.this, AdminSettingsActivity.class);
                 startActivity(intentAdmin);
+                return true;
+
+            case R.id.context_comunicador:
+
+                Intent intentComunicador = new Intent(AdministratorActivity.this, UserActivity.class);
+                intentComunicador.putExtra(EXTRA_MESSAGE, adminEmail);
+                startActivity(intentComunicador);
+                finish();
                 return true;
 
             case R.id.context_logout:

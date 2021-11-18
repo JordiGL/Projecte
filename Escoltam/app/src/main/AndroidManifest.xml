@@ -13,45 +13,48 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity
+            android:name="controlador.activity.AdministratorTransitionActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true" />
         <activity
             android:name="controlador.activity.AdminSettingsActivity"
-            android:label="Configuració"
             android:exported="true"
-            android:parentActivityName="controlador.activity.AdministratorActivity"/>
+            android:label="Configuració"
+            android:parentActivityName="controlador.activity.AdministratorActivity" />
         <activity
             android:name="controlador.activity.UserSettingsActivity"
-            android:label="Configuració"
             android:exported="true"
-            android:parentActivityName="controlador.activity.UserActivity"/>
+            android:label="Configuració"
+            android:parentActivityName="controlador.activity.UserActivity" />
         <activity
             android:name="controlador.server.test.RequestTokenTestActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="controlador.activity.ForgotPasswordActivity"
             android:exported="true"
             android:parentActivityName="controlador.activity.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="controlador.activity.AdministratorActivity"
             android:exported="true"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name="controlador.activity.UserActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="controlador.activity.SignUpActivity"
             android:exported="true"
             android:parentActivityName="controlador.activity.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="controlador.activity.LoginActivity"
             android:exported="true"
             android:parentActivityName="controlador.activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="controlador.activity.MainActivity"
             android:exported="true"

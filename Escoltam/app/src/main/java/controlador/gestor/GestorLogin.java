@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import controlador.activity.AdministratorActivity;
+import controlador.activity.AdministratorTransitionActivity;
 import controlador.activity.UserActivity;
 import model.Usuari;
 
@@ -168,7 +168,7 @@ public class GestorLogin {
 
         if(role.equals(ROLE_ADMIN)){
 
-            intent = new Intent(context, AdministratorActivity.class);
+            intent = new Intent(context, AdministratorTransitionActivity.class);
         }else{
 
             intent = new Intent(context, UserActivity.class);

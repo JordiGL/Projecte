@@ -6,8 +6,13 @@
         android:title="Configuració"/>
 
     <item
-        android:id="@+id/context_logout"
+        android:id="@+id/context_comunicador"
         android:orderInCategory="20"
+        android:title="Comunicador"/>
+
+    <item
+        android:id="@+id/context_logout"
+        android:orderInCategory="30"
         android:title="Logout"/>
 
 </menu>

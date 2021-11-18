@@ -3,7 +3,7 @@ package controlador.gestor;
 import android.content.Context;
 import android.content.Intent;
 
-import controlador.activity.AdministratorActivity;
+import controlador.activity.AdministratorTransitionActivity;
 import controlador.activity.UserActivity;
 
 /**
@@ -32,13 +32,13 @@ public class GestorMain {
 
         if (role.equals(ROLE_ADMIN)) {
 
-            intent = new Intent(context, AdministratorActivity.class);
+            intent = new Intent(context, AdministratorTransitionActivity.class);
         } else {
 
             intent = new Intent(context, UserActivity.class);
         }
 
-        intent.putExtra(message, email);
+        intent.putExtra(message, role);
         context.startActivity(intent);
 
     }
