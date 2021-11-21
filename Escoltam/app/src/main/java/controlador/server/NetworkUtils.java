@@ -250,13 +250,6 @@ public class NetworkUtils extends Connexio{
 
             responseCode = connexio.getResponseCode();
 
-            InputStream inputStream = connexio.getInputStream();
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-
-            if(responseCode == 200 && reader.readLine().equals("[]")){
-                responseCode = 400;
-            }
-
         } catch (IOException e){
             e.printStackTrace();
         } finally{

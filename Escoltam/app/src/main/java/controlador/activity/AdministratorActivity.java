@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +36,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import controlador.gestor.GestorAdministrator;
 import controlador.gestor.GestorSharedPreferences;
+import controlador.gestor.GestorSignUp;
 import controlador.server.get.UsuarisListLoader;
 import jordigomez.ioc.cat.escoltam.R;
 import model.Role;
@@ -50,12 +53,14 @@ import model.Usuari;
  */
 public class AdministratorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>,PopupMenu.OnMenuItemClickListener {
     private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
+    private static final String CERCA_SENSE_RESULTAT = "No s'ha obtingut cap resultat";
     private AutoCompleteTextView cercador;
     private List<Usuari> mUsuaris;
     private RecyclerView mRecyclerView;
     private UsuariAdapter mAdapter;
     private GestorSharedPreferences  gestorSharedPreferences;
     private String adminEmail;
+    private GestorAdministrator gestorAdministrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +79,7 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
         mAdapter = new UsuariAdapter(mUsuaris, AdministratorActivity.this);
         mRecyclerView.setAdapter(mAdapter);
 
+        gestorAdministrator = new GestorAdministrator();
         //Obtenim el correu
         Intent intent = getIntent();
         adminEmail = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
@@ -106,15 +112,16 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
         cercador.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                cercador.setError(null);
                 int position = spinner.getSelectedItemPosition();
-                dropDownOptions(position);
+                gestorAdministrator.dropDownOptions(position, cercador, AdministratorActivity.this);
             }
         });
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                dropDownOptions(position);
+                gestorAdministrator.dropDownOptions(position, cercador, AdministratorActivity.this);
             }
 
             @Override
@@ -125,111 +132,52 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
             @Override
             public void onClick(View view) {
                 String spinnerSelection = spinner.getSelectedItem().toString();
-                obtenirInformacio(spinnerSelection, token);
+                if(checkFields(spinnerSelection)){
+                    Log.i("Info", "error");
+                    obtenirInformacio(spinnerSelection, token);
+                }
             }
         });
 
     }
 
     /**
-     * Gestiona les opcions a mostrar a l'EditText.
-     * @param position Posició de l'espinner.
+     * Obté el valor introduït per l'usuari en els diferents camps del registre i comprova que no hi hagi errors.
+     * @return Un booleà: true si es correcte, false en cas contrari.
      * @author Jordi Gómez Lozano.
      */
-    private void dropDownOptions(int position) {
-        ArrayAdapter<CharSequence> adapterET;
-        switch (position) {
-            case 0:
-                cercador.setText("");
-                cercador.setEnabled(false);
+    private boolean checkFields(String opcio) {
+        boolean correcte = true;
+
+        gestorAdministrator.setCercadorText(cercador.getText().toString());
+
+        switch(opcio){
+            case "Email":
+
+                if(!gestorAdministrator.emailChecker()){
+                    cercador.setError(gestorAdministrator.getError());
+                    return false;
+                }
                 break;
-            case 1:
-                cercador.setText("");
-                cercador.setEnabled(true);
+            case "Rol":
+
+                if(!gestorAdministrator.roleChecker()){
+                    cercador.setError(gestorAdministrator.getError());
+                    return false;
+                }
                 break;
-            case 2:
-                cercador.setEnabled(true);
-                cercador.setText("");
-                //Autocomplete del cercador.
-                adapterET = ArrayAdapter.createFromResource(AdministratorActivity.this, R.array.autocomplete_voice_options, android.R.layout.simple_list_item_1);
-                cercador.setAdapter(adapterET);
-                cercador.showDropDown();
-                break;
-            case 3:
-                cercador.setEnabled(true);
-                cercador.setText("");
-                //Autocomplete del cercador.
-                adapterET = ArrayAdapter.createFromResource(AdministratorActivity.this, R.array.autocomplete_role_options, android.R.layout.simple_list_item_1);
-                cercador.setAdapter(adapterET);
-                cercador.showDropDown();
+            case "Veu":
+
+                if(!gestorAdministrator.voiceChecker()){
+                    cercador.setError(gestorAdministrator.getError());
+                    return false;
+                }
                 break;
             default:
-                cercador.setEnabled(true);
-                cercador.setText("");
                 break;
         }
-    }
 
-    /**
-     * Omplim el List d'usuaris amb les dades obtingudes del servidor.
-     * @param obtainedServerData dades rebudes del GET al servidor.
-     * @return List d'usuaris.
-     * @author Jordi Gómez Lozano.
-     */
-    private List<Usuari> createObjectsFromObtainedData(String obtainedServerData) {
-        List<Usuari> usuarisObtinguts = new ArrayList<>();
-
-        try {
-
-            if(obtainedServerData != null) {
-
-                String firstChar = String.valueOf(obtainedServerData.charAt(0));
-
-                if(firstChar.equalsIgnoreCase("[")) {
-
-                    JSONArray jsonArray = new JSONArray(obtainedServerData);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        Role role = new Role(
-                                jsonObject.getJSONArray("roles").getJSONObject(0).getInt("id"),
-                                jsonObject.getJSONArray("roles").getJSONObject(0).getString("name")
-                        );
-
-                        Usuari usuari = new Usuari(
-                                jsonObject.getString("username"),
-                                role,
-                                jsonObject.getString("voice"),
-                                jsonObject.getString("password"),
-                                jsonObject.getBoolean("enabled")
-                        );
-
-                        usuarisObtinguts.add(usuari);
-                    }
-
-                }else{
-                    
-                    JSONObject jsonObject = new JSONObject(obtainedServerData);
-                    Role role = new Role(
-                            jsonObject.getJSONArray("roles").getJSONObject(0).getInt("id"),
-                            jsonObject.getJSONArray("roles").getJSONObject(0).getString("name")
-                    );
-
-                    Usuari usuari = new Usuari(
-                            jsonObject.getString("username"),
-                            role,
-                            jsonObject.getString("voice"),
-                            jsonObject.getString("password"),
-                            jsonObject.getBoolean("enabled")
-                    );
-                    usuarisObtinguts.add(usuari);
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return usuarisObtinguts;
+        return correcte;
     }
 
     /**
@@ -272,14 +220,14 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
 
                     queryBundle = new Bundle();
                     queryBundle.putString("token", token);
-                    queryBundle.putString("url", "/voice/" + textIntroduit);
+                    queryBundle.putString("url", "/voice/" + textIntroduit.toUpperCase());
                     break;
 
                 case "Rol":
 
                     queryBundle = new Bundle();
                     queryBundle.putString("token", token);
-                    queryBundle.putString("url", "/roles/" + textIntroduit);
+                    queryBundle.putString("url", "/roles/" + textIntroduit.toUpperCase());
                     break;
 
                 default:
@@ -313,15 +261,14 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
     public void onLoadFinished(@NonNull Loader<String> loader, String data) {
 
         if(data != null) {
-
             mUsuaris = new ArrayList<>();
-            mUsuaris = createObjectsFromObtainedData(data);
+            mUsuaris = gestorAdministrator.createObjectsFromObtainedData(data);
 
             mAdapter = new UsuariAdapter(mUsuaris, AdministratorActivity.this);
             mRecyclerView.setAdapter(mAdapter);
 
         } else{
-            displayToast("Error");
+            displayToast(CERCA_SENSE_RESULTAT);
         }
     }
 

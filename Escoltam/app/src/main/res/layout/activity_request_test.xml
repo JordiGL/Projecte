@@ -49,7 +49,7 @@
     <EditText
         android:id="@+id/infoTest"
         android:layout_width="202dp"
-        android:layout_height="55dp"
+        android:layout_height="60dp"
         android:autofillHints="password"
         android:background="@drawable/bg_edittext"
         android:drawablePadding="10dp"
