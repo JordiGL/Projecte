@@ -75,6 +75,37 @@ public class NetworkUtils extends Connexio{
     }
 
     /**
+     * Post request al servidor per afegir un nou usuari.
+     * @param usuari usuari a afegir al servidor.
+     * @return un Bundle amb el codi de resposta i possible informació d'error.
+     * @author Jordi Gómez Lozano.
+     */
+    public static int addNewUserForTest(Usuari usuari){
+        HttpURLConnection connexio = null;
+        int responseCode = 0;
+        try{
+            byte[] postData = usuari.toString().getBytes(StandardCharsets.UTF_8);
+            int postDataLength = postData.length;
+            connexio = postRequest(postDataLength, METODE_PETICIO_POST, SIGN_UP_URL, APPLICATION_JSON);
+
+            DataOutputStream wr = new DataOutputStream(connexio.getOutputStream());
+
+            wr.write(postData);
+
+            responseCode = connexio.getResponseCode();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+        }
+
+        return responseCode;
+    }
+
+    /**
      * Put request al servidor per a fer el canvi de clau.
      * @param password nova clau.
      * @param email email de l'usuari.
@@ -200,6 +231,50 @@ public class NetworkUtils extends Connexio{
 
     }
 
+    /**
+     * Get request per a obtenir el codi de resposte en fer la consulta
+     * per a obtenir dades dels usuaris o usuari.
+     * @param opcio part de la url del request.
+     * @param token token de l'usuari.
+     * @return codi de resposta del servidor.
+     * @author Jordi Gómez Lozano.
+     */
+    public static int getUsuarisDataResponse(String opcio, String token){
+        HttpURLConnection connexio = null;
+        BufferedReader reader = null;
+        int responseCode = 0;
+
+        try{
+
+            connexio = getRequest(token, BASIC_GET_URL+opcio);
+
+            responseCode = connexio.getResponseCode();
+
+            InputStream inputStream = connexio.getInputStream();
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            if(responseCode == 200 && reader.readLine().equals("[]")){
+                responseCode = 400;
+            }
+
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally{
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return responseCode;
+
+    }
 
     /**
      * Obté l'estring a partir dels bytes.

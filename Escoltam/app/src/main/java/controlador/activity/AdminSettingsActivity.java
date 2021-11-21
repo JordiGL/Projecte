@@ -353,4 +353,9 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
 
     }
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
 }

@@ -1,5 +1,7 @@
 package controlador.gestor;
 
+import android.util.Log;
+
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -39,6 +41,26 @@ public class GestorSettings {
         this.receivedPassword = receivedPassword;
         this.newPassword = newPassword;
         this.conformPassword = conformPassword;
+    }
+
+    public void setReceivedPassword(String receivedPassword) {
+        this.receivedPassword = receivedPassword;
+    }
+
+    public void setPreviousPassword(String previousPassword) {
+        this.previousPassword = previousPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public void setConformPassword(String conformPassword) {
+        this.conformPassword = conformPassword;
+    }
+
+    public void setVoice(String voice) {
+        this.voice = voice;
     }
 
     public String getError() {
@@ -138,4 +160,5 @@ public class GestorSettings {
 
         return correcte;
     }
+
 }

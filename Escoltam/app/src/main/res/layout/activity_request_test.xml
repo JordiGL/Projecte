@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="controlador.server.test.RequestTestActivity">
+
+
+    <Spinner
+        android:id="@+id/spinnerRequest"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="176dp"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:gravity="end"
+        android:paddingEnd="30dp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <Button
+        android:id="@+id/buttonRequestTest"
+        android:layout_width="60dp"
+        android:layout_height="48dp"
+        android:text="@string/textButtonServerTestUI"
+        app:layout_constraintBottom_toBottomOf="@+id/infoTest"
+        app:layout_constraintStart_toEndOf="@+id/infoTest"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerRequest" />
+
+    <TextView
+        android:id="@+id/textRequestResponse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:textColor="@color/black"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/infoTest" />
+
+    <EditText
+        android:id="@+id/infoTest"
+        android:layout_width="202dp"
+        android:layout_height="55dp"
+        android:autofillHints="password"
+        android:background="@drawable/bg_edittext"
+        android:drawablePadding="10dp"
+        android:ems="10"
+        android:inputType="none"
+        android:minHeight="48dp"
+        android:paddingStart="20dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/darkerGray"
+        app:layout_constraintStart_toStartOf="@+id/spinnerRequest"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerRequest"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <Button
+        android:id="@+id/buttonClearTest"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:text="X"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRequestTest"
+        app:layout_constraintEnd_toEndOf="@+id/spinnerRequest"
+        app:layout_constraintStart_toEndOf="@+id/buttonRequestTest"
+        app:layout_constraintTop_toTopOf="@+id/buttonRequestTest" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

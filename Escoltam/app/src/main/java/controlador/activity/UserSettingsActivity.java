@@ -71,6 +71,10 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
+        if(getSupportLoaderManager().getLoader(0)!=null){
+            getSupportLoaderManager().initLoader(0,null,this);
+        }
+
         btnChangeVoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +133,15 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
         }
     }
 
+    /**
+     * Obté el valor introduït per l'usuari en els diferents camps del fragment del canvi
+     * de veu i comprova que no hi hagi errors.
+     * @param passwordEntered EditText del camp de la clau.
+     * @param choice String amb la veu seleccionada.
+     * @param radioGroupLayout LinearLayout del grup de radiobuttons.
+     * @return Un booleà: true si es correcte, false en cas contrari.
+     * @author Jordi Gómez Lozano.
+     */
     private boolean checkVoiceChangedFields(EditText passwordEntered, String choice, LinearLayout radioGroupLayout) {
         boolean correcte = true;
 
@@ -222,6 +235,11 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
         return correcte;
     }
 
+    /**
+     * Crea el bundle i crida al Loader per a fer el request al servidor.
+     * @param novaClau la nova clau introduida per l'usuari.
+     * @author Jordi Gómez Lozano.
+     */
     private void sendPasswordToServer(String novaClau) {
 
         GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(UserSettingsActivity.this);
@@ -245,6 +263,11 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
         }
     }
 
+    /**
+     * Crea el bundle i crida al Loader per a fer el request al servidor.
+     * @param novaVeu la nova veu seleccionada per l'usuari.
+     * @author Jordi Gómez Lozano.
+     */
     private void sendVoiceToServer(String novaVeu) {
 
         GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(UserSettingsActivity.this);

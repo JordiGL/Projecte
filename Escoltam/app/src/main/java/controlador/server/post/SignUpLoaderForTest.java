@@ -15,23 +15,23 @@ import model.Usuari;
  * @see AsyncTaskLoader
  * @author Jordi Gómez Lozano.
  */
-public class SignUpLoader extends AsyncTaskLoader<Bundle> {
+public class SignUpLoaderForTest  extends AsyncTaskLoader<Integer> {
     private Usuari usuari;
 
-    public SignUpLoader(@NonNull Context context, Usuari usuari) {
+    public SignUpLoaderForTest(@NonNull Context context, Usuari usuari) {
         super(context);
         this.usuari = usuari;
     }
 
     /**
      * Designem l'operació a fer.
-     * @return un bundle amb el codi de resposta del servidor, i la informació.
+     * @return l'int amb el codi de resposta del servidor.
      * @author Jordi Gómez Lozano.
      */
     @Nullable
     @Override
-    public Bundle loadInBackground() {
-        return NetworkUtils.addNewUser(usuari);
+    public Integer loadInBackground() {
+        return NetworkUtils.addNewUserForTest(usuari);
     }
 
     /**

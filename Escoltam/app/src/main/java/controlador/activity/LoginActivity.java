@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import controlador.server.test.RequestTestActivity;
 import io.github.muddz.styleabletoast.StyleableToast;
 
 import java.net.HttpURLConnection;
@@ -54,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
 
             //Per a fer tests al servidor.-----------------------------------------------------------------//
             if(email.getText().toString().equals(TEST_INPUT) && password.getText().toString().equals(TEST_INPUT)){
-                Intent intent = new Intent(LoginActivity.this, RequestTokenTestActivity.class);
+                Intent intent = new Intent(LoginActivity.this, RequestTestActivity.class);
                 startActivity(intent);
                 finish();
 

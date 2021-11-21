@@ -45,14 +45,14 @@ public class GestorSignUpTest {
 
         gestorSignUp.setPassword("");
         assertFalse(gestorSignUp.passwordChecker());
-        assertFalse(gestorSignUp.passwordChecker());
         gestorSignUp.setPassword("password");
+        assertFalse(gestorSignUp.passwordChecker());
+        gestorSignUp.setPassword("curta");
+        assertFalse(gestorSignUp.passwordChecker());
+        gestorSignUp.setPassword("cincdigitssensenumero");
+        assertFalse(gestorSignUp.passwordChecker());
+        gestorSignUp.setPassword("5digitsambnumero");
         assertTrue(gestorSignUp.passwordChecker());
-
-//Desactivat de moment.
-//        gestorSignUp.setPassword("curta");
-//        assertFalse(gestorSignUp.passwordChecker());
-//        gestorSignUp.setPassword("vuitdigitssensenumero");
     }
 
     /**
@@ -92,9 +92,9 @@ public class GestorSignUpTest {
 
         gestorSignUp.setVoice("");
         assertFalse(gestorSignUp.voiceChecker());
-        gestorSignUp.setVoice("male");
+        gestorSignUp.setVoice("MALE");
         assertTrue(gestorSignUp.voiceChecker());
-        gestorSignUp.setVoice("female");
+        gestorSignUp.setVoice("FEMALE");
         assertTrue(gestorSignUp.voiceChecker());
     }
 }
