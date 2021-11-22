@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/context_settings"
+        android:id="@+id/context_settings_user_comunicador"
         android:orderInCategory="10"
-        android:title="Configuració"/>
+        android:title="@string/menu_title_configuracio"/>
 
     <item
-        android:id="@+id/context_logout"
+        android:id="@+id/context_logout_user_comunicador"
         android:orderInCategory="20"
-        android:title="Logout"/>
+        android:title="@string/title_logout"/>
 
 </menu>

@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -131,11 +132,14 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 String spinnerSelection = spinner.getSelectedItem().toString();
                 if(checkFields(spinnerSelection)){
-                    Log.i("Info", "error");
+
                     obtenirInformacio(spinnerSelection, token);
                 }
+
+                hideKeyboard();
             }
         });
 
@@ -327,6 +331,16 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
 
             default:
                 return super.onContextItemSelected(item);
+        }
+    }
+
+    private void hideKeyboard(){
+        //Amagar el teclat un cop l'usuari pitja el botó
+        try {
+            InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

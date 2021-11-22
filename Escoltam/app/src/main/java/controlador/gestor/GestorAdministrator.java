@@ -26,10 +26,10 @@ import model.Usuari;
 public class GestorAdministrator {
     private static final String MALE = "MALE";
     private static final String FEMALE = "FEMALE";
-    private static final String ERROR_VOICE = "Selecciona la veu";
-    private static final String ERROR_ROLE = "Selecciona el rol";
+    private static final String ERROR_VOICE = "Opció de rol incorrecte";
+    private static final String ERROR_ROLE = "Opció de veu  incorrecta";
     private static final String ERROR_EMPTY_EMAIL = "Introdueix l'email";
-    private static final String ERROR_EMPTY_ROLE_OR_VOICE = "Introdueix una de les opcions";
+    private static final String ERROR_EMPTY_ROLE_OR_VOICE = "Introdueix una de les opcions disponibles";
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private static final String ROLE_USER = "ROLE_USER";
     private static final String ROLES_JSON = "roles";
@@ -88,7 +88,7 @@ public class GestorAdministrator {
 
         } else if(!Arrays.asList(ROLE_ADMIN, ROLE_USER).contains(cercadorText.toUpperCase())) {
 
-            error = ERROR_ROLE;
+            error = ERROR_EMPTY_ROLE_OR_VOICE;
             correcte = false;
         }
 
@@ -110,7 +110,7 @@ public class GestorAdministrator {
             correcte = false;
 
         } else if(!Arrays.asList(MALE, FEMALE).contains(cercadorText.toUpperCase())) {
-            error = ERROR_VOICE;
+            error = ERROR_EMPTY_ROLE_OR_VOICE;
             correcte = false;
         }
 

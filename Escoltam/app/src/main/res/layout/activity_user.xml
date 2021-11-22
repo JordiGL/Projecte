@@ -43,33 +43,15 @@
 
     </FrameLayout>
 
-
-    <Button
-        android:id="@+id/btn_LogoutClient"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/textLogoutButtonClient"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <TextView
-        android:id="@+id/clientTitleText"
+        android:id="@+id/textMostrarRol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="48dp"
-        android:text="@string/titleUiClient"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_LogoutClient"
-        app:layout_constraintEnd_toStartOf="@+id/btn_LogoutClient"
-        app:layout_constraintTop_toTopOf="@+id/btn_LogoutClient" />
-
-    <TextView
-        android:id="@+id/textEmailClient"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/clientTitleText"
-        app:layout_constraintEnd_toStartOf="@+id/clientTitleText"
-        app:layout_constraintTop_toTopOf="@+id/clientTitleText" />
+        android:layout_marginBottom="284dp"
+        app:layout_constraintBottom_toTopOf="@+id/favorites_fragment_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_fragment_container" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

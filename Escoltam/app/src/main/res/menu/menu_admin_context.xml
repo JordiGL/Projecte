@@ -3,16 +3,16 @@
     <item
         android:id="@+id/context_settings"
         android:orderInCategory="10"
-        android:title="Configuració"/>
+        android:title="@string/menu_title_configuracio"/>
 
     <item
         android:id="@+id/context_comunicador"
         android:orderInCategory="20"
-        android:title="Comunicador"/>
+        android:title="@string/menu_title_comunicador"/>
 
     <item
         android:id="@+id/context_logout"
         android:orderInCategory="30"
-        android:title="Logout"/>
+        android:title="@string/title_logout"/>
 
 </menu>

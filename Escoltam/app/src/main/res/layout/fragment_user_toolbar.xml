@@ -27,7 +27,6 @@
         android:layout_height="@dimen/control_dimen_button"
         android:layout_marginEnd="5dp"
         android:layout_marginStart="@dimen/control_dimen_basic_margin"
-        android:onClick="openMoreMenuOptions"
         android:background="@drawable/button_top_right"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/appCompatEditText"

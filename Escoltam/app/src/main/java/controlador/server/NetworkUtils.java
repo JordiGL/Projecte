@@ -192,8 +192,6 @@ public class NetworkUtils extends Connexio{
 
             connexio = getRequest(token, BASIC_GET_URL+opcio);
 
-//            int responseCode = connexio.getResponseCode();
-
             InputStream inputStream = connexio.getInputStream();
             reader = new BufferedReader(new InputStreamReader(inputStream));
 

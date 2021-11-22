@@ -32,7 +32,9 @@ import jordigomez.ioc.cat.escoltam.R;
  */
 public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuItemClickListener{
     private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
-    public static final String ROLE_KEY = "role";
+    private static final String ROLE_KEY = "role";
+    private static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String ROLE_USER = "ROLE_USER";
     private static String role;
     private View rootView;
 
@@ -71,13 +73,8 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(role.equals("ROLE_USER")){
-                    Intent intent = new Intent(rootView.getContext(), UserSettingsActivity.class);
-                    startActivity(intent);
-                }else{
-                    Intent intent = new Intent(rootView.getContext(), AdminSettingsActivity.class);
-                    startActivity(intent);
-                }
+
+                openMoreMenuOptions(v);
 
             }
         });
@@ -96,7 +93,7 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
         popup.setOnMenuItemClickListener(this);
         MenuInflater inflater = popup.getMenuInflater();
 
-        if(role.equals("ROLE_USER")){
+        if(role.equals(ROLE_USER)){
             inflater.inflate(R.menu.menu_user_comunicador_context, popup.getMenu());
         }else{
             inflater.inflate(R.menu.menu_admin_comunicador_context, popup.getMenu());
@@ -110,24 +107,29 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
 
         switch (item.getItemId()) {
 
-            case R.id.context_settings:
+            case R.id.context_settings_admin_comunicador:
                 Intent intentAdmin = new Intent(rootView.getContext(), AdminSettingsActivity.class);
-                startActivity(intentAdmin);
+                rootView.getContext().startActivity(intentAdmin);
                 return true;
 
-            case R.id.context_comunicador:
-
-                Intent intentComunicador = new Intent(rootView.getContext(), UserActivity.class);
-                intentComunicador.putExtra(EXTRA_MESSAGE, "ROLE_ADMIN");
-                startActivity(intentComunicador);
+            case R.id.context_settings_user_comunicador:
+                Intent intentUser = new Intent(rootView.getContext(), UserSettingsActivity.class);
+                rootView.getContext().startActivity(intentUser);
                 return true;
 
-            case R.id.context_logout:
+            case R.id.context_administracio_admin_comunicador:
 
+                Intent intentComunicador = new Intent(rootView.getContext(), AdministratorActivity.class);
+                intentComunicador.putExtra(EXTRA_MESSAGE, ROLE_ADMIN);
+                rootView.getContext().startActivity(intentComunicador);
+                return true;
+
+            case R.id.context_logout_admin_comunicador:
+            case R.id.context_logout_user_comunicador:
                 GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(rootView.getContext());
                 gestorSharedPreferences.deleteData();
                 Intent intentLogin = new Intent(rootView.getContext(), LoginActivity.class);
-                startActivity(intentLogin);
+                rootView.getContext().startActivity(intentLogin);
                 return true;
 
             default:

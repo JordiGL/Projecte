@@ -63,6 +63,10 @@
     <string name="user_toolbar_edtittext_description">user toolbar edtittext description</string>
     <string name="canvi_de_clau">Canvi de clau</string>
     <string name="canvi_de_veu">Canvi de veu</string>
+    <string name="title_logout">Logout</string>
+    <string name="menu_title_comunicador">Comunicador</string>
+    <string name="menu_title_configuracio">Configuració</string>
+    <string name="menu_title_administracio">Administració</string>
 
     <string-array name="search_options">
         <item>Tot</item>

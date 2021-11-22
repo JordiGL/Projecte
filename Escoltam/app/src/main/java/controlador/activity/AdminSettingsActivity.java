@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -126,15 +127,20 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
     @Override
     public void onButtonPressed(EditText previousPasswordEntered, EditText newPassword, EditText conformPassword) {
         if(checkPasswordChangedFields(previousPasswordEntered, newPassword, conformPassword)){
+
             passwordChanged = newPassword.getText().toString();
             sendPasswordToServer(newPassword.getText().toString());
+
+            hideKeyboard();
         }
     }
 
     @Override
     public void onButtonPressed(EditText passwordEntered, String choice, LinearLayout radioGroupLayout) {
         if(checkVoiceChangedFields(passwordEntered, choice, radioGroupLayout)){
+
             sendVoiceToServer(choice);
+            hideKeyboard();
         }
     }
 
@@ -351,6 +357,16 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
     @Override
     public void onLoaderReset(@NonNull Loader<Integer> loader) {
 
+    }
+
+    private void hideKeyboard(){
+        //Amagar el teclat un cop l'usuari pitja el botó
+        try {
+            InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

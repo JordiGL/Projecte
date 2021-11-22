@@ -38,6 +38,7 @@ public class RequestTestActivity extends AppCompatActivity implements LoaderMana
     public static final String BUNDLE_URL_KEY = "url";
     private TextView textResponse;
     private EditText info;
+    //Variables de configuració del servidor.
     private static final String TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Mzc1ODQ5MzIsInVzZXJfbmFtZSI6IkpvR29tTG96QGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iXSwianRpIjoiZmY1ZTFjN2QtZmE3NS00OTE5LTkxNzMtMzRhZWM3M2FiYWMyIiwiY2xpZW50X2lkIjoiYW5kcm9pZGFwcCIsInNjb3BlIjpbInJlYWQiLCJ3cml0ZSJdfQ.tPHr9Z4oBJa1h64FHf6Ki5xxFIoH0nLTkLBXKuVUGFRGzNZ7LacyFMG0ufqKgi5TkeqH70E3VYqRXGoifl0hR4dh4Y33HmZJVc861ISLiMjeMQzi4jIvjeDSOleeqxThW-M8tMWIZ-4UdVZcnxXOUqIAz4G5-xvHVUiB6jJRM-yiIhbX1rv1-hIgVzfa1HS1aJEOJBB_fCopd-8aibora0ENo8jcK8dcT7X4Ysz27fmuEtkwipI7D6aK-pkqOUiXZFKIdzDd9diR1vLocalfAspt8YwuuY8fUTbEi4DrheYSTZAW1Q67yquYBFIEX119_eg7f91Y3ZCAqRJJUuz3Yg";
     private static final String CLAU = "12345";
     private static final String EMAIL = "JoGomLoz@gmail.com";

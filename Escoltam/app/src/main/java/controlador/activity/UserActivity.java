@@ -8,15 +8,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import controlador.fragment.UserControlFragment;
 import controlador.fragment.UserFavoritesFragment;
 import controlador.fragment.UserToolbarFragment;
 import controlador.gestor.GestorSharedPreferences;
-import controlador.gestor.OnFragmentInteractionListener;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**
@@ -42,8 +39,7 @@ public class UserActivity extends AppCompatActivity{
         //Amagar barra superior de la info del dispositiu.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        TextView textInfo = findViewById(R.id.textEmailClient);
-        Button btnLogout = findViewById(R.id.btn_LogoutClient);
+        TextView textInfo = findViewById(R.id.textMostrarRol);
 
         Intent intent = getIntent();
         textInfo.setText(intent.getStringExtra(LoginActivity.EXTRA_MESSAGE));
@@ -63,22 +59,11 @@ public class UserActivity extends AppCompatActivity{
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
-
-
-        //Listeners
-        btnLogout.setOnClickListener(view -> {
-            //Borrar token
-            GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
-            gestorSharedPreferences.deleteData();
-
-            Intent intent1 = new Intent(UserActivity.this, LoginActivity.class);
-            startActivity(intent1);
-            finish();
-        });
     }
 
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
     }
+
 }

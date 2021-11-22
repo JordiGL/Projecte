@@ -45,7 +45,7 @@
         android:layout_width="0dp"
         android:layout_height="75dp"
         android:layout_weight=".50"
-        app:layout_constraintEnd_toStartOf="@+id/textEmailClient"
+        app:layout_constraintEnd_toStartOf="@+id/textMostrarRol"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout="@layout/fragment_user_favorites">
@@ -73,7 +73,7 @@
         app:layout_constraintTop_toTopOf="@+id/btn_LogoutClient" />
 
     <TextView
-        android:id="@+id/textEmailClient"
+        android:id="@+id/textMostrarRol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/clientTitleText"

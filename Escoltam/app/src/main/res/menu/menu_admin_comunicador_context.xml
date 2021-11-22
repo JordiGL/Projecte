@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/context_settings_comunicador"
+        android:id="@+id/context_settings_admin_comunicador"
         android:orderInCategory="10"
-        android:title="Configuració"/>
+        android:title="@string/menu_title_configuracio"/>
 
     <item
-        android:id="@+id/context_administracio"
+        android:id="@+id/context_administracio_admin_comunicador"
         android:orderInCategory="20"
-        android:title="Administració"/>
+        android:title="@string/menu_title_administracio"/>
 
     <item
-        android:id="@+id/context_logout"
+        android:id="@+id/context_logout_admin_comunicador"
         android:orderInCategory="30"
-        android:title="Logout"/>
+        android:title="@string/title_logout"/>
 
 </menu>
