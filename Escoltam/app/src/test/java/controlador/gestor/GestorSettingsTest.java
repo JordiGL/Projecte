@@ -5,8 +5,12 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Classe per a fer el test de les classes AdminSettings i UserSettings.
+ * @author Jordi Gómez Lozano
+ */
 public class GestorSettingsTest {
-    GestorSettings gestorSettings;
+    private GestorSettings gestorSettings;
 
     @Before
     public void setUp() throws Exception {
@@ -22,7 +26,6 @@ public class GestorSettingsTest {
     public void previousPasswordChecker() {
         gestorSettings.setPreviousPassword("");
         gestorSettings.setReceivedPassword("12345");
-
         assertFalse(gestorSettings.previousPasswordChecker());
         gestorSettings.setPreviousPassword("45637");
         assertFalse(gestorSettings.previousPasswordChecker());
@@ -82,6 +85,8 @@ public class GestorSettingsTest {
     @Test
     public void voiceChecker() {
         gestorSettings.setVoice("");
+        assertFalse(gestorSettings.voiceChecker());
+        gestorSettings.setVoice("qwerqwer");
         assertFalse(gestorSettings.voiceChecker());
         gestorSettings.setVoice("MALE");
         assertTrue(gestorSettings.voiceChecker());

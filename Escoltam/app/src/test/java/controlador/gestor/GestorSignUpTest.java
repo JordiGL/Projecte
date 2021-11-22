@@ -92,6 +92,8 @@ public class GestorSignUpTest {
 
         gestorSignUp.setVoice("");
         assertFalse(gestorSignUp.voiceChecker());
+        gestorSignUp.setVoice("hjkasdf");
+        assertFalse(gestorSignUp.voiceChecker());
         gestorSignUp.setVoice("MALE");
         assertTrue(gestorSignUp.voiceChecker());
         gestorSignUp.setVoice("FEMALE");

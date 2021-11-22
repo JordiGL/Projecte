@@ -35,12 +35,12 @@ public class RequestTestActivity extends AppCompatActivity implements LoaderMana
     private static final String BUNDLE_PASSWORD_KEY = "password";
     private static final String BUNDLE_VOICE_KEY = "voice";
     private static final String SERVER_OPTION = "server_option";
-    private static final String EMAIL = "JoGomLoz@gmail.com";
     public static final String BUNDLE_URL_KEY = "url";
     private TextView textResponse;
     private EditText info;
-    private static final String TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Mzc1MzMwODgsInVzZXJfbmFtZSI6IkpvR29tTG96QGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iXSwianRpIjoiOWJiYzAzZDItN2YzMi00NzVlLWFhNzktZTlmZTBjMDBmMWMzIiwiY2xpZW50X2lkIjoiYW5kcm9pZGFwcCIsInNjb3BlIjpbInJlYWQiLCJ3cml0ZSJdfQ.lqXLM2MWFoHePoNKv1Xk8LE_KRdDcd3Doab8_1dWGYirTFKpxj-3T8cq8f1gYrkfjgDmJt6kCfV1LDoLBONwDOwPkGf_iBX6Sj0DfEtUc4qWyWJ949NG2Ce1huk-cbuyP9VAAbkQPoLWmABOe5U0val6H5g_W6l5K0oqNusX3jg8QF1XPbf4YyIzRbI2GDaHAScVXQLzOINFurZIccRFvjilstpfrP787KmDdbfSZON4EJjYo7uZm_jOSu1NvGXga1G5gwfMB3ssHbK0dGTT31nUn5HPtB6dOIp-7iTx-utxN-FhEmPy95LCjD81eQs8NnD0kRFZdXPNVvGpETOwAA";
+    private static final String TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Mzc1ODQ5MzIsInVzZXJfbmFtZSI6IkpvR29tTG96QGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iXSwianRpIjoiZmY1ZTFjN2QtZmE3NS00OTE5LTkxNzMtMzRhZWM3M2FiYWMyIiwiY2xpZW50X2lkIjoiYW5kcm9pZGFwcCIsInNjb3BlIjpbInJlYWQiLCJ3cml0ZSJdfQ.tPHr9Z4oBJa1h64FHf6Ki5xxFIoH0nLTkLBXKuVUGFRGzNZ7LacyFMG0ufqKgi5TkeqH70E3VYqRXGoifl0hR4dh4Y33HmZJVc861ISLiMjeMQzi4jIvjeDSOleeqxThW-M8tMWIZ-4UdVZcnxXOUqIAz4G5-xvHVUiB6jJRM-yiIhbX1rv1-hIgVzfa1HS1aJEOJBB_fCopd-8aibora0ENo8jcK8dcT7X4Ysz27fmuEtkwipI7D6aK-pkqOUiXZFKIdzDd9diR1vLocalfAspt8YwuuY8fUTbEi4DrheYSTZAW1Q67yquYBFIEX119_eg7f91Y3ZCAqRJJUuz3Yg";
     private static final String CLAU = "12345";
+    private static final String EMAIL = "JoGomLoz@gmail.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

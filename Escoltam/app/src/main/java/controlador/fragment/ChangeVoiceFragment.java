@@ -28,8 +28,8 @@ public class ChangeVoiceFragment extends Fragment {
     private static final String RADIO_BUTTON_COMPARED_TEXT = "Masculina";
     private static final String MALE = "MALE";
     private static final String FEMALE = "FEMALE";
-    OnFragmentInteractionListener mListener;
-    String voiceUsuari;
+    public OnFragmentInteractionListener mListener;
+    private String voiceUsuari;
 
     public ChangeVoiceFragment() {
     }

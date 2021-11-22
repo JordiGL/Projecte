@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -37,11 +38,13 @@ import io.github.muddz.styleabletoast.StyleableToast;
 import jordigomez.ioc.cat.escoltam.R;
 
 public class UserSettingsActivity extends AppCompatActivity implements OnFragmentInteractionListener, LoaderManager.LoaderCallbacks<Integer>{
-
+    public final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     private static final String BUNDLE_TOKEN_KEY = "token";
     private static final String BUNDLE_EMAIL_KEY = "email";
     private static final String BUNDLE_PASSWORD_KEY = "password";
     private static final String BUNDLE_VOICE_KEY = "voice";
+    private static final String MODIFICACIO_OK = "Modificació efectuada correctament";
+    private static final String MODIFICACIO_ERROR = "Error, no s'ha pogut dur a terme la modificació";
 
     private ChangePasswordFragment changePasswordFragment;
     private ChangeVoiceFragment changeVoiceFragment;
@@ -334,18 +337,28 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
                 GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(UserSettingsActivity.this);
                 gestorSharedPreferences.setPassword(passwordChanged);
             }
-
-            Intent intentAdmin = new Intent(UserSettingsActivity.this, UserActivity.class);
-            startActivity(intentAdmin);
-            finish();
+            Toast.makeText(UserSettingsActivity.this, MODIFICACIO_OK, Toast.LENGTH_SHORT).show();
         }else{
-            StyleableToast.makeText(UserSettingsActivity.this, "Error, no s'ha pogut canviar la clau", Toast.LENGTH_SHORT, R.style.toastError).show();
+            StyleableToast.makeText(UserSettingsActivity.this,MODIFICACIO_ERROR , Toast.LENGTH_SHORT, R.style.toastError).show();
         }
 
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<Integer> loader) {}
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(this, UserActivity.class);
+                intent.putExtra(EXTRA_MESSAGE, "ROLE_USER");
+                startActivity(intent);
+                return true;
+        }
+        return false;
+    }
 
     @Override
     public void onBackPressed() {

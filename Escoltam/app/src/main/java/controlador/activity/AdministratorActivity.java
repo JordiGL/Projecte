@@ -312,7 +312,7 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
             case R.id.context_comunicador:
 
                 Intent intentComunicador = new Intent(AdministratorActivity.this, UserActivity.class);
-                intentComunicador.putExtra(EXTRA_MESSAGE, adminEmail);
+                intentComunicador.putExtra(EXTRA_MESSAGE, "ROLE_ADMIN");
                 startActivity(intentComunicador);
                 finish();
                 return true;

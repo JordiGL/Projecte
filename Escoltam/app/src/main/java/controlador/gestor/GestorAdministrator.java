@@ -19,6 +19,10 @@ import jordigomez.ioc.cat.escoltam.R;
 import model.Role;
 import model.Usuari;
 
+/**
+ * Classe gestora de l'administrador.
+ * @author Jordi Gómez Lozano.
+ */
 public class GestorAdministrator {
     private static final String MALE = "MALE";
     private static final String FEMALE = "FEMALE";
@@ -35,7 +39,6 @@ public class GestorAdministrator {
     private static final String VOICE_JSON = "voice";
     private static final String PASSWORD_JSON = "password";
     private static final String ENABLED_JSON = "enabled";
-
     private String cercadorText;
     private String error;
 

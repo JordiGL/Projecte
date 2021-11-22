@@ -45,6 +45,8 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
     private static final String BUNDLE_EMAIL_KEY = "email";
     private static final String BUNDLE_PASSWORD_KEY = "password";
     private static final String BUNDLE_VOICE_KEY = "voice";
+    private static final String MODIFICACIO_OK = "Modificació efectuada correctament";
+    private static final String MODIFICACIO_ERROR = "Error, no s'ha pogut dur a terme la modificació";
     private ChangePasswordFragment changePasswordFragment;
     private ChangeVoiceFragment changeVoiceFragment;
     private FragmentTransaction fragmentTransaction;
@@ -340,11 +342,9 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
                 gestorSharedPreferences.setPassword(passwordChanged);
             }
 
-            Intent intentAdmin = new Intent(AdminSettingsActivity.this, AdministratorActivity.class);
-            startActivity(intentAdmin);
-            finish();
+            Toast.makeText(AdminSettingsActivity.this, MODIFICACIO_OK, Toast.LENGTH_SHORT).show();
         }else{
-            StyleableToast.makeText(AdminSettingsActivity.this, "Error, no s'ha pogut canviar la clau", Toast.LENGTH_SHORT, R.style.toastError).show();
+            StyleableToast.makeText(AdminSettingsActivity.this,MODIFICACIO_ERROR , Toast.LENGTH_SHORT, R.style.toastError).show();
         }
     }
 

@@ -8,12 +8,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import controlador.fragment.UserControlFragment;
 import controlador.fragment.UserFavoritesFragment;
 import controlador.fragment.UserToolbarFragment;
 import controlador.gestor.GestorSharedPreferences;
+import controlador.gestor.OnFragmentInteractionListener;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**
@@ -21,14 +24,15 @@ import jordigomez.ioc.cat.escoltam.R;
  * @see AppCompatActivity
  * @author Jordi Gómez Lozano
  */
-public class UserActivity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity{
 
+    public static final String ROLE_USER = "ROLE_USER";
     private UserToolbarFragment toolbarFragment;
     private UserFavoritesFragment favoritesFragment;
     private UserControlFragment controlFragment;
     private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
-    private String roleUser;
+    private String role;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,22 +47,23 @@ public class UserActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         textInfo.setText(intent.getStringExtra(LoginActivity.EXTRA_MESSAGE));
-        roleUser = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
+        role = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
 
         //Fragments
-        toolbarFragment = UserToolbarFragment.newInstance();
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction =  fragmentManager.beginTransaction();
+
+        toolbarFragment = UserToolbarFragment.newInstance(role);
         favoritesFragment = UserFavoritesFragment.newInstance();
         controlFragment = UserControlFragment.newInstance();
-
-        fragmentManager = getSupportFragmentManager();
-
-        fragmentTransaction =  fragmentManager.beginTransaction();
 
         fragmentTransaction.add(R.id.toolbar_fragment_container, toolbarFragment);
         fragmentTransaction.add(R.id.favorites_fragment_container, favoritesFragment);
         fragmentTransaction.add(R.id.control_fragment_container, controlFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+
+
 
         //Listeners
         btnLogout.setOnClickListener(view -> {
