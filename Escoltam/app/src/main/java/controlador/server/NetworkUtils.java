@@ -1,6 +1,7 @@
 package controlador.server;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +23,8 @@ import model.Usuari;
  * @author Jordi Gómez Lozano.
  */
 public class NetworkUtils extends Connexio{
+    private static final String USER_TOKEN_JSON_KEY = "access_token";
+    private static final String ERROR_JSON_KEY = "Error";
     private static final String CHARSET_NAME = "UTF-8";
     private static final String METODE_PETICIO_POST = "POST";
     private static final String METODE_PETICIO_PUT = "PUT";
@@ -29,6 +32,49 @@ public class NetworkUtils extends Connexio{
     private static final String CHANGE_PASS_URL = "http://10.0.2.2:8080/changePassword/";
     private static final String BASIC_GET_URL = "http://10.0.2.2:8080/api/usuaris";
     private static final String APPLICATION_JSON = "application/json";
+    private static final String APPLICATION_URLENCODED = "application/x-www-form-urlencoded";
+    private static final String URL_TOKEN = "http://10.0.2.2:8080/oauth/token";
+    private static final String RESPONSE_CODE_BUNDLE_KEY = "responseCode";
+    private static final String TOKEN_BUNDLE_KEY = "token";
+    private static final String SERVER_INFO_BUNDLE_KEY = "serverInfo";
+
+    /**
+     * Post request al servidor per obtenir el token.
+     * @return un int per part del servidor, si retorna 200 el request s'ha efectuat correctament.
+     * @author Jordi Gómez Lozano.
+     */
+    public static Bundle requestToken(String username, String clau){
+        int responseCode = 0;
+        Bundle queryBundle = null;
+
+        String urlParameters = "username="+username+"&password="+clau+"&grant_type=password";
+        byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
+        int postDataLength = postData.length;
+        HttpURLConnection connexio = postRequest(postDataLength, METODE_PETICIO_POST, URL_TOKEN, APPLICATION_URLENCODED);
+
+        try( DataOutputStream wr = new DataOutputStream(connexio.getOutputStream())) {
+
+            wr.write(postData);
+            responseCode = connexio.getResponseCode();
+
+            queryBundle = new Bundle();
+            queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, responseCode);
+
+            if(responseCode == HttpURLConnection.HTTP_OK){
+                InputStream data = connexio.getInputStream();
+                queryBundle.putString(TOKEN_BUNDLE_KEY, obtenirToken(bytesToString(data)));
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        } finally{
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+        }
+
+        return queryBundle;
+    }
 
     /**
      * Post request al servidor per afegir un nou usuari.
@@ -53,14 +99,14 @@ public class NetworkUtils extends Connexio{
             InputStream error = connexio.getErrorStream();
 
             if(error != null){
-                serverInfo = getInfo(bytesToString(error));
+                serverInfo = getErrorInfo(bytesToString(error));
             }
 
             responseCode = connexio.getResponseCode();
 
             queryBundle = new Bundle();
-            queryBundle.putInt("responseCode", responseCode);
-            queryBundle.putString("serverInfo", serverInfo);
+            queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, responseCode);
+            queryBundle.putString(SERVER_INFO_BUNDLE_KEY, serverInfo);
 
 
         } catch (Exception e) {
@@ -307,8 +353,20 @@ public class NetworkUtils extends Connexio{
      * @throws JSONException
      * @author Jordi Gómez Lozano.
      */
-    private static String getInfo(String data) throws JSONException {
+    private static String getErrorInfo(String data) throws JSONException {
         JSONObject access_token = new JSONObject(data);
-        return access_token.getString("Error");
+        return access_token.getString(ERROR_JSON_KEY);
+    }
+
+    /**
+     * Obtinc la dada del token del JSON que rebo, aquest té altres dades.
+     * @param data
+     * @return
+     * @throws JSONException
+     * @author Jordi Gómez Lozano.
+     */
+    private static String obtenirToken(String data) throws JSONException {
+        JSONObject access_token = new JSONObject(data);
+        return access_token.getString(USER_TOKEN_JSON_KEY);
     }
 }

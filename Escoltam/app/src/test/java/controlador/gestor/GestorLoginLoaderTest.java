@@ -14,7 +14,7 @@ import model.Usuari;
  * Classe per a fer el test del login d'usuari.
  * @author Jordi Gómez Lozano
  */
-public class GestorLoginTest {
+public class GestorLoginLoaderTest {
     GestorLogin gestorLogin;
 
     @Before

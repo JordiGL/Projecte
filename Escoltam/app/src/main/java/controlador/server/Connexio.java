@@ -143,7 +143,7 @@ public class Connexio {
      * @param time temps actual en mil·lisegons
      * @return Torna true si s'està tardant a establir connexió, fals en cas contrari.
      */
-    public boolean connectionProblems(long time){
+    public static boolean connectionProblems(long time){
 
         return (System.currentTimeMillis() - time) >= TIMEOUT_MILLS;
     }

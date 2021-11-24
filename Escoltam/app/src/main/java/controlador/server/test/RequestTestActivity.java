@@ -35,7 +35,8 @@ public class RequestTestActivity extends AppCompatActivity implements LoaderMana
     private static final String BUNDLE_PASSWORD_KEY = "password";
     private static final String BUNDLE_VOICE_KEY = "voice";
     private static final String SERVER_OPTION = "server_option";
-    public static final String BUNDLE_URL_KEY = "url";
+    private static final String BUNDLE_URL_KEY = "url";
+    private static final int SERVER_PROBLEMS = 0;
     private TextView textResponse;
     private EditText info;
     //Variables de configuració del servidor.
@@ -202,9 +203,6 @@ public class RequestTestActivity extends AppCompatActivity implements LoaderMana
                     email = args.getString(BUNDLE_EMAIL_KEY);
                     novaClau = args.getString(BUNDLE_PASSWORD_KEY);
                     novaVeu = args.getString(BUNDLE_VOICE_KEY);
-                    Log.i("Info", novaClau);
-                    Log.i("Info", novaVeu);
-                    Log.i("Info", email);
                     return new ChangeVoiceLoader(this, novaClau , novaVeu, email, token);
 
                 case "Canviar clau":
@@ -226,13 +224,13 @@ public class RequestTestActivity extends AppCompatActivity implements LoaderMana
 
     @Override
     public void onLoadFinished(@NonNull Loader<Integer> loader, Integer data) {
-        RequestToken gestorRequest = new RequestToken(this);
-        long time = System.currentTimeMillis();
 
-        if(gestorRequest.connectionProblems(time)){
+        if(data == SERVER_PROBLEMS){
 
             textResponse.setText(ERROR_SERVIDOR);
+
         } else {
+
             textResponse.setText(String.valueOf(data));
         }
 
