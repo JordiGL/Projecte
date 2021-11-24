@@ -1,7 +1,6 @@
 package controlador.server.test.post;
 
 import android.content.Context;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,7 +30,7 @@ public class TestSignUpLoader extends AsyncTaskLoader<Integer> {
     @Nullable
     @Override
     public Integer loadInBackground() {
-        return NetworkUtils.addNewUserForTest(usuari);
+        return NetworkUtils.testAddNewUser(usuari);
     }
 
     /**

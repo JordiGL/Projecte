@@ -41,6 +41,10 @@
     //RequestTest UI
     <string name="tornar_al_login">Tornar al login</string>
 
+    //Settings UI
+    <string name="canvi_de_clau">Canvi de clau</string>
+    <string name="canvi_de_veu">Canvi de veu</string>
+
     //Generals UI
     <string name="emailEditTextHint">Email</string>
     <string name="clauEditTextHint">Clau</string>
@@ -49,13 +53,12 @@
     <string name="errorServidor">Problemes amb el servidor</string>
     <string name="errorEmailPassword">Email o clau incorrecta</string>
     <string name="errorUserSignUp">No s\'ha pogut dur a terme el registre.</string>
-    <string name="canvi_de_clau">Canvi de clau</string>
-    <string name="canvi_de_veu">Canvi de veu</string>
     <string name="menu_title_logout">Logout</string>
     <string name="menu_title_comunicador">Comunicador</string>
     <string name="menu_title_configuracio">Configuració</string>
     <string name="menu_title_administracio">Administració</string>
 
+    //Spinners
     <string-array name="search_options">
         <item>Tot</item>
         <item>Email</item>
@@ -74,6 +77,7 @@
         <item>Cerca per rol</item>
     </string-array>
 
+    //Selectable
     <string-array name="autocomplete_voice_options">
         <item>FEMALE</item>
         <item>MALE</item>

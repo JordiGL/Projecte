@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.Date;
 
 import controlador.gestor.GestorMain;
-import controlador.server.post.RequestToken;
+import controlador.gestor.JsonUtils;
 import controlador.gestor.GestorSharedPreferences;
 import jordigomez.ioc.cat.escoltam.R;
 
@@ -27,9 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     private static final String LOGO_TO_TRANSITION_ID = "logoTextTransition";
     private TextView logo;
-    private RequestToken gestorRequest;
-    private GestorMain gestorMain;
-    private GestorSharedPreferences gestorSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +43,12 @@ public class MainActivity extends AppCompatActivity {
         logo.setAnimation(animation);
 
         new Handler().postDelayed(() -> {
+            JsonUtils jsonUtils = new JsonUtils();
+            GestorMain gestorMain = new GestorMain(this);
+            GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
             String role;
             String email;
             Date expiredData;
-            gestorMain = new GestorMain(this);
-            gestorRequest = new RequestToken(this);
-            gestorSharedPreferences = new GestorSharedPreferences(this);
 
             String token = gestorSharedPreferences.getToken();
             if(token != null){
@@ -60,10 +57,16 @@ public class MainActivity extends AppCompatActivity {
 
                 if(expiredData.after(new Date())) {
 
-                    role = gestorRequest.getRoleFromToken(token);
-                    email = gestorRequest.getEmailFromToken(token);
-                    gestorMain.dirigirUsuari(role, email, EXTRA_MESSAGE);
+                    role = jsonUtils.getRoleFromToken(token);
+                    email = jsonUtils.getEmailFromToken(token);
 
+                    if(role != null) {
+
+                        gestorMain.dirigirUsuari(role, email, EXTRA_MESSAGE);
+
+                    } else {
+                        dirigirALogin();
+                    }
                 } else {
                     gestorSharedPreferences.deleteData();
                     dirigirALogin();

@@ -1,4 +1,4 @@
-package controlador.server.test;
+package controlador.server.test.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,10 +19,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.android.material.navigation.NavigationBarView;
-
 import controlador.activity.LoginActivity;
-import controlador.activity.SignUpActivity;
 import controlador.server.test.get.TestUsuarisListLoader;
 import controlador.server.test.post.TestLoginLoader;
 import controlador.server.test.post.TestSignUpLoader;
@@ -56,7 +52,6 @@ public class RequestTestActivity extends AppCompatActivity implements LoaderMana
     private static final String HINT_NOVA_VEU = "Nova veu";
     private static final String HINT_VEU = "Veu";
     private static final String HINT_ROL = "Rol";
-
     private TextView textResponse;
     private EditText info;
     private EditText emailInput;

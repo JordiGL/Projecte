@@ -9,7 +9,7 @@
         android:id="@+id/control_second_bg_user"
         android:layout_width="@dimen/user_control_second_bg_width_land"
         android:layout_height="@dimen/user_control_second_bg_height_land"
-        android:contentDescription="@string/user_second_background_description"
+        android:contentDescription=""
         android:src="@drawable/control_bg_second_land"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/control_first_bg_user"
@@ -19,7 +19,7 @@
         android:id="@+id/control_first_bg_user"
         android:layout_width="@dimen/user_control_first_bg_width_land"
         android:layout_height="@dimen/user_control_first_bg_height_land"
-        android:contentDescription="@string/user_first_background_description"
+        android:contentDescription=""
         android:src="@drawable/control_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +42,7 @@
             android:layout_height="@dimen/control_dimen_button"
             android:layout_marginBottom="@dimen/control_dimen_basic_margin"
             android:layout_weight=".45"
-            android:contentDescription="@string/user_add_page_description"
+            android:contentDescription=""
             android:background="@drawable/button_middle_top_round"
             android:src="@drawable/ic_action_add_screen"/>
 
@@ -50,7 +50,7 @@
             android:layout_width="@dimen/control_dimen_button"
             android:layout_height="@dimen/control_dimen_button"
             android:layout_weight=".45"
-            android:contentDescription="@string/user_control_icons_description"
+            android:contentDescription=""
             android:background="@drawable/button_middle_bottom_round"
             android:src="@drawable/ic_action_icon_number"/>
     </LinearLayout>
@@ -73,7 +73,7 @@
             android:layout_height="@dimen/control_dimen_button"
             android:layout_marginBottom="@dimen/control_dimen_basic_margin"
             android:layout_weight=".45"
-            android:contentDescription="@string/user_control_stop_description"
+            android:contentDescription=""
             android:background="@drawable/button_top_right"
             android:src="@drawable/ic_action_stop"/>
 
@@ -81,7 +81,7 @@
             android:layout_width="@dimen/control_dimen_large_button_land"
             android:layout_height="@dimen/control_dimen_button"
             android:layout_weight=".45"
-            android:contentDescription="@string/user_control_play_description"
+            android:contentDescription=""
             android:background="@drawable/button_bottom_right"
             android:src="@drawable/ic_action_play"
             tools:ignore="SpeakableTextPresentCheck" />

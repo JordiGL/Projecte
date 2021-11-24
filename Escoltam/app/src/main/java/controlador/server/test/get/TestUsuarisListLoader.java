@@ -31,7 +31,7 @@ public class TestUsuarisListLoader extends AsyncTaskLoader<Integer>{
     @Nullable
     @Override
     public Integer loadInBackground() {
-        return NetworkUtils.getUsuarisDataResponse(token, opcio);
+        return NetworkUtils.testGetUsuarisData(token, opcio);
     }
 
     /**

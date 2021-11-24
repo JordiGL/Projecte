@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context="controlador.server.test.RequestTestActivity">
+    tools:context="controlador.server.test.activity.RequestTestActivity">
 
     <RelativeLayout
         android:id="@+id/spinner_layout"

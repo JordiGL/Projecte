@@ -8,6 +8,10 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
+/**
+ * Loader del login per a fer el test
+ * @author Jordi Gómez Lozano.
+ */
 public class TestLoginLoader extends AsyncTaskLoader<Integer> {
     private String username;
     private String password;

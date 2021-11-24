@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="controlador.server.test.RequestTestActivity"
+            android:name="controlador.server.test.activity.RequestTestActivity"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
@@ -31,10 +31,6 @@
             android:exported="true"
             android:label="Configuració"
             android:parentActivityName="controlador.activity.UserActivity" />
-        <activity
-            android:name="controlador.server.test.RequestTokenTestActivity"
-            android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="controlador.activity.ForgotPasswordActivity"
             android:exported="true"

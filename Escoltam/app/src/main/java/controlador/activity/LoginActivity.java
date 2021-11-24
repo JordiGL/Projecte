@@ -20,14 +20,13 @@ import android.widget.Toast;
 
 import controlador.gestor.JsonUtils;
 import controlador.server.post.LoginLoader;
-import controlador.server.test.RequestTestActivity;
+import controlador.server.test.activity.RequestTestActivity;
 import io.github.muddz.styleabletoast.StyleableToast;
 
 import java.net.HttpURLConnection;
 
 import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.GestorLogin;
-import controlador.server.post.RequestToken;
 
 import jordigomez.ioc.cat.escoltam.R;
 
@@ -46,8 +45,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     private static final String TOKEN_BUNDLE_KEY = "token";
 
     private EditText email, password;
-    private GestorLogin gestorLogin;
-    private RequestToken gestorRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +69,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 Intent intent = new Intent(LoginActivity.this, RequestTestActivity.class);
                 startActivity(intent);
                 finish();
-
+            //----------------------------------------------------------------------------------------------//
             }else {
-                //----------------------------------------------------------------------------------------------//
                 if (emailAndPasswordChecker()) {
                     loginUser();
                 }
@@ -126,7 +122,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         boolean correcte = true;
 
-        gestorLogin = new GestorLogin(email.getText().toString(), password.getText().toString());
+        GestorLogin gestorLogin = new GestorLogin(email.getText().toString(), password.getText().toString());
 
 
         if (!gestorLogin.emailChecker()) {

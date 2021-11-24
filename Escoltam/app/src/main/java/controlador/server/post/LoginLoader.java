@@ -9,6 +9,11 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
+/**
+ * Classe per a crear el fil per a connectar amb el servidor.
+ * @see AsyncTaskLoader
+ * @author Jordi Gómez Lozano.
+ */
 public class LoginLoader extends AsyncTaskLoader<Bundle> {
     private String username;
     private String password;
