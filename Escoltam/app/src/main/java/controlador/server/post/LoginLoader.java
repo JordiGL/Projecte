@@ -21,7 +21,7 @@ public class LoginLoader extends AsyncTaskLoader<Bundle> {
 
     /**
      * Designem l'operació a fer.
-     * @return l'int amb el codi de resposta del servidor.
+     * @return Un Bundle amb el codi de resposta del servidor, i les dades de retorn.
      * @author Jordi Gómez Lozano.
      */
     @Nullable

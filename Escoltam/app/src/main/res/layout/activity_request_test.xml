@@ -4,52 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context="controlador.server.test.RequestTestActivity">
 
-
-    <Spinner
-        android:id="@+id/spinnerRequest"
+    <RelativeLayout
+        android:id="@+id/spinner_layout"
         android:layout_width="300dp"
         android:layout_height="48dp"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="176dp"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:gravity="end"
-        android:paddingEnd="30dp"
-        android:spinnerMode="dropdown"
+        android:layout_weight=".28"
+        android:background="@drawable/spinner_bg"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="SpeakableTextPresentCheck" />
+        app:layout_constraintVertical_bias="0.17000002">
 
-    <Button
-        android:id="@+id/buttonRequestTest"
-        android:layout_width="60dp"
-        android:layout_height="48dp"
-        android:text="@string/textButtonServerTestUI"
-        app:layout_constraintBottom_toBottomOf="@+id/infoTest"
-        app:layout_constraintStart_toEndOf="@+id/infoTest"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerRequest" />
+        <Spinner
+            android:id="@+id/spinnerRequest"
+            android:layout_width="300dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="176dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:gravity="end"
+            android:paddingEnd="30dp"
+            android:spinnerMode="dropdown"
 
-    <TextView
-        android:id="@+id/textRequestResponse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:textColor="@color/black"
-        android:textSize="28sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/infoTest" />
+            tools:ignore="SpeakableTextPresentCheck" />
+
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/infoTest"
-        android:layout_width="202dp"
+        android:layout_width="0dp"
         android:layout_height="60dp"
+        android:layout_marginTop="8dp"
         android:autofillHints="password"
         android:background="@drawable/bg_edittext"
         android:drawablePadding="10dp"
@@ -62,19 +53,76 @@
         android:paddingBottom="10dp"
         android:textColor="@color/black"
         android:textColorHint="@color/darkerGray"
-        app:layout_constraintStart_toStartOf="@+id/spinnerRequest"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerRequest"
+        app:layout_constraintEnd_toEndOf="@+id/spinner_layout"
+        app:layout_constraintStart_toStartOf="@+id/spinner_layout"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_layout"
         tools:ignore="SpeakableTextPresentCheck" />
+
+    <EditText
+        android:id="@+id/emailTest"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:autofillHints="password"
+        android:background="@drawable/bg_edittext"
+        android:drawablePadding="10dp"
+        android:ems="10"
+        android:hint="@string/emailEditTextHint"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:paddingStart="20dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/darkerGray"
+        app:layout_constraintEnd_toEndOf="@+id/infoTest"
+        app:layout_constraintStart_toStartOf="@+id/infoTest"
+        app:layout_constraintTop_toBottomOf="@+id/infoTest"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <Button
+        android:id="@+id/buttonRequestTest"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/textButtonServerTestUI"
+        app:layout_constraintEnd_toStartOf="@+id/buttonClearTest"
+        app:layout_constraintStart_toStartOf="@+id/emailTest"
+        app:layout_constraintTop_toBottomOf="@+id/emailTest" />
 
     <Button
         android:id="@+id/buttonClearTest"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginTop="16dp"
         android:text="X"
-        app:layout_constraintBottom_toBottomOf="@+id/buttonRequestTest"
-        app:layout_constraintEnd_toEndOf="@+id/spinnerRequest"
-        app:layout_constraintStart_toEndOf="@+id/buttonRequestTest"
-        app:layout_constraintTop_toTopOf="@+id/buttonRequestTest" />
+        app:layout_constraintEnd_toEndOf="@+id/emailTest"
+        app:layout_constraintTop_toBottomOf="@+id/emailTest" />
+
+    <TextView
+        android:id="@+id/textRequestResponse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:textColor="@color/black"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonRequestTest" />
+
+    <TextView
+        android:id="@+id/textReturnLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/tornar_al_login"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/emailTest" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

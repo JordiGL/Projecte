@@ -77,6 +77,36 @@ public class NetworkUtils extends Connexio{
     }
 
     /**
+     * Post request al servidor per obtenir el token.
+     * @return un int per part del servidor, si retorna 200 el request s'ha efectuat correctament.
+     * @author Jordi Gómez Lozano.
+     */
+    public static int testRequestToken(String username, String clau){
+        int responseCode = 0;
+        Bundle queryBundle = null;
+
+        String urlParameters = "username="+username+"&password="+clau+"&grant_type=password";
+        byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
+        int postDataLength = postData.length;
+        HttpURLConnection connexio = postRequest(postDataLength, METODE_PETICIO_POST, URL_TOKEN, APPLICATION_URLENCODED);
+
+        try( DataOutputStream wr = new DataOutputStream(connexio.getOutputStream())) {
+
+            wr.write(postData);
+            responseCode = connexio.getResponseCode();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        } finally{
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+        }
+
+        return responseCode;
+    }
+
+    /**
      * Post request al servidor per afegir un nou usuari.
      * @param usuari usuari a afegir al servidor.
      * @return un Bundle amb el codi de resposta i possible informació d'error.

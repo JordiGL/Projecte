@@ -1,4 +1,4 @@
-package controlador.server.get;
+package controlador.server.test.get;
 
 import android.content.Context;
 
@@ -13,11 +13,11 @@ import controlador.server.NetworkUtils;
  * @see AsyncTaskLoader
  * @author Jordi Gómez Lozano.
  */
-public class UsuarisListLoaderForTest extends AsyncTaskLoader<Integer>{
+public class TestUsuarisListLoader extends AsyncTaskLoader<Integer>{
 
     private String token;
     private String opcio;
-    public UsuarisListLoaderForTest(@NonNull Context context, String token, String opcio) {
+    public TestUsuarisListLoader(@NonNull Context context, String token, String opcio) {
         super(context);
         this.token = token;
         this.opcio = opcio;

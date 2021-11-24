@@ -15,7 +15,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="controlador.server.test.RequestTestActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="controlador.activity.AdministratorTransitionActivity"
             android:exported="true"

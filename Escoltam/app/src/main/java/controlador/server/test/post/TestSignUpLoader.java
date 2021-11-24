@@ -1,4 +1,4 @@
-package controlador.server.post;
+package controlador.server.test.post;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,10 +15,10 @@ import model.Usuari;
  * @see AsyncTaskLoader
  * @author Jordi Gómez Lozano.
  */
-public class SignUpLoaderForTest  extends AsyncTaskLoader<Integer> {
+public class TestSignUpLoader extends AsyncTaskLoader<Integer> {
     private Usuari usuari;
 
-    public SignUpLoaderForTest(@NonNull Context context, Usuari usuari) {
+    public TestSignUpLoader(@NonNull Context context, Usuari usuari) {
         super(context);
         this.usuari = usuari;
     }
