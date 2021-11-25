@@ -42,8 +42,20 @@
     <string name="tornar_al_login">Tornar al login</string>
 
     //Settings UI
-    <string name="canvi_de_clau">Canvi de clau</string>
-    <string name="canvi_de_veu">Canvi de veu</string>
+    <string name="description_canvi_de_clau">Canvi de clau</string>
+    <string name="description_canvi_de_veu">Canvi de veu</string>
+    <string name="text_canviar_clau_settings">\tCanviar clau </string>
+    <string name="text_canviar_veu_settings">\tCanviar veu </string>
+
+    //Fragment change voice UI
+    <string name="hint_acceptar_change_voice">Acceptar</string>
+    <string name="hint_clau_change_voice">Clau</string>
+
+    //Fragment change password UI
+    <string name="hint_clau_actual_change_password">Clau actual</string>
+    <string name="hint_clau_nova_change_password">Clau nova</string>
+    <string name="hint_repetir_clau_nova_change_password">Repetir clau nova</string>
+    <string name="hint_acceptar_change_password">Acceptar</string>
 
     //Generals UI
     <string name="emailEditTextHint">Email</string>
@@ -57,6 +69,21 @@
     <string name="menu_title_comunicador">Comunicador</string>
     <string name="menu_title_configuracio">Configuració</string>
     <string name="menu_title_administracio">Administració</string>
+
+    //Fragments views description.
+    <string name="user_second_background_description">user second background</string>
+    <string name="user_first_background_description">user first background</string>
+    <string name="user_add_page_description">user add page</string>
+    <string name="user_control_icons_description">user control icons description</string>
+    <string name="user_control_stop_description">user control stop description</string>
+    <string name="user_control_play_description">user control play description</string>
+    <string name="user_toolbar_delete_all_description">user toolbar delete all description</string>
+    <string name="user_toolbar_settings_description">user toolbar settings description</string>
+    <string name="user_toolbar_delete_description">user toolbar delete description</string>
+    <string name="user_toolbar_translate_description">user toolbar translate description</string>
+    <string name="user_toolbar_add_icon_description">user toolbar add icon description</string>
+    <string name="user_toolbar_forward_description">user toolbar forward description</string>
+    <string name="user_toolbar_edtittext_description">user toolbar edtittext description</string>
 
     //Spinners
     <string-array name="search_options">
@@ -87,6 +114,5 @@
         <item>ROLE_ADMIN</item>
         <item>ROLE_USER</item>
     </string-array>
-
 
 </resources>

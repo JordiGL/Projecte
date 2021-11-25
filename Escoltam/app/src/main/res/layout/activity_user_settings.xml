@@ -26,22 +26,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text=" Canviar clau "
+        android:text="@string/text_canviar_clau_settings"
         android:background="@drawable/principal_button_settings_top_round"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/canvi_de_clau" />
+        android:contentDescription="@string/description_canvi_de_clau" />
 
     <Button
         android:id="@+id/btnChangeVoiceUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=" Canviar veu "
+        android:text="@string/text_canviar_veu_settings"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/btnChangePasswordUser"
         app:layout_constraintStart_toEndOf="@+id/btnChangePasswordUser"
         app:layout_constraintTop_toTopOf="@+id/btnChangePasswordUser"
         android:background="@drawable/button_middle_top_round"
-        android:contentDescription="@string/canvi_de_veu" />
+        android:contentDescription="@string/description_canvi_de_veu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
