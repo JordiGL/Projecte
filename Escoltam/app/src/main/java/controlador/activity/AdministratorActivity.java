@@ -11,11 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,25 +22,18 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import controlador.gestor.GestorAdministrator;
 import controlador.gestor.GestorSharedPreferences;
-import controlador.gestor.GestorSignUp;
 import controlador.server.get.UsuarisListLoader;
 import jordigomez.ioc.cat.escoltam.R;
-import model.Role;
 import model.Usuari;
 
 /**
@@ -55,12 +46,18 @@ import model.Usuari;
 public class AdministratorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>,PopupMenu.OnMenuItemClickListener {
     private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     private static final String CERCA_SENSE_RESULTAT = "No s'ha obtingut cap resultat";
+    private static final String INTENT_VALUE_ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String TOKEN_BUNDLE_KEY = "token";
+    private static final String URL_BUNDLE_KEY = "url";
+    private static final String TOT_OPTION = "Tot";
+    private static final String EMAIL_OPTION = "Email";
+    private static final String VEU_OPTION = "Veu";
+    private static final String ROL_OPTION = "Rol";
     private AutoCompleteTextView cercador;
     private List<Usuari> mUsuaris;
     private RecyclerView mRecyclerView;
     private UsuariAdapter mAdapter;
     private GestorSharedPreferences  gestorSharedPreferences;
-    private String adminEmail;
     private GestorAdministrator gestorAdministrator;
 
     @Override
@@ -81,12 +78,9 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
         mRecyclerView.setAdapter(mAdapter);
 
         gestorAdministrator = new GestorAdministrator();
-        //Obtenim el correu
-        Intent intent = getIntent();
-        adminEmail = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
 
         ImageView settings = findViewById(R.id.buttonMore);
-        //Afegir al menu
+        //Afegir el menu al boto de settings
         registerForContextMenu(settings);
 
         //Objecte selector.
@@ -156,21 +150,21 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
         gestorAdministrator.setCercadorText(cercador.getText().toString());
 
         switch(opcio){
-            case "Email":
+            case EMAIL_OPTION:
 
                 if(!gestorAdministrator.emailChecker()){
                     cercador.setError(gestorAdministrator.getError());
                     return false;
                 }
                 break;
-            case "Rol":
+            case ROL_OPTION:
 
                 if(!gestorAdministrator.roleChecker()){
                     cercador.setError(gestorAdministrator.getError());
                     return false;
                 }
                 break;
-            case "Veu":
+            case VEU_OPTION:
 
                 if(!gestorAdministrator.voiceChecker()){
                     cercador.setError(gestorAdministrator.getError());
@@ -206,39 +200,39 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
 
             switch (selection) {
 
-                case "Tot":
+                case TOT_OPTION:
 
                     queryBundle = new Bundle();
-                    queryBundle.putString("token", token);
-                    queryBundle.putString("url", "");
+                    queryBundle.putString(TOKEN_BUNDLE_KEY, token);
+                    queryBundle.putString(URL_BUNDLE_KEY, "");
                     break;
 
-                case "Email":
+                case EMAIL_OPTION:
 
                     queryBundle = new Bundle();
-                    queryBundle.putString("token", token);
-                    queryBundle.putString("url", "/"+textIntroduit);
+                    queryBundle.putString(TOKEN_BUNDLE_KEY, token);
+                    queryBundle.putString(URL_BUNDLE_KEY, "/"+textIntroduit);
                     break;
 
-                case "Veu":
+                case VEU_OPTION:
 
                     queryBundle = new Bundle();
-                    queryBundle.putString("token", token);
-                    queryBundle.putString("url", "/voice/" + textIntroduit.toUpperCase());
+                    queryBundle.putString(TOKEN_BUNDLE_KEY, token);
+                    queryBundle.putString(URL_BUNDLE_KEY, "/voice/" + textIntroduit.toUpperCase());
                     break;
 
-                case "Rol":
+                case ROL_OPTION:
 
                     queryBundle = new Bundle();
-                    queryBundle.putString("token", token);
-                    queryBundle.putString("url", "/roles/" + textIntroduit.toUpperCase());
+                    queryBundle.putString(TOKEN_BUNDLE_KEY, token);
+                    queryBundle.putString(URL_BUNDLE_KEY, "/roles/" + textIntroduit.toUpperCase());
                     break;
 
                 default:
 
                     queryBundle = new Bundle();
-                    queryBundle.putString("token", "");
-                    queryBundle.putString("url", "");
+                    queryBundle.putString(TOKEN_BUNDLE_KEY, "");
+                    queryBundle.putString(URL_BUNDLE_KEY, "");
                     break;
             }
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
@@ -254,8 +248,8 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
 
         if (args != null) {
 
-            token = args.getString("token");
-            opcioUrl = args.getString("url");
+            token = args.getString(TOKEN_BUNDLE_KEY);
+            opcioUrl = args.getString(URL_BUNDLE_KEY);
         }
 
         return new UsuarisListLoader(this, opcioUrl, token);
@@ -272,6 +266,10 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
             mRecyclerView.setAdapter(mAdapter);
 
         } else{
+            mUsuaris = new ArrayList<>();
+            mAdapter = new UsuariAdapter(mUsuaris, AdministratorActivity.this);
+            mRecyclerView.setAdapter(mAdapter);
+
             displayToast(CERCA_SENSE_RESULTAT);
         }
     }
@@ -316,7 +314,7 @@ public class AdministratorActivity extends AppCompatActivity implements LoaderMa
             case R.id.context_comunicador:
 
                 Intent intentComunicador = new Intent(AdministratorActivity.this, UserActivity.class);
-                intentComunicador.putExtra(EXTRA_MESSAGE, "ROLE_ADMIN");
+                intentComunicador.putExtra(EXTRA_MESSAGE, INTENT_VALUE_ROLE_ADMIN);
                 startActivity(intentComunicador);
                 finish();
                 return true;

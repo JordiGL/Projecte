@@ -28,6 +28,7 @@ public class ChangeVoiceFragment extends Fragment {
     private static final String RADIO_BUTTON_COMPARED_TEXT = "Masculina";
     private static final String MALE = "MALE";
     private static final String FEMALE = "FEMALE";
+    public static final String ERROR = "Error";
     public OnFragmentInteractionListener mListener;
     private String voiceUsuari;
 
@@ -89,7 +90,7 @@ public class ChangeVoiceFragment extends Fragment {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new ClassCastException(context.toString()
-                    + "Error");
+                    + ERROR);
         }
     }
 

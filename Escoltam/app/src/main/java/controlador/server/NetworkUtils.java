@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 
+import controlador.gestor.JsonUtils;
 import model.Usuari;
 
 /**
@@ -22,8 +23,6 @@ import model.Usuari;
  * @author Jordi Gómez Lozano.
  */
 public class NetworkUtils extends Connexio{
-    private static final String USER_TOKEN_JSON_KEY = "access_token";
-    private static final String ERROR_JSON_KEY = "Error";
     private static final String CHARSET_NAME = "UTF-8";
     private static final String METODE_PETICIO_POST = "POST";
     private static final String METODE_PETICIO_PUT = "PUT";
@@ -61,7 +60,7 @@ public class NetworkUtils extends Connexio{
 
             if(responseCode == HttpURLConnection.HTTP_OK){
                 InputStream data = connexio.getInputStream();
-                queryBundle.putString(TOKEN_BUNDLE_KEY, obtenirToken(bytesToString(data)));
+                queryBundle.putString(TOKEN_BUNDLE_KEY, JsonUtils.obtenirToken(bytesToString(data)));
             }
 
         }catch (Exception e){
@@ -98,7 +97,7 @@ public class NetworkUtils extends Connexio{
             InputStream error = connexio.getErrorStream();
 
             if(error != null){
-                serverInfo = getErrorInfo(bytesToString(error));
+                serverInfo = JsonUtils.getErrorInfo(bytesToString(error));
             }
 
             responseCode = connexio.getResponseCode();
@@ -274,30 +273,6 @@ public class NetworkUtils extends Connexio{
         }
 
         return into.toString(CHARSET_NAME);
-    }
-
-    /**
-     * Obtinc la dada de l'error del JSON que rebo.
-     * @param data dades del servidor.
-     * @return l'error rebut pel servidor.
-     * @throws JSONException
-     * @author Jordi Gómez Lozano.
-     */
-    private static String getErrorInfo(String data) throws JSONException {
-        JSONObject access_token = new JSONObject(data);
-        return access_token.getString(ERROR_JSON_KEY);
-    }
-
-    /**
-     * Obtinc la dada del token del JSON que rebo, aquest té altres dades.
-     * @param data
-     * @return
-     * @throws JSONException
-     * @author Jordi Gómez Lozano.
-     */
-    private static String obtenirToken(String data) throws JSONException {
-        JSONObject access_token = new JSONObject(data);
-        return access_token.getString(USER_TOKEN_JSON_KEY);
     }
 
     //Métodes creats només per a fer tests

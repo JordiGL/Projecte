@@ -22,6 +22,7 @@ import jordigomez.ioc.cat.escoltam.R;
  */
 public class ChangePasswordFragment extends Fragment {
 
+    public static final String ERROR = "Error";
     OnFragmentInteractionListener mListener;
 
 
@@ -69,7 +70,7 @@ public class ChangePasswordFragment extends Fragment {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new ClassCastException(context.toString()
-                    + "Error");
+                    + ERROR);
         }
     }
 }

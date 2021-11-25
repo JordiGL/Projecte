@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         logo.setAnimation(animation);
 
         new Handler().postDelayed(() -> {
-            JsonUtils jsonUtils = new JsonUtils();
             GestorMain gestorMain = new GestorMain(this);
             GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
             String role;
@@ -57,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if(expiredData.after(new Date())) {
 
-                    role = jsonUtils.getRoleFromToken(token);
-                    email = jsonUtils.getEmailFromToken(token);
+                    role = JsonUtils.getRoleFromToken(token);
+                    email = JsonUtils.getEmailFromToken(token);
 
                     if(role != null) {
 
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
                     dirigirALogin();
                 }
             }else{
-
                 dirigirALogin();
             }
         }, 2000);

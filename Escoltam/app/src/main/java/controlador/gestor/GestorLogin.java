@@ -25,6 +25,7 @@ public class GestorLogin {
     private static final String PASSWORD_NUMBER_PATTERN = "[0-9]";
     private static final String MINIM_DE_CINC_CARACTERS = "Mínim de cinc caràcters";
     private static final String HA_DE_CONTENIR_UN_NUMERO = "Ha de contenir un número";
+    private static final int MAX_LENGTH_PASSWORD = 5;
     private String email;
     private String password;
     private String error;
@@ -97,7 +98,7 @@ public class GestorLogin {
             error = ERROR_EMPTY_PASSWORD;
             correcte = false;
 
-        }else if(password.length() < 5  ){
+        }else if(password.length() < MAX_LENGTH_PASSWORD){
 
             error = MINIM_DE_CINC_CARACTERS;
             correcte = false;
@@ -128,7 +129,7 @@ public class GestorLogin {
 
         if(!correcte){
 
-            error = "ERROR_EMAIL_PASSWORD";
+            error = ERROR_EMAIL_PASSWORD;
         }
 
         return correcte;

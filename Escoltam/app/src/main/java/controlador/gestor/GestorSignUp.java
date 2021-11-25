@@ -22,6 +22,7 @@ public class GestorSignUp {
     private static final String PASSWORD_NUMBER_PATTERN = "[0-9]";
     private static final String ERROR_CONTAIN_NUMBER = "Ha de contenir un número";
     private static final String ERROR_MINIMUM_NUMBERS = "Mínim de 5 caràcters";
+    private static final int MAX_LENGTH_PASSWORD = 5;
     private String email;
     private String password;
     private String conformPassword;
@@ -115,7 +116,7 @@ public class GestorSignUp {
             error = ERROR_EMPTY_PASSWORD;
             correcte = false;
 
-        }else if(password.length() < 5 ){
+        }else if(password.length() < MAX_LENGTH_PASSWORD ){
 
             error = ERROR_MINIMUM_NUMBERS;
             correcte = false;

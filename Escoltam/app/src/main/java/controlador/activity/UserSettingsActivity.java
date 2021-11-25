@@ -46,7 +46,7 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
     private static final String BUNDLE_VOICE_KEY = "voice";
     private static final String MODIFICACIO_OK = "Modificació efectuada correctament";
     private static final String MODIFICACIO_ERROR = "Error, no s'ha pogut dur a terme la modificació";
-
+    private static final String INTENT_VALUE_ROLE_USER = "ROLE_USER";
     private ChangePasswordFragment changePasswordFragment;
     private ChangeVoiceFragment changeVoiceFragment;
     private FragmentTransaction fragmentTransaction;
@@ -359,7 +359,7 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
         switch (item.getItemId()) {
             case android.R.id.home:
                 Intent intent = new Intent(this, UserActivity.class);
-                intent.putExtra(EXTRA_MESSAGE, "ROLE_USER");
+                intent.putExtra(EXTRA_MESSAGE, INTENT_VALUE_ROLE_USER);
                 startActivity(intent);
                 return true;
         }

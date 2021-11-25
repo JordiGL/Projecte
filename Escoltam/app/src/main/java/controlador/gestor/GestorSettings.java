@@ -19,6 +19,7 @@ public class GestorSettings {
     private static final String MALE = "MALE";
     private static final String FEMALE = "FEMALE";
     private static final String CLAU_INCORRECTA = "Clau incorrecta";
+    private static final int MAX_LENGTH_PASSWORD = 5;
 
     private String receivedPassword;
     private String previousPassword;
@@ -105,7 +106,7 @@ public class GestorSettings {
             error = ERROR_EMPTY_PASSWORD;
             correcte = false;
 
-        }else if(newPassword.length() < 5  ){
+        }else if(newPassword.length() < MAX_LENGTH_PASSWORD){
 
             error = MINIM_DE_CINC_CARACTERS;
             correcte = false;

@@ -12,7 +12,7 @@ import jordigomez.ioc.cat.escoltam.R;
 
 public class AdministratorTransitionActivity extends AppCompatActivity {
     private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
-    private String adminEmail;
+    private String adminRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +27,13 @@ public class AdministratorTransitionActivity extends AppCompatActivity {
 
         //Obtenim el correu
         Intent intent = getIntent();
-        adminEmail = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
+        adminRole = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
 
         btnAdmin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intentComunicador = new Intent(AdministratorTransitionActivity.this, AdministratorActivity.class);
-                intentComunicador.putExtra(EXTRA_MESSAGE, adminEmail);
+                intentComunicador.putExtra(EXTRA_MESSAGE, adminRole);
                 startActivity(intentComunicador);
                 finish();
             }
@@ -43,7 +43,7 @@ public class AdministratorTransitionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intentComunicador = new Intent(AdministratorTransitionActivity.this, UserActivity.class);
-                intentComunicador.putExtra(EXTRA_MESSAGE, adminEmail);
+                intentComunicador.putExtra(EXTRA_MESSAGE, adminRole);
                 startActivity(intentComunicador);
                 finish();
             }

@@ -176,7 +176,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         GestorLogin gestorLogin = new GestorLogin();
         GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(LoginActivity.this);
-        JsonUtils jsonUtils = new JsonUtils();
 
         if(data != null) {
 
@@ -185,11 +184,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 //Si la resposta es afirmativa(200) obtinc el rol del token i dirigeixo a l'usuari a la corresponent pantalla.
                 String token = data.getString(TOKEN_BUNDLE_KEY);
-                long expiredTime = jsonUtils.getExpireTimeFromToken(token);
-                String email = jsonUtils.getEmailFromToken(token);
+                long expiredTime = JsonUtils.getExpireTimeFromToken(token);
+                String email = JsonUtils.getEmailFromToken(token);
                 gestorSharedPreferences.saveData(token, expiredTime, email, password.getText().toString());
 
-                String role = jsonUtils.getRoleFromToken(token);
+                String role = JsonUtils.getRoleFromToken(token);
 
                 if (role == null) {
                     role = ROLE_USER;
