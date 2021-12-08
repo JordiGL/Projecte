@@ -7,6 +7,7 @@
     tools:context="controlador.activity.UserActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -39,45 +40,26 @@
 
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/favorites_fragment_container"
-        android:name="FavoritesFragmentContainer"
-        android:layout_width="0dp"
-        android:layout_height="75dp"
-        android:layout_weight=".50"
-        app:layout_constraintEnd_toStartOf="@+id/textMostrarRol"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout="@layout/fragment_user_favorites">
+<!--    <FrameLayout-->
+<!--        android:id="@+id/favorites_fragment_container"-->
+<!--        android:name="FavoritesFragmentContainer"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="75dp"-->
+<!--        android:layout_weight=".50"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/textMostrarRol"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        tools:layout="@layout/fragment_user_favorites">-->
 
-    </FrameLayout>
+<!--    </FrameLayout>-->
 
-    <Button
-        android:id="@+id/btn_LogoutClient"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/textLogoutButtonClient"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/clientTitleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="48dp"
-        android:text="@string/titleUiClient"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_LogoutClient"
-        app:layout_constraintEnd_toStartOf="@+id/btn_LogoutClient"
-        app:layout_constraintTop_toTopOf="@+id/btn_LogoutClient" />
-
-    <TextView
-        android:id="@+id/textMostrarRol"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/clientTitleText"
-        app:layout_constraintEnd_toStartOf="@+id/clientTitleText"
-        app:layout_constraintTop_toTopOf="@+id/clientTitleText" />
+<!--    <TextView-->
+<!--        android:id="@+id/textMostrarRol"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

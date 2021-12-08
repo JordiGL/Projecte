@@ -13,7 +13,7 @@
         android:layout_height="@dimen/control_dimen_button"
         android:layout_marginStart="@dimen/control_dimen_basic_margin"
         android:layout_marginEnd="@dimen/control_dimen_basic_margin"
-        android:background="@drawable/button_top_left"
+        android:background="@drawable/button_left"
         app:layout_constraintEnd_toStartOf="@+id/appCompatEditText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/appCompatEditText"
@@ -27,7 +27,7 @@
         android:layout_height="@dimen/control_dimen_button"
         android:layout_marginEnd="5dp"
         android:layout_marginStart="@dimen/control_dimen_basic_margin"
-        android:background="@drawable/button_top_right"
+        android:background="@drawable/button_right"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/appCompatEditText"
         app:layout_constraintTop_toTopOf="@+id/appCompatEditText"
@@ -38,9 +38,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="6dp"
-        android:layout_marginBottom="@dimen/control_dimen_basic_margin"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/user_button_top_right"
@@ -49,31 +49,31 @@
 
         <ImageButton
             android:id="@+id/button_delete_back"
-            android:background="@drawable/button_bottom_left"
+            android:background="@drawable/button_left"
             style="@style/control_outer_button"
             android:layout_marginEnd="4dp"
             android:src="@drawable/ic_action_delete"
             android:contentDescription="@string/user_toolbar_delete_description"/>
 
         <ImageButton
-            android:id="@+id/button_stop"
+            android:id="@+id/button_screen"
             style="@style/control_middle_buttons"
             android:layout_marginEnd="4dp"
-            android:src="@drawable/ic_action_translate"
+            android:src="@drawable/ic_action_add_screen"
             android:contentDescription="@string/user_toolbar_translate_description"/>
 
         <ImageButton
-            android:id="@+id/button_translator"
+            android:id="@+id/button_icon"
             android:layout_marginEnd="4dp"
             style="@style/control_middle_buttons"
             android:src="@drawable/ic_action_add_icon"
             android:contentDescription="@string/user_toolbar_add_icon_description"/>
 
         <ImageButton
-            android:id="@+id/button_button_play"
-            android:background="@drawable/button_bottom_right"
+            android:id="@+id/button_translator"
+            android:background="@drawable/button_right"
             style="@style/control_outer_button"
-            android:src="@drawable/ic_action_forward"
+            android:src="@drawable/ic_action_translate"
             android:contentDescription="@string/user_toolbar_forward_description"/>
 
     </LinearLayout>

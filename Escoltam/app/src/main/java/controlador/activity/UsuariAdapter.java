@@ -33,7 +33,7 @@ public class UsuariAdapter extends RecyclerView.Adapter<UsuariAdapter.ViewHolder
     @Override
     public UsuariAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(mContext).
-                inflate(R.layout.recyclerview_item, parent, false));
+                inflate(R.layout.recyclerview_user_item, parent, false));
     }
 
     @Override
