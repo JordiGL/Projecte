@@ -42,7 +42,7 @@ public class AdministratorTransitionActivity extends AppCompatActivity {
         btnCommunicator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentComunicador = new Intent(AdministratorTransitionActivity.this, ComunicatorTransitionActivity.class);
+                Intent intentComunicador = new Intent(AdministratorTransitionActivity.this, CommunicatorTransitionActivity.class);
                 intentComunicador.putExtra(EXTRA_MESSAGE, adminRole);
                 startActivity(intentComunicador);
                 finish();

@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="controlador.activity.ComunicatorTransitionActivity"
+            android:name="controlador.activity.CommunicatorTransitionActivity"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity

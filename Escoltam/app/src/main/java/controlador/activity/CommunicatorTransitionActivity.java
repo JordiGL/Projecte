@@ -6,30 +6,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.util.Pair;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.TextView;
 
-import java.util.Date;
-
-import controlador.gestor.GestorMain;
 import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.GestorUser;
-import controlador.gestor.JsonUtils;
 import controlador.server.get.PanellsListLoader;
 import jordigomez.ioc.cat.escoltam.R;
 
-public class ComunicatorTransitionActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
+public class CommunicatorTransitionActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
     private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     private static final String TOKEN_BUNDLE_KEY = "token";
     private static final String URL_BUNDLE_KEY = "url";
@@ -37,7 +26,7 @@ public class ComunicatorTransitionActivity extends AppCompatActivity implements 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_comunicator_transition);
+        setContentView(R.layout.activity_communicator_transition);
 
         //Amagar barra superior de la info del dispositiu.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
