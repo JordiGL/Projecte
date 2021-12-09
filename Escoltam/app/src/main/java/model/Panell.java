@@ -7,14 +7,12 @@ public class Panell {
     private int posicio;
     private boolean favorit;
     private List<Icona> icones;
-    private Usuari usuari;
 
-    public Panell(String nom, int posicio, boolean favorit, List<Icona> icones, Usuari usuari) {
+    public Panell(String nom, int posicio, boolean favorit, List<Icona> icones) {
         this.nom = nom;
         this.posicio = posicio;
         this.favorit = favorit;
         this.icones = icones;
-        this.usuari = usuari;
     }
 
     public String getNom() {
@@ -49,11 +47,4 @@ public class Panell {
         this.icones = icones;
     }
 
-    public Usuari getUsuari() {
-        return usuari;
-    }
-
-    public void setUsuari(Usuari usuari) {
-        this.usuari = usuari;
-    }
 }

@@ -8,16 +8,11 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
-/**
- * Classe per a crear el fil per a connectar amb el servidor.
- * @see AsyncTaskLoader
- * @author Jordi Gómez Lozano.
- */
-public class UsuarisListLoader extends AsyncTaskLoader<String> {
+public class PanellsListLoader extends AsyncTaskLoader<String> {
     private String token;
     private String opcio;
 
-    public UsuarisListLoader(@NonNull Context context,String opcio, String token) {
+    public PanellsListLoader(@NonNull Context context, String opcio, String token) {
         super(context);
         this.token = token;
         this.opcio = opcio;
@@ -25,13 +20,13 @@ public class UsuarisListLoader extends AsyncTaskLoader<String> {
 
     /**
      * Designem l'operació a fer.
-     * @return l'String amb la llista d'usuaris.
+     * @return l'String amb la llista dels panells de l'usuari.
      * @author Jordi Gómez Lozano.
      */
     @Nullable
     @Override
     public String loadInBackground() {
-        return NetworkUtils.getUsuarisData(opcio, token);
+        return NetworkUtils.getPanellsData(opcio, token);
     }
 
     /**

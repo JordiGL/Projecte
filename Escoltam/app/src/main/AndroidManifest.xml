@@ -14,9 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="controlador.server.test.activity.RequestTestActivity"
+            android:name="controlador.activity.ComunicatorTransitionActivity"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name="controlador.server.test.activity.RequestTestActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="controlador.activity.AdministratorTransitionActivity"
             android:exported="true"

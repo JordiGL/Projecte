@@ -1,6 +1,7 @@
 package controlador.server;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +30,7 @@ public class NetworkUtils extends Connexio{
     private static final String SIGN_UP_URL = "http://10.0.2.2:8080/signin";
     private static final String CHANGE_PASS_URL = "http://10.0.2.2:8080/changePassword/";
     private static final String BASIC_GET_URL = "http://10.0.2.2:8080/api/usuaris";
+    private static final String PANELLS_GET_URL = "http://10.0.2.2:8080/app/panells/";
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_URLENCODED = "application/x-www-form-urlencoded";
     private static final String URL_TOKEN = "http://10.0.2.2:8080/oauth/token";
@@ -239,7 +241,64 @@ public class NetworkUtils extends Connexio{
         }
 
         return usersJSONString;
+    }
 
+    /**
+     * Get request per a obtenir els panells dels usuaris o usuari.
+     * @param opcio part de la url del request.
+     * @param token token de l'usuari.
+     * @return dades obtingudes del servidor.
+     * @author Jordi Gómez Lozano.
+     */
+    public static String getPanellsData(String opcio, String token){
+        HttpURLConnection connexio = null;
+        BufferedReader reader = null;
+        String panellsJSONString = null;
+        int responseCode;
+
+        try{
+
+            connexio = getRequest(token, PANELLS_GET_URL+opcio);
+            responseCode = connexio.getResponseCode();
+            Log.i("Info", String.valueOf(responseCode));
+
+            InputStream inputStream = connexio.getInputStream();
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            // StringBuilder on hi guardarem la resposta.
+            StringBuilder builder = new StringBuilder();
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                builder.append(line);
+                builder.append("\n");
+            }
+
+            if (builder.length() == 0) {
+                Log.i("Info", responseCode+panellsJSONString);
+                return null;
+            }
+
+            panellsJSONString = builder.toString();
+
+            Log.i("Info", responseCode+panellsJSONString);
+
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally{
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return panellsJSONString;
     }
 
     /**

@@ -12,16 +12,6 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryLight">
 
-        <TextView
-            android:id="@+id/textIconPosition"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Posicio: "
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textIconPositionList"
@@ -29,21 +19,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="@+id/textIconPosition"
-            app:layout_constraintStart_toEndOf="@+id/textIconPosition"
-            app:layout_constraintTop_toTopOf="@+id/textIconPosition" />
-
-        <TextView
-            android:id="@+id/textIconName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Nom: "
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textIconPosition" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textIconNameList"
@@ -51,9 +29,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="@+id/textIconName"
-            app:layout_constraintStart_toEndOf="@+id/textIconName"
-            app:layout_constraintTop_toTopOf="@+id/textIconName" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textIconPositionList" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
