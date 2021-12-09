@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/appCompatEditText"
         app:layout_constraintTop_toTopOf="@+id/appCompatEditText"
-        android:src="@drawable/ic_action_settings"
+        android:src="@drawable/ic_action_more"
         android:contentDescription="@string/user_toolbar_settings_description"/>
 
     <LinearLayout

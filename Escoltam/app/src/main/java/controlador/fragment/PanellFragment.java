@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -32,14 +33,15 @@ public class PanellFragment extends Fragment {
     private PanellRecyclerAdapter mAdapter;
     private int spanCount = 3;
     private static int position;
+    private TextView panelTitle;
 
     public PanellFragment() {
 
     }
 
-    public static PanellFragment newInstance(int position) {
+    public static PanellFragment newInstance(int panelPosition) {
         PanellFragment fragment = new PanellFragment();
-        PanellFragment.position = position;
+        position = panelPosition;
         return fragment;
     }
 
@@ -52,10 +54,12 @@ public class PanellFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_panell, container, false);
-        //RecyclerView i adapter.
+        panelTitle = rootView.findViewById(R.id.titolPanell);
+        panelTitle.setText(GestorUser.mPanells.get(position).getNom());
 
         mIcones = GestorUser.mPanells.get(position).getIcones();
 
+        //RecyclerView i adapter.
         mRecyclerView = rootView.findViewById(R.id.recyclerViewPanell);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         mAdapter = new PanellRecyclerAdapter(mIcones, rootView.getContext());
