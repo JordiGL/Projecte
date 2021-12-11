@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import controlador.gestor.OnFragmentInteractionListener;
+import controlador.gestor.OnFragmentInteractionSettingsListener;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**
@@ -23,7 +23,7 @@ import jordigomez.ioc.cat.escoltam.R;
 public class ChangePasswordFragment extends Fragment {
 
     public static final String ERROR = "Error";
-    OnFragmentInteractionListener mListener;
+    OnFragmentInteractionSettingsListener mListener;
 
 
     public ChangePasswordFragment() {
@@ -32,7 +32,6 @@ public class ChangePasswordFragment extends Fragment {
     public static ChangePasswordFragment newInstance(){
         return new ChangePasswordFragment();
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,8 +65,8 @@ public class ChangePasswordFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentInteractionSettingsListener) {
+            mListener = (OnFragmentInteractionSettingsListener) context;
         } else {
             throw new ClassCastException(context.toString()
                     + ERROR);

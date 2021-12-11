@@ -1,4 +1,4 @@
-package controlador.server.get;
+package controlador.server.delete;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,25 +9,21 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
-public class PanellsListLoader extends AsyncTaskLoader<Bundle> {
+public class DeletePanellLoader extends AsyncTaskLoader<Bundle> {
+    private int idPanell;
     private String token;
-    private String opcio;
 
-    public PanellsListLoader(@NonNull Context context, String opcio, String token) {
+    public DeletePanellLoader(@NonNull Context context, int idPanell, String token) {
         super(context);
+        this.idPanell = idPanell;
         this.token = token;
-        this.opcio = opcio;
     }
 
-    /**
-     * Designem l'operació a fer.
-     * @return l'String amb la llista dels panells de l'usuari.
-     * @author Jordi Gómez Lozano.
-     */
+
     @Nullable
     @Override
     public Bundle loadInBackground() {
-        return NetworkUtils.getPanellsData(opcio, token);
+        return NetworkUtils.deletePanell(idPanell, token);
     }
 
     /**
@@ -40,4 +36,5 @@ public class PanellsListLoader extends AsyncTaskLoader<Bundle> {
         super.onStartLoading();
         forceLoad();
     }
+
 }

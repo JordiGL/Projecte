@@ -14,9 +14,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
-import controlador.gestor.OnFragmentInteractionListener;
+import controlador.gestor.OnFragmentInteractionSettingsListener;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**
@@ -28,8 +27,8 @@ public class ChangeVoiceFragment extends Fragment {
     private static final String RADIO_BUTTON_COMPARED_TEXT = "Masculina";
     private static final String MALE = "MALE";
     private static final String FEMALE = "FEMALE";
-    public static final String ERROR = "Error";
-    public OnFragmentInteractionListener mListener;
+    private static final String ERROR = "Error";
+    private OnFragmentInteractionSettingsListener mListener;
     private String voiceUsuari;
 
     public ChangeVoiceFragment() {
@@ -86,8 +85,8 @@ public class ChangeVoiceFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentInteractionSettingsListener) {
+            mListener = (OnFragmentInteractionSettingsListener) context;
         } else {
             throw new ClassCastException(context.toString()
                     + ERROR);

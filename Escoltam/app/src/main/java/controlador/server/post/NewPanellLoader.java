@@ -1,4 +1,4 @@
-package controlador.server.get;
+package controlador.server.post;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,25 +9,24 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
-public class PanellsListLoader extends AsyncTaskLoader<Bundle> {
-    private String token;
-    private String opcio;
 
-    public PanellsListLoader(@NonNull Context context, String opcio, String token) {
+public class NewPanellLoader extends AsyncTaskLoader<Bundle> {
+    private String panell;
+    private String username;
+    private String token;
+
+    public NewPanellLoader(@NonNull Context context, String panell, String username, String token) {
         super(context);
+        this.panell = panell;
+        this.username = username;
         this.token = token;
-        this.opcio = opcio;
     }
 
-    /**
-     * Designem l'operació a fer.
-     * @return l'String amb la llista dels panells de l'usuari.
-     * @author Jordi Gómez Lozano.
-     */
+
     @Nullable
     @Override
     public Bundle loadInBackground() {
-        return NetworkUtils.getPanellsData(opcio, token);
+        return NetworkUtils.addNewPanell(panell, username, token);
     }
 
     /**

@@ -1,5 +1,7 @@
 package controlador.server;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -47,6 +49,45 @@ public class Connexio {
             conn.setInstanceFollowRedirects( false );
             conn.setRequestMethod( method );
             conn.setRequestProperty(AUTHORIZATION_KEY, AUTHORIZATION_VALUE);
+            conn.setRequestProperty(CONTENT_TYPE_KEY, contentType);
+            conn.setRequestProperty(CHARSET_KEY, CHARSET_VALUE);
+            conn.setRequestProperty(CONTENT_LENGTH_KEY, Integer.toString( postDataLength ));
+            conn.setUseCaches( false );
+
+            conn.setConnectTimeout(TIMEOUT_MILLS);
+            conn.setReadTimeout(TIMEOUT_MILLS);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+
+        return conn;
+    }
+
+    /**
+     * Estableix la connexió amb el servidor per a fer una petició POST per a afegir un panell.
+     * @param postDataLength la allargada del Content-length.
+     * @param method el metode del request.
+     * @param requestUrl la url de connexió per a fer la petició.
+     * @param contentType el tipus de contingut.
+     * @param token el token de l'usuari.
+     * @return la connexió amb el servidor
+     * @author Jordi Gómez Lozano
+     */
+    public static HttpURLConnection postRequestPanell(int postDataLength, String method,
+            String requestUrl, String contentType, String token){
+        try {
+
+            URL url = new URL( requestUrl );
+            conn= (HttpURLConnection) url.openConnection();
+            conn.setDoOutput( true );
+            conn.setInstanceFollowRedirects( false );
+            conn.setRequestMethod( method );
+            conn.setRequestProperty(AUTHORIZATION_KEY, BEARER + token);
             conn.setRequestProperty(CONTENT_TYPE_KEY, contentType);
             conn.setRequestProperty(CHARSET_KEY, CHARSET_VALUE);
             conn.setRequestProperty(CONTENT_LENGTH_KEY, Integer.toString( postDataLength ));
@@ -124,6 +165,40 @@ public class Connexio {
 
             conn.setConnectTimeout(TIMEOUT_MILLS);
             conn.setReadTimeout(TIMEOUT_MILLS);
+
+        } catch (IOException e){
+
+            e.printStackTrace();
+            if (conn != null) {
+                conn.disconnect();
+            }
+
+
+        }
+
+        return conn;
+    }
+
+    /**
+     * Estableix la connexió amb el servidor per a fer una petició GET.
+     * @param token token de l'usuari.
+     * @param url la url de connexió per a fer la petició.
+     * @return la connexió amb el servidor.
+     * @author Jordi Gómez Lozano.
+     */
+    public static HttpURLConnection deleteRequest(String token, String url){
+
+        try{
+            URL requestURL = new URL(url);
+
+            conn = (HttpURLConnection) requestURL.openConnection();
+            conn.setRequestProperty("Authorization","Bearer "+ token);
+            conn.setRequestMethod("DELETE");
+
+            conn.setConnectTimeout(TIMEOUT_MILLS);
+            conn.setReadTimeout(TIMEOUT_MILLS);
+
+            Log.i("Info", "entra");
 
         } catch (IOException e){
 

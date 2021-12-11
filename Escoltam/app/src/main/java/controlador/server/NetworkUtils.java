@@ -3,9 +3,6 @@ package controlador.server;
 import android.os.Bundle;
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -30,13 +27,20 @@ public class NetworkUtils extends Connexio{
     private static final String SIGN_UP_URL = "http://10.0.2.2:8080/signin";
     private static final String CHANGE_PASS_URL = "http://10.0.2.2:8080/changePassword/";
     private static final String BASIC_GET_URL = "http://10.0.2.2:8080/api/usuaris";
-    private static final String PANELLS_GET_URL = "http://10.0.2.2:8080/app/panells/";
+    private static final String PANELLS_URL = "http://10.0.2.2:8080/app/panells/";
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_URLENCODED = "application/x-www-form-urlencoded";
     private static final String URL_TOKEN = "http://10.0.2.2:8080/oauth/token";
     private static final String RESPONSE_CODE_BUNDLE_KEY = "responseCode";
     private static final String TOKEN_BUNDLE_KEY = "token";
+    private static final String PANELLS_BUNDLE_KEY = "panells";
     private static final String SERVER_INFO_BUNDLE_KEY = "serverInfo";
+    private static final String OPTION_BUNDLE_KEY = "opcio";
+    private static final String LIST_PANELLS_OPTION = "list";
+    private static final String ADD_PANELL_OPTION = "add";
+    private static final String DELETE_PANELL_INFO_BUNDLE_KEY = "delete_panell_info";
+    private static final String DELETE_PANELL_OPTION = "delete";
+    private static final String ID_PANELL_BUNDLE_KEY = "id_panell";
 
     /**
      * Post request al servidor per obtenir el token.
@@ -243,45 +247,52 @@ public class NetworkUtils extends Connexio{
         return usersJSONString;
     }
 
+//DELETE PANELL
     /**
-     * Get request per a obtenir els panells dels usuaris o usuari.
+     * Delete request per a eliminar un panell.
      * @param opcio part de la url del request.
      * @param token token de l'usuari.
      * @return dades obtingudes del servidor.
      * @author Jordi Gómez Lozano.
      */
-    public static String getPanellsData(String opcio, String token){
+    public static Bundle deletePanell(int opcio, String token){
         HttpURLConnection connexio = null;
         BufferedReader reader = null;
-        String panellsJSONString = null;
+        String infoJSONString = null;
+        Bundle queryBundle = null;
         int responseCode;
 
         try{
 
-            connexio = getRequest(token, PANELLS_GET_URL+opcio);
+            connexio = deleteRequest(token, PANELLS_URL+opcio);
             responseCode = connexio.getResponseCode();
             Log.i("Info", String.valueOf(responseCode));
+            queryBundle = new Bundle();
+            queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, responseCode);
 
-            InputStream inputStream = connexio.getInputStream();
-            reader = new BufferedReader(new InputStreamReader(inputStream));
+            if(responseCode == HttpURLConnection.HTTP_OK) {
 
-            // StringBuilder on hi guardarem la resposta.
-            StringBuilder builder = new StringBuilder();
+                InputStream inputStream = connexio.getInputStream();
+                reader = new BufferedReader(new InputStreamReader(inputStream));
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                builder.append(line);
-                builder.append("\n");
+                // StringBuilder on hi guardarem la resposta.
+                StringBuilder builder = new StringBuilder();
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                    builder.append("\n");
+                }
+
+                if (builder.length() == 0) {
+                    return null;
+                }
+
+                infoJSONString = builder.toString();
+                queryBundle.putString(DELETE_PANELL_INFO_BUNDLE_KEY, infoJSONString);
+                queryBundle.putString(OPTION_BUNDLE_KEY, DELETE_PANELL_OPTION);
+                queryBundle.putInt(ID_PANELL_BUNDLE_KEY, opcio);
             }
-
-            if (builder.length() == 0) {
-                Log.i("Info", responseCode+panellsJSONString);
-                return null;
-            }
-
-            panellsJSONString = builder.toString();
-
-            Log.i("Info", responseCode+panellsJSONString);
 
         } catch (IOException e){
             e.printStackTrace();
@@ -298,7 +309,117 @@ public class NetworkUtils extends Connexio{
             }
         }
 
-        return panellsJSONString;
+        return queryBundle;
+    }
+
+    /**
+     * Get request per a obtenir els panells dels usuaris o usuari.
+     * @param opcio part de la url del request.
+     * @param token token de l'usuari.
+     * @return dades obtingudes del servidor.
+     * @author Jordi Gómez Lozano.
+     */
+    public static Bundle getPanellsData(String opcio, String token){
+        HttpURLConnection connexio = null;
+        BufferedReader reader = null;
+        String panellsJSONString = null;
+        Bundle queryBundle = null;
+        int responseCode;
+
+        try{
+
+            connexio = getRequest(token, PANELLS_URL +opcio);
+            responseCode = connexio.getResponseCode();
+
+            queryBundle = new Bundle();
+            queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, responseCode);
+
+            if(responseCode == HttpURLConnection.HTTP_OK){
+
+                InputStream inputStream = connexio.getInputStream();
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                // StringBuilder on hi guardarem la resposta.
+                StringBuilder builder = new StringBuilder();
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                    builder.append("\n");
+                }
+
+                if (builder.length() == 0) {
+                    return null;
+                }
+
+                panellsJSONString = builder.toString();
+
+                queryBundle.putString(PANELLS_BUNDLE_KEY, panellsJSONString);
+                queryBundle.putString(OPTION_BUNDLE_KEY, LIST_PANELLS_OPTION);
+            }
+
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally{
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return queryBundle;
+    }
+
+
+    /**
+     * Post request al servidor per afegir un nou panell.
+     * @param panell panell a afegir al servidor.
+     * @return un Bundle amb el codi de resposta i possible informació d'error.
+     * @author Jordi Gómez Lozano.
+     */
+    public static Bundle addNewPanell(String panell, String opcio, String token){
+        Bundle queryBundle = null;
+        String serverInfo = "";
+        HttpURLConnection connexio = null;
+        int responseCode = 0;
+        try{
+            byte[] postData = panell.getBytes(StandardCharsets.UTF_8);
+            int postDataLength = postData.length;
+            connexio = postRequestPanell(postDataLength, METODE_PETICIO_POST, PANELLS_URL+opcio, APPLICATION_JSON, token);
+
+            DataOutputStream wr = new DataOutputStream(connexio.getOutputStream());
+
+            wr.write(postData);
+
+            InputStream error = connexio.getErrorStream();
+
+            if(error != null){
+                serverInfo = error.toString();
+            }
+
+            responseCode = connexio.getResponseCode();
+
+            queryBundle = new Bundle();
+            queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, responseCode);
+            queryBundle.putString(SERVER_INFO_BUNDLE_KEY, serverInfo);
+            queryBundle.putString(OPTION_BUNDLE_KEY, ADD_PANELL_OPTION);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+        }
+
+        return queryBundle;
     }
 
     /**

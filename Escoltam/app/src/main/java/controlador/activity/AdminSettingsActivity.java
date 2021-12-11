@@ -9,11 +9,9 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -28,7 +26,7 @@ import controlador.fragment.ChangePasswordFragment;
 import controlador.fragment.ChangeVoiceFragment;
 import controlador.gestor.GestorSettings;
 import controlador.gestor.GestorSharedPreferences;
-import controlador.gestor.OnFragmentInteractionListener;
+import controlador.gestor.OnFragmentInteractionSettingsListener;
 import controlador.server.put.ChangePasswordLoader;
 import controlador.server.put.ChangeVoiceLoader;
 import io.github.muddz.styleabletoast.StyleableToast;
@@ -36,11 +34,11 @@ import jordigomez.ioc.cat.escoltam.R;
 
 /**
  * Classe de la configuració de l'usuari per a canviar la clau o la veu.
- * @see OnFragmentInteractionListener
+ * @see OnFragmentInteractionSettingsListener
  * @see LoaderManager
  * @author Jordi Gómez Lozano.
  */
-public class AdminSettingsActivity extends AppCompatActivity implements OnFragmentInteractionListener, LoaderManager.LoaderCallbacks<Integer> {
+public class AdminSettingsActivity extends AppCompatActivity implements OnFragmentInteractionSettingsListener, LoaderManager.LoaderCallbacks<Integer> {
 
     private static final String BUNDLE_TOKEN_KEY = "token";
     private static final String BUNDLE_EMAIL_KEY = "email";

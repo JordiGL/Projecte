@@ -6,21 +6,25 @@
     tools:context="controlador.fragment.PanellFragment">
 
 
-    <TextView
+    <EditText
         android:id="@+id/titolPanell"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
         android:paddingStart="8dp"
+        android:background="@color/white"
         android:paddingTop="8dp"
         android:textSize="30sp"
         android:textColor="@color/colorPrimaryDark"
+        android:maxLines="1"
+        android:inputType="text"
+        android:imeOptions="actionNext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/deletePanell"
+        android:id="@+id/optionsPanell"
         android:layout_width="@dimen/control_dimen_button"
         android:layout_height="@dimen/control_dimen_button"
         android:layout_marginTop="3dp"

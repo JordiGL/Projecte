@@ -22,24 +22,20 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.net.HttpURLConnection;
 
 import controlador.fragment.ChangePasswordFragment;
 import controlador.fragment.ChangeVoiceFragment;
 import controlador.gestor.GestorSettings;
 import controlador.gestor.GestorSharedPreferences;
-import controlador.gestor.OnFragmentInteractionListener;
-import controlador.server.get.UsuarisListLoader;
+import controlador.gestor.OnFragmentInteractionSettingsListener;
 import controlador.server.put.ChangePasswordLoader;
 import controlador.server.put.ChangeVoiceLoader;
 import io.github.muddz.styleabletoast.StyleableToast;
 import jordigomez.ioc.cat.escoltam.R;
 
-public class UserSettingsActivity extends AppCompatActivity implements OnFragmentInteractionListener, LoaderManager.LoaderCallbacks<Integer>{
-    public final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
+public class UserSettingsActivity extends AppCompatActivity implements OnFragmentInteractionSettingsListener, LoaderManager.LoaderCallbacks<Integer>{
+    private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     private static final String BUNDLE_TOKEN_KEY = "token";
     private static final String BUNDLE_EMAIL_KEY = "email";
     private static final String BUNDLE_PASSWORD_KEY = "password";

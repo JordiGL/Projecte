@@ -20,6 +20,7 @@ public class GestorSharedPreferences {
     private static final String SHARED_PREFERENCES_EMAIL_KEY = "user_name";
     private static final String SHARED_PREFERENCES_PASSWORD_KEY = "password";
     private static final String ARXIU = "InfoObt";
+    public static final String SHARED_PREFERENCES_EDIT_TEXT_CONTENT_KEY = "edit_text_content";
     private Context context;
 
     public GestorSharedPreferences(Context context){
@@ -123,6 +124,16 @@ public class GestorSharedPreferences {
     }
 
     /**
+     * Obte el contingut de l'edittext de l'arxiu.
+     * @return l'string corresponent del contingut
+     * @author Jordi Gómez Lozano
+     */
+    public String getEtitTextContent() {
+        SharedPreferences sharedPreferences =  getEncryptedSharedPreferences();
+        return sharedPreferences.getString(SHARED_PREFERENCES_EDIT_TEXT_CONTENT_KEY, null);
+    }
+
+    /**
      * Modifica la clau a l'arxiu.
      * @param newPassword la clau a guardar.
      * @author Jordi Gómez Lozano
@@ -130,6 +141,16 @@ public class GestorSharedPreferences {
     public void setPassword(String newPassword) {
         SharedPreferences sharedPreferences =  getEncryptedSharedPreferences();
         sharedPreferences.edit().putString(SHARED_PREFERENCES_PASSWORD_KEY, newPassword).apply();
+    }
+
+    /**
+     * Guarda el contingut de l'edittext a l'arxiu.
+     * @param content el contingut a guardar.
+     * @author Jordi Gómez Lozano
+     */
+    public void setEditTextContent(String content) {
+        SharedPreferences sharedPreferences =  getEncryptedSharedPreferences();
+        sharedPreferences.edit().putString(SHARED_PREFERENCES_EDIT_TEXT_CONTENT_KEY, content).apply();
     }
 
 }

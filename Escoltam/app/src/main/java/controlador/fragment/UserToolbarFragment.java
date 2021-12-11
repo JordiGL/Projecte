@@ -1,8 +1,10 @@
 package controlador.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 
@@ -18,11 +20,10 @@ import android.widget.ImageButton;
 import controlador.activity.AdminSettingsActivity;
 import controlador.activity.AdministratorActivity;
 import controlador.activity.LoginActivity;
-import controlador.activity.UserActivity;
 import controlador.activity.UserSettingsActivity;
-import controlador.gestor.GestorAdministrator;
 import controlador.gestor.GestorSharedPreferences;
-import controlador.gestor.OnFragmentInteractionListener;
+
+import controlador.gestor.OnFragmentInteractionUserListener;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**
@@ -31,10 +32,12 @@ import jordigomez.ioc.cat.escoltam.R;
  * @author Jordi Gómez Lozano.
  */
 public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuItemClickListener{
+    private static final String ERROR = "Error";
     private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     private static final String ROLE_KEY = "role";
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private static final String ROLE_USER = "ROLE_USER";
+    private OnFragmentInteractionUserListener mListener;
     private static String role;
     private View rootView;
 
@@ -61,6 +64,7 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
         rootView =  inflater.inflate(R.layout.fragment_user_toolbar, container, false);
         final EditText editText = rootView.findViewById(R.id.appCompatEditText);
         final ImageButton settings = (ImageButton) rootView.findViewById(R.id.user_button_top_right);
+        final ImageButton addPanel = rootView.findViewById(R.id.button_screen);
 
         editText.setShowSoftInputOnFocus(false);
         editText.setInputType(InputType.TYPE_NULL);
@@ -76,6 +80,13 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
 
                 openMoreMenuOptions(v);
 
+            }
+        });
+
+        addPanel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onToolbarButtonPressed(addPanel);
             }
         });
 
@@ -134,6 +145,18 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
 
             default:
                 return super.onContextItemSelected(item);
+        }
+    }
+
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionUserListener) {
+            mListener = (OnFragmentInteractionUserListener) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + ERROR);
         }
     }
 

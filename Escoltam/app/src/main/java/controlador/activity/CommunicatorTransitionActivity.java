@@ -11,17 +11,28 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+
 import android.view.WindowManager;
+import android.widget.Toast;
+
+import java.net.HttpURLConnection;
 
 import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.GestorUser;
 import controlador.server.get.PanellsListLoader;
 import jordigomez.ioc.cat.escoltam.R;
 
-public class CommunicatorTransitionActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
+/**
+ * Classe de transició cap al comunicador per a carregar els panells
+ * @author Jordi Gómez Lozano
+ */
+public class CommunicatorTransitionActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Bundle>{
+    private static final String PANELLS_BUNDLE_KEY = "panells";
+    private static final String RESPONSE_CODE_BUNDLE_KEY = "responseCode";
     private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     private static final String TOKEN_BUNDLE_KEY = "token";
     private static final String URL_BUNDLE_KEY = "url";
+    private static final String ERROR_GET_PANELLS = "Error en obtenir la llista de panells";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +84,7 @@ public class CommunicatorTransitionActivity extends AppCompatActivity implements
 
     @NonNull
     @Override
-    public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
+    public Loader<Bundle> onCreateLoader(int id, @Nullable Bundle args) {
         String token ="";
         String opcioUrl ="";
 
@@ -87,17 +98,39 @@ public class CommunicatorTransitionActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<String> loader, String data) {
-        GestorUser.createObjectsFromObtainedData(data);
+    public void onLoadFinished(@NonNull Loader<Bundle> loader, Bundle data) {
+        String panells ="";
+        int responseCode;
 
-        Intent intentComunicador = new Intent(this, UserActivity.class);
-        intentComunicador.putExtra(EXTRA_MESSAGE, "ROLE_ADMIN");
-        startActivity(intentComunicador);
+        if (data != null) {
+            responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
 
+            if(responseCode == HttpURLConnection.HTTP_OK){
+
+                panells = data.getString(PANELLS_BUNDLE_KEY);
+                GestorUser.createObjectsFromObtainedData(panells);
+                Intent intentComunicador = new Intent(this, UserActivity.class);
+//Eliminar
+                intentComunicador.putExtra(EXTRA_MESSAGE, "ROLE_ADMIN");
+                startActivity(intentComunicador);
+            } else {
+                displayToast(ERROR_GET_PANELLS);
+            }
+        }
+    }
+
+    /**
+     * Mostra informació per pantalla.
+     * @param message missatge que es mostrara per pantalla.
+     * @author Jordi Gómez Lozano.
+     */
+    public void displayToast(String message) {
+        Toast.makeText(getApplicationContext(), message,
+                Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<String> loader) {
+    public void onLoaderReset(@NonNull Loader<Bundle> loader) {
 
     }
 

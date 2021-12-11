@@ -3,6 +3,7 @@ package model;
 import java.util.List;
 
 public class Panell {
+    private int id;
     private String nom;
     private int posicio;
     private boolean favorit;
@@ -13,6 +14,15 @@ public class Panell {
         this.posicio = posicio;
         this.favorit = favorit;
         this.icones = icones;
+        this.id = 0;
+    }
+
+    public Panell(String nom, int posicio, boolean favorit, List<Icona> icones, int id) {
+        this.nom = nom;
+        this.posicio = posicio;
+        this.favorit = favorit;
+        this.icones = icones;
+        this.id = id;
     }
 
     public String getNom() {
@@ -47,4 +57,21 @@ public class Panell {
         this.icones = icones;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        String panell =
+                "{\"nom\": \""+getNom()+"\"," +
+                "\"posicio\": \""+getPosicio()+"\"," +
+                "\"favorit\": \""+isFavorit()+"\""+
+                "}";
+        return panell;
+    }
 }

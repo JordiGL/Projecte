@@ -4,32 +4,33 @@ import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import model.Icona;
 import model.Panell;
-import model.Role;
-import model.Usuari;
-
-//CREAR CLASEE STATIC?
 
 
+/**
+ * Classe gestora dels Panells
+ * @author Jordi Gómez Lozano
+ */
 public class GestorUser {
-    public static final String ICONES_JSON = "icones";
-    public static final String ICONA_NOM_JSON = "nom";
-    public static final String ICONA_POSICIO_JSON = "posicio";
-    public static final String PANELL_NOM_JSON = "nom";
-    public static final String PANELL_POSICIO_JSON = "posicio";
-    public static final String PANELL_FAVORIT_JSON = "favorit";
-    public static List<Panell> mPanells;
+    private static final String ICONES_JSON = "icones";
+    private static final String ICONA_NOM_JSON = "nom";
+    private static final String ICONA_POSICIO_JSON = "posicio";
+    private static final String PANELL_ID_JSON = "id";
+    private static final String PANELL_NOM_JSON = "nom";
+    private static final String PANELL_POSICIO_JSON = "posicio";
+    private static final String PANELL_FAVORIT_JSON = "favorit";
+    private static List<Panell> mPanells;
+    private static int numPanells;
 
 
     public GestorUser(List<Panell> mPanells) {
-        this.mPanells = mPanells;
+        GestorUser.mPanells = mPanells;
+        GestorUser.numPanells = mPanells.size();
     }
 
     /**
@@ -41,7 +42,6 @@ public class GestorUser {
     public static List<Panell> createObjectsFromObtainedData(String obtainedServerData) {
         mPanells = new ArrayList<>();
         List<Icona> icones;
-        Log.i("Info", "JSON: "+obtainedServerData);
 
         try {
 
@@ -73,7 +73,8 @@ public class GestorUser {
                                 jsonArray.getJSONObject(i).getString(PANELL_NOM_JSON),
                                 jsonArray.getJSONObject(i).getInt(PANELL_POSICIO_JSON),
                                 jsonArray.getJSONObject(i).getBoolean(PANELL_FAVORIT_JSON),
-                                icones));
+                                icones,
+                                jsonArray.getJSONObject(i).getInt(PANELL_ID_JSON)));
                     }
                 }
             }
@@ -83,4 +84,24 @@ public class GestorUser {
 
         return mPanells;
     }
+
+    public static List<Panell> getPanells() {
+        return mPanells;
+    }
+
+    public static void setPanells(List<Panell> mPanells) {
+        GestorUser.mPanells = mPanells;
+    }
+
+    public static int getNumPanells() {
+        if(GestorUser.mPanells != null){
+            return GestorUser.mPanells.size();
+        }
+        return 0;
+    }
+
+    public static void setNumPanells(int num_panells) {
+        GestorUser.numPanells = num_panells;
+    }
+
 }
