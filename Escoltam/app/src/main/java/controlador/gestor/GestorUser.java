@@ -115,4 +115,14 @@ public class GestorUser {
 
         return false;
     }
+
+    public static Panell newPanell(int position){
+
+        return new Panell(
+                NEW_PANELL,
+                position,
+                false,
+                new ArrayList<Icona>()
+        );
+    }
 }

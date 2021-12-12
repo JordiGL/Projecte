@@ -6,9 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -74,8 +76,8 @@ public class UserActivity extends FragmentActivity
     private static final String PANELL_SUCCESSFULLY_REMOVED = "Panell eliminat correctament";
     public static final String EDIT_TEXT_SAVED_INSTANCE = "edit_text";
     private int numPanells;
-    private ViewPager2 viewPager;
-    private FragmentStateAdapter pagerAdapter;
+    private ViewPager viewPager;
+    private ScreenSlidePagerAdapter pagerAdapter;
     private UserToolbarFragment toolbarFragment;
 //    private UserFavoritesFragment favoritesFragment;
     private UserControlFragment controlFragment;
@@ -115,8 +117,9 @@ public class UserActivity extends FragmentActivity
         fragmentTransaction.commit();
 
         numPanells = GestorUser.getNumPanells();
-
+        Log.i("Info", "numPanells: "+ numPanells);
         // Instantiate a ViewPager2 and a PagerAdapter.
+        setUpViewPager();
 
         if(getSupportLoaderManager().getLoader(0)!=null){
             getSupportLoaderManager().initLoader(0,null,this);
@@ -126,87 +129,82 @@ public class UserActivity extends FragmentActivity
     @Override
     protected void onStart() {
         super.onStart();
-        setUpViewPager();
 
+//        editTextCommunicator = findViewById(R.id.appCompatEditText);
         screen = findViewById(R.id.button_screen);
-        editTextCommunicator = findViewById(R.id.appCompatEditText);
-
-
         screen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(GestorUser.containsPanell()){
-
-                   displayToast("Acaba d'editar el nou panell creat");
-
-                }else{
-                    numPanells = GestorUser.getNumPanells()+1;
-                    Log.i("Info", "entra a crear" + numPanells);
-                    GestorUser.getPanells().add(
-                            new Panell(
-                                    NAME_NEW_PANELL,
-                                    numPanells,
-                                    false,
-                                    new ArrayList<Icona>()
-                            ));
-
-                    pagerAdapter.notifyItemInserted(numPanells);
-                    viewPager.setCurrentItem(numPanells);
-                    Log.i("Info", "entra a crear" + GestorUser.getNumPanells());
-                    editTextCommunicator.setText("hola");
-
-                }
-
+                addPanell();
             }
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
-        editTextCommunicator.setText(gestorSharedPreferences.getEtitTextContent());
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
+//        editTextCommunicator.setText(gestorSharedPreferences.getEtitTextContent());
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
+//        gestorSharedPreferences.setEditTextContent(editTextCommunicator.getText().toString());
+//    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
-        gestorSharedPreferences.setEditTextContent(editTextCommunicator.getText().toString());
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putString(EDIT_TEXT_SAVED_INSTANCE, "hola");
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        editTextCommunicator.setText(savedInstanceState.getString(EDIT_TEXT_SAVED_INSTANCE));
-    }
+//    @Override
+//    public void onSaveInstanceState(Bundle savedInstanceState) {
+//        savedInstanceState.putString(EDIT_TEXT_SAVED_INSTANCE, "hola");
+//        super.onSaveInstanceState(savedInstanceState);
+//    }
+//
+//    @Override
+//    public void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        editTextCommunicator.setText(savedInstanceState.getString(EDIT_TEXT_SAVED_INSTANCE));
+//    }
 
     private void setUpViewPager() {
-        viewPager = findViewById(R.id.pager);
-        viewPager.setPageTransformer(new ZoomOutPageTransformer());
-        pagerAdapter = new UserActivity.ScreenSlidePagerAdapter(this);
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        pagerAdapter = new UserActivity.ScreenSlidePagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
     }
 
     @Override
     public void onToolbarButtonPressed(ImageButton button) {
 //        if(button.getId() == R.id.button_screen){
-//
+
+//                addPanell();
+
 //        }
+    }
+
+    public void addPanell(){
+        if(GestorUser.containsPanell()){
+            displayToast("Acaba d'editar el nou panell creat");
+
+        }else{
+            int position = GestorUser.getNumPanells()+1;
+            pagerAdapter.addView(GestorUser.newPanell(position));
+            updateViewPager(position);
+        }
+    }
+
+    public void deletePanell(){
+        int position = viewPager.getCurrentItem();
+        pagerAdapter.removeView(position);
+        updateViewPager(position - 1);
     }
 
     @Override
     public void onPanellButtonPressed(ImageButton optionsButton, EditText titleEditText, int idPanell) {
         if ((int) optionsButton.getTag() == R.drawable.ic_action_check) {
 
-            titleEditText.clearFocus();
+            titleEditText.setFocusableInTouchMode(false);
+            titleEditText.setFocusable(false);
 
             int num_panells = GestorUser.getNumPanells() - 1;
 
@@ -218,30 +216,20 @@ public class UserActivity extends FragmentActivity
             callAddPanellLoader(GestorUser.getPanells().get(num_panells));
             callGetPanellsLoader();
 
-        } else if ((int) optionsButton.getTag() == R.drawable.ic_action_settings){
+        } else if ((int) optionsButton.getTag() == R.drawable.ic_action_settings) {
 
-            if(!titleEditText.getText().toString().equals("Nou panell")){
+            if(!titleEditText.getText().toString().equals(NAME_NEW_PANELL)){
                 callDeletePanellLoader(idPanell);
-
                 callGetPanellsLoader();
             }
-
-            pagerAdapter.notifyItemRemoved(viewPager.getCurrentItem());
-
-            if(numPanells == 1){
-                numPanells = 0;
-                pagerAdapter.notifyItemRemoved(0);
-            } else {
-                Log.i("Info", "entra");
-                numPanells = GestorUser.getNumPanells()-1;
-            }
-            Log.i("Info", "numero Panells: "+ numPanells);
-            setUpViewPager();
-
-            //Refresco la activitat
-//            Intent intentComunicador = new Intent(this, UserActivity.class);
-//            startActivity(intentComunicador);
         }
+    }
+
+    public void updateViewPager(int position){
+        viewPager.setAdapter(null);
+        pagerAdapter =new UserActivity.ScreenSlidePagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setCurrentItem(position);
     }
 
     @NonNull
@@ -320,6 +308,8 @@ public class UserActivity extends FragmentActivity
                     responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
 
                     if (responseCode == HttpURLConnection.HTTP_OK) {
+
+                        deletePanell();
 
                         displayToast(PANELL_SUCCESSFULLY_REMOVED);
 
@@ -443,37 +433,34 @@ public class UserActivity extends FragmentActivity
      * @see ViewPager2
      * @author Jordi Gómez Lozano
      */
-    private class ScreenSlidePagerAdapter extends FragmentStateAdapter {
-        private int position;
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
-        public ScreenSlidePagerAdapter(FragmentActivity fa) {
-            super(fa);
+        public ScreenSlidePagerAdapter(@NonNull FragmentManager fm) {
+            super(fm);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            Log.i("Info", "posicio: "+ position);
+            return new PanellFragment(position);
         }
 
         @Override
-        public Fragment createFragment(int position) {
-            this.position = position;
-            return PanellFragment.newInstance(position);
+        public int getCount() {
+            return GestorUser.getNumPanells();
         }
 
-        @Override
-        public int getItemCount() {
-            return numPanells;
+        public void removeView(int position) {
+            GestorUser.getPanells().remove(position);
+            notifyDataSetChanged();
         }
 
-        @Override
-        public boolean containsItem(long itemId) {
-            return super.containsItem(itemId);
+        public void addView(Panell panell){
+            GestorUser.getPanells().add(panell);
+            notifyDataSetChanged();
         }
 
-        @Override
-        public long getItemId(int position) {
-            return super.getItemId(position);
-        }
-
-        public int getPosition() {
-            return position;
-        }
     }
 
 }

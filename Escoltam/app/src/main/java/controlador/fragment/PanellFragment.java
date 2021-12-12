@@ -32,24 +32,25 @@ import model.Icona;
  */
 public class PanellFragment extends Fragment{
     private static final String ERROR = "Error";
+    private static final String NAME_NEW_PANELL = "Nou panell";
     private OnFragmentInteractionPanellListener mListener;
     private static List<Icona> mIcones;
     private RecyclerView mRecyclerView;
     private PanellRecyclerAdapter mAdapter;
     private int spanCount = 3;
-    private static int position;
+    private int position;
     private EditText panellTitle;
     private ImageButton optionsButton;
 
-    public PanellFragment() {
-
+    public PanellFragment(int position) {
+        this.position = position;
     }
 
-    public static PanellFragment newInstance(int panelPosition) {
-        PanellFragment fragment = new PanellFragment();
-        position = panelPosition;
-        return fragment;
-    }
+//    public static PanellFragment newInstance(int panelPosition) {
+//        PanellFragment fragment = new PanellFragment(panelPosition);
+//        position = panelPosition;
+//        return fragment;
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,8 @@ public class PanellFragment extends Fragment{
 
         try{
             panellTitle.setText(GestorUser.getPanells().get(position).getNom());
+
+            setEditTextFocusable(false);
 
             mIcones = GestorUser.getPanells().get(position).getIcones();
 
@@ -127,4 +130,8 @@ public class PanellFragment extends Fragment{
         }
     }
 
+    private void setEditTextFocusable(boolean focusable){
+        panellTitle.setFocusableInTouchMode(focusable);
+        panellTitle.setFocusable(focusable);
+    }
 }
