@@ -24,6 +24,7 @@ public class GestorUser {
     private static final String PANELL_NOM_JSON = "nom";
     private static final String PANELL_POSICIO_JSON = "posicio";
     private static final String PANELL_FAVORIT_JSON = "favorit";
+    private static final String NEW_PANELL = "Nou panell";
     private static List<Panell> mPanells;
     private static int numPanells;
 
@@ -104,4 +105,14 @@ public class GestorUser {
         GestorUser.numPanells = num_panells;
     }
 
+    public static boolean containsPanell(){
+
+        for(Panell panell: mPanells){
+            if(panell.getNom().equals(NEW_PANELL)){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

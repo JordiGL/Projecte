@@ -180,7 +180,7 @@ public class Connexio {
     }
 
     /**
-     * Estableix la connexió amb el servidor per a fer una petició GET.
+     * Estableix la connexió amb el servidor per a fer una petició Delete.
      * @param token token de l'usuari.
      * @param url la url de connexió per a fer la petició.
      * @return la connexió amb el servidor.

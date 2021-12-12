@@ -19,7 +19,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,7 +26,6 @@ import android.widget.Toast;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.List;
 
 import controlador.fragment.PanellFragment;
 import controlador.fragment.UserControlFragment;
@@ -75,7 +73,7 @@ public class UserActivity extends FragmentActivity
     private static final String ERROR_DELETE_PANELL = "Error en eliminar el panel del servidor";
     private static final String PANELL_SUCCESSFULLY_REMOVED = "Panell eliminat correctament";
     public static final String EDIT_TEXT_SAVED_INSTANCE = "edit_text";
-    private int num_panells;
+    private int numPanells;
     private ViewPager2 viewPager;
     private FragmentStateAdapter pagerAdapter;
     private UserToolbarFragment toolbarFragment;
@@ -86,6 +84,7 @@ public class UserActivity extends FragmentActivity
     private String role;
     private ImageButton screen;
     private EditText editTextCommunicator;
+    private EditText panellTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +114,7 @@ public class UserActivity extends FragmentActivity
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
-        num_panells = GestorUser.getNumPanells();
+        numPanells = GestorUser.getNumPanells();
 
         // Instantiate a ViewPager2 and a PagerAdapter.
 
@@ -131,23 +130,34 @@ public class UserActivity extends FragmentActivity
 
         screen = findViewById(R.id.button_screen);
         editTextCommunicator = findViewById(R.id.appCompatEditText);
+
+
         screen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                num_panells = GestorUser.getNumPanells()+1;
-                Log.i("Info", "entra a crear");
-                GestorUser.getPanells().add(
-                        new Panell(
-                                NAME_NEW_PANELL,
-                                num_panells,
-                                false,
-                                new ArrayList<Icona>()
-                        ));
 
-                pagerAdapter.notifyItemInserted(num_panells);
-                viewPager.setCurrentItem(num_panells+1);
+                if(GestorUser.containsPanell()){
 
-                editTextCommunicator.setText("hola");
+                   displayToast("Acaba d'editar el nou panell creat");
+
+                }else{
+                    numPanells = GestorUser.getNumPanells()+1;
+                    Log.i("Info", "entra a crear" + numPanells);
+                    GestorUser.getPanells().add(
+                            new Panell(
+                                    NAME_NEW_PANELL,
+                                    numPanells,
+                                    false,
+                                    new ArrayList<Icona>()
+                            ));
+
+                    pagerAdapter.notifyItemInserted(numPanells);
+                    viewPager.setCurrentItem(numPanells);
+                    Log.i("Info", "entra a crear" + GestorUser.getNumPanells());
+                    editTextCommunicator.setText("hola");
+
+                }
+
             }
         });
     }
@@ -181,7 +191,7 @@ public class UserActivity extends FragmentActivity
     private void setUpViewPager() {
         viewPager = findViewById(R.id.pager);
         viewPager.setPageTransformer(new ZoomOutPageTransformer());
-        pagerAdapter = new ScreenSlidePagerAdapter(this);
+        pagerAdapter = new UserActivity.ScreenSlidePagerAdapter(this);
         viewPager.setAdapter(pagerAdapter);
     }
 
@@ -210,13 +220,27 @@ public class UserActivity extends FragmentActivity
 
         } else if ((int) optionsButton.getTag() == R.drawable.ic_action_settings){
 
-            callDeletePanellLoader(idPanell);
+            if(!titleEditText.getText().toString().equals("Nou panell")){
+                callDeletePanellLoader(idPanell);
 
+                callGetPanellsLoader();
+            }
 
+            pagerAdapter.notifyItemRemoved(viewPager.getCurrentItem());
 
-            //Torno a fer la transicio per a refrescar el ViewPager
-            Intent intentComunicador = new Intent(this, CommunicatorTransitionActivity.class);
-            startActivity(intentComunicador);
+            if(numPanells == 1){
+                numPanells = 0;
+                pagerAdapter.notifyItemRemoved(0);
+            } else {
+                Log.i("Info", "entra");
+                numPanells = GestorUser.getNumPanells()-1;
+            }
+            Log.i("Info", "numero Panells: "+ numPanells);
+            setUpViewPager();
+
+            //Refresco la activitat
+//            Intent intentComunicador = new Intent(this, UserActivity.class);
+//            startActivity(intentComunicador);
         }
     }
 
@@ -434,7 +458,7 @@ public class UserActivity extends FragmentActivity
 
         @Override
         public int getItemCount() {
-            return num_panells;
+            return numPanells;
         }
 
         @Override
@@ -445,6 +469,10 @@ public class UserActivity extends FragmentActivity
         @Override
         public long getItemId(int position) {
             return super.getItemId(position);
+        }
+
+        public int getPosition() {
+            return position;
         }
     }
 

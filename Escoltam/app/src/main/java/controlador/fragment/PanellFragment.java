@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class PanellFragment extends Fragment{
     private PanellRecyclerAdapter mAdapter;
     private int spanCount = 3;
     private static int position;
-    private EditText panelTitle;
+    private EditText panellTitle;
     private ImageButton optionsButton;
 
     public PanellFragment() {
@@ -60,22 +61,26 @@ public class PanellFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_panell, container, false);
-        panelTitle = rootView.findViewById(R.id.titolPanell);
+        panellTitle = rootView.findViewById(R.id.titolPanell);
         optionsButton = rootView.findViewById(R.id.optionsPanell);
         optionsButton.setTag(R.drawable.ic_action_settings);
 
+        try{
+            panellTitle.setText(GestorUser.getPanells().get(position).getNom());
 
-        panelTitle.setText(GestorUser.getPanells().get(position).getNom());
+            mIcones = GestorUser.getPanells().get(position).getIcones();
 
-        mIcones = GestorUser.getPanells().get(position).getIcones();
+            //RecyclerView i adapter.
+            mRecyclerView = rootView.findViewById(R.id.recyclerViewPanell);
+            mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
+            mAdapter = new PanellRecyclerAdapter(mIcones, rootView.getContext());
+            mRecyclerView.setAdapter(mAdapter);
 
-        //RecyclerView i adapter.
-        mRecyclerView = rootView.findViewById(R.id.recyclerViewPanell);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
-        mAdapter = new PanellRecyclerAdapter(mIcones, rootView.getContext());
-        mRecyclerView.setAdapter(mAdapter);
+        }catch (IndexOutOfBoundsException e){
+            Log.i("Error", e.toString());
+        }
 
-        panelTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        panellTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
@@ -91,16 +96,19 @@ public class PanellFragment extends Fragment{
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(optionsButton.getTag() != null) {
-
-                    if(position >= 0){
-                        mListener.onPanellButtonPressed(
-                                optionsButton,
-                                panelTitle,
-                                GestorUser.getPanells().get(position).getId()
-                        );
+                try{
+                    if(optionsButton.getTag() != null) {
+                        Log.i("Error", "posicio: "+GestorUser.getPanells().get(position).getId());
+                        if(position >= 0){
+                            mListener.onPanellButtonPressed(
+                                    optionsButton,
+                                    panellTitle,
+                                    GestorUser.getPanells().get(position).getId()
+                            );
+                        }
                     }
+                }catch (IndexOutOfBoundsException e){
+                    Log.i("Error", e.toString());
                 }
             }
         });
