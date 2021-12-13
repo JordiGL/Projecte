@@ -66,8 +66,6 @@ public class PanellRecyclerAdapter extends RecyclerView.Adapter<PanellRecyclerAd
 
             mIconPosition = itemView.findViewById(R.id.textIconPositionList);
             mIconName = itemView.findViewById(R.id.textIconNameList);
-
-
         }
 
     }

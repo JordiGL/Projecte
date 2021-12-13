@@ -29,12 +29,11 @@ public class GestorUser {
     private static final String PANELL_FAVORIT_JSON = "favorit";
     private static final String NEW_PANELL = "Nou panell";
     private static List<Panell> mPanells;
-    private static int numPanells;
+
 
 
     public GestorUser(List<Panell> mPanells) {
         GestorUser.mPanells = mPanells;
-        GestorUser.numPanells = mPanells.size();
     }
 
     /**
@@ -105,10 +104,6 @@ public class GestorUser {
         return 0;
     }
 
-    public static void setNumPanells(int num_panells) {
-        GestorUser.numPanells = num_panells;
-    }
-
     public static boolean containsPanell(){
 
         for(Panell panell: mPanells){
@@ -151,7 +146,6 @@ public class GestorUser {
 
         @Override
         public int compare(Panell one, Panell two) {
-            Log.i("Info", "Panell 1: "+one.getPosicio()+" Panell 2: "+two.getPosicio());
             return one.getPosicio() - two.getPosicio();
         }
 

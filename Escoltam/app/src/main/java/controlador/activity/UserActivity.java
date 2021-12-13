@@ -58,6 +58,7 @@ import controlador.server.get.PanellsListLoader;
 import controlador.server.post.NewPanellLoader;
 import controlador.server.put.EditPanellLoader;
 import jordigomez.ioc.cat.escoltam.R;
+import model.Icona;
 import model.Panell;
 
 /**
@@ -112,7 +113,6 @@ public class UserActivity extends FragmentActivity
     private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
     private String role;
-    private ImageButton screen;
     private EditText editTextCommunicator;
     private EditText panellTitle;
     private ImageButton optionsButton;
@@ -180,6 +180,8 @@ public class UserActivity extends FragmentActivity
     @Override
     protected void onStart() {
         super.onStart();
+        ImageButton newPanellButton = findViewById(R.id.button_screen);
+        ImageButton newIconButton = findViewById(R.id.button_icon);
 
         if(GestorUser.getNumPanells() > 0){
             panellTitle.setText(GestorUser.getPanells().get(0).getNom());
@@ -219,11 +221,25 @@ public class UserActivity extends FragmentActivity
         });
 
 //        editTextCommunicator = findViewById(R.id.appCompatEditText);
-        screen = findViewById(R.id.button_screen);
-        screen.setOnClickListener(new View.OnClickListener() {
+
+        newPanellButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addPanell();
+            }
+        });
+
+        newIconButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Panell panell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem());
+                pagerAdapter.getCurrentPanell(viewPager.getCurrentItem())
+                        .getIcones()
+                        .add(new Icona(
+                                "hola",
+                                panell.getIcones().size()+1)
+                        );
+                pagerAdapter.notifyDataSetChanged();
             }
         });
     }
