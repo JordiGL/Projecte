@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import model.Icona;
@@ -84,6 +86,7 @@ public class GestorUser {
             e.printStackTrace();
         }
 
+        Collections.sort(mPanells, new PanellSequenceComparator());
         return mPanells;
     }
 
@@ -142,5 +145,15 @@ public class GestorUser {
         if (focusable) {
             editText.requestFocusFromTouch();
         }
+    }
+
+    public static class PanellSequenceComparator implements Comparator<Panell> {
+
+        @Override
+        public int compare(Panell one, Panell two) {
+            Log.i("Info", "Panell 1: "+one.getPosicio()+" Panell 2: "+two.getPosicio());
+            return one.getPosicio() - two.getPosicio();
+        }
+
     }
 }

@@ -37,7 +37,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Task;
+
 import java.net.HttpURLConnection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -537,7 +541,7 @@ public class UserActivity extends FragmentActivity
                 viewPager.setCurrentItem(pagerAdapter.getCount());
                 panellTitle.setText(NAME_NEW_PANELL);
             }
-        }, 250);
+        }, 500);
     }
 
     public void deletePanell(int idPanell){
@@ -685,7 +689,7 @@ public class UserActivity extends FragmentActivity
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            return new PanellFragment(panellList.get(position), panellList.get(position).getNom());
+            return new PanellFragment(panellList.get(position));
         }
 
         @Override

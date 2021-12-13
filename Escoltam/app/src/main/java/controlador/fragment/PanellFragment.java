@@ -52,14 +52,12 @@ public class PanellFragment extends Fragment {
     private PanellRecyclerAdapter mAdapter;
     private int spanCount = 3;
     private Panell panell;
-    private String name;
 //    private EditText panellTitle;
 //    private ImageButton optionsButton;
     private View rootView;
 
-    public PanellFragment(Panell panell, String name) {
+    public PanellFragment(Panell panell) {
         this.panell = panell;
-        this.name = name;
     }
 
 //    public static PanellFragment newInstance(int panelPosition) {
