@@ -125,4 +125,12 @@ public class GestorUser {
                 new ArrayList<Icona>()
         );
     }
+
+    public static void removePanell(int idPanell){
+        for(Panell panell: mPanells){
+            if(panell.getId() == idPanell){
+                mPanells.remove(panell);
+            }
+        }
+    }
 }

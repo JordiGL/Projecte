@@ -256,6 +256,7 @@ public class NetworkUtils extends Connexio{
      * @author Jordi Gómez Lozano.
      */
     public static Bundle deletePanell(int opcio, String token){
+        Log.i("Info",""+opcio);
         HttpURLConnection connexio = null;
         BufferedReader reader = null;
         String infoJSONString = null;

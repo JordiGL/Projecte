@@ -9,6 +9,8 @@ public class Panell {
     private boolean favorit;
     private List<Icona> icones;
 
+    public Panell(){}
+
     public Panell(String nom, int posicio, boolean favorit, List<Icona> icones) {
         this.nom = nom;
         this.posicio = posicio;

@@ -1,28 +1,41 @@
 package controlador.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
+import controlador.activity.AdminSettingsActivity;
+import controlador.activity.AdministratorActivity;
+import controlador.activity.LoginActivity;
 import controlador.activity.PanellRecyclerAdapter;
+import controlador.activity.UserSettingsActivity;
+import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.GestorUser;
 import controlador.gestor.OnFragmentInteractionPanellListener;
 import jordigomez.ioc.cat.escoltam.R;
 import model.Icona;
+import model.Panell;
 
 
 /**
@@ -30,7 +43,7 @@ import model.Icona;
  * @see Fragment
  * @author Jordi Gómez Lozano
  */
-public class PanellFragment extends Fragment{
+public class PanellFragment extends Fragment {
     private static final String ERROR = "Error";
     private static final String NAME_NEW_PANELL = "Nou panell";
     private OnFragmentInteractionPanellListener mListener;
@@ -38,12 +51,15 @@ public class PanellFragment extends Fragment{
     private RecyclerView mRecyclerView;
     private PanellRecyclerAdapter mAdapter;
     private int spanCount = 3;
-    private int position;
-    private EditText panellTitle;
-    private ImageButton optionsButton;
+    private Panell panell;
+    private String name;
+//    private EditText panellTitle;
+//    private ImageButton optionsButton;
+    private View rootView;
 
-    public PanellFragment(int position) {
-        this.position = position;
+    public PanellFragment(Panell panell, String name) {
+        this.panell = panell;
+        this.name = name;
     }
 
 //    public static PanellFragment newInstance(int panelPosition) {
@@ -61,17 +77,18 @@ public class PanellFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_panell, container, false);
-        panellTitle = rootView.findViewById(R.id.titolPanell);
-        optionsButton = rootView.findViewById(R.id.optionsPanell);
-        optionsButton.setTag(R.drawable.ic_action_settings);
+        rootView = inflater.inflate(R.layout.fragment_panell, container, false);
+//        panellTitle = rootView.findViewById(R.id.titolPanell);
+//        optionsButton = rootView.findViewById(R.id.optionsPanell);
+//        optionsButton.setTag(R.drawable.ic_action_settings);
+//
+//        registerForContextMenu(optionsButton);
 
-        try{
-            panellTitle.setText(GestorUser.getPanells().get(position).getNom());
+//        try{
 
-            setEditTextFocusable(false);
+//            setEditTextFocusable(false);
 
-            mIcones = GestorUser.getPanells().get(position).getIcones();
+            mIcones = panell.getIcones();
 
             //RecyclerView i adapter.
             mRecyclerView = rootView.findViewById(R.id.recyclerViewPanell);
@@ -79,44 +96,92 @@ public class PanellFragment extends Fragment{
             mAdapter = new PanellRecyclerAdapter(mIcones, rootView.getContext());
             mRecyclerView.setAdapter(mAdapter);
 
-        }catch (IndexOutOfBoundsException e){
-            Log.i("Error", e.toString());
-        }
-
-        panellTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    optionsButton.setImageResource(R.drawable.ic_action_check);
-                    optionsButton.setTag(R.drawable.ic_action_check);
-                } else {
-                    optionsButton.setImageResource(R.drawable.ic_action_settings);
-                    optionsButton.setTag(R.drawable.ic_action_settings);
-                }
-            }
-        });
-
-        optionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try{
-                    if(optionsButton.getTag() != null) {
-                        Log.i("Error", "posicio: "+GestorUser.getPanells().get(position).getId());
-                        if(position >= 0){
-                            mListener.onPanellButtonPressed(
-                                    optionsButton,
-                                    panellTitle,
-                                    GestorUser.getPanells().get(position).getId()
-                            );
-                        }
-                    }
-                }catch (IndexOutOfBoundsException e){
-                    Log.i("Error", e.toString());
-                }
-            }
-        });
+//            panellTitle.setText(name);
+//
+//        }catch (IndexOutOfBoundsException e){
+//            Log.i("Error", e.toString());
+//        }
+//
+//        panellTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//
+//            @Override
+//            public void onFocusChange(View view, boolean hasFocus) {
+//
+//                if (hasFocus) {
+//
+//                    optionsButton.setImageResource(R.drawable.ic_action_check);
+//                    optionsButton.setTag(R.drawable.ic_action_check);
+//                } else {
+//
+//                    optionsButton.setImageResource(R.drawable.ic_action_settings);
+//                    optionsButton.setTag(R.drawable.ic_action_settings);
+//                }
+//            }
+//        });
+//
+//        optionsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                try{
+//                    if(optionsButton.getTag() != null) {
+//
+//                        mListener.onPanellButtonPressed(
+//                                optionsButton,
+//                                panellTitle,
+//                                panell.getId()
+//                        );
+//
+//                        if((int) optionsButton.getTag() == R.drawable.ic_action_settings){
+//                            openMoreMenuOptions(v);
+//                        }
+//                    }
+//                }catch (IndexOutOfBoundsException e){
+//                    Log.i("Error", e.toString());
+//                }
+//            }
+//        });
 
         return rootView;
+    }
+
+//    /**
+//     * PopupMenu per a mostrar les diferents opcions del botó.
+//     * @param view del component.
+//     * @author Jordi Gómez Lozano.
+//     */
+//    public void openMoreMenuOptions(View view) {
+//
+//        PopupMenu popup = new PopupMenu(rootView.getContext(), view);
+//        popup.setOnMenuItemClickListener(this);
+//        MenuInflater inflater = popup.getMenuInflater();
+//
+//        inflater.inflate(R.menu.menu_panell_context, popup.getMenu());
+//
+//
+//        popup.show();
+//    }
+//
+//    @Override
+//    public boolean onMenuItemClick(MenuItem item) {
+//
+//        mListener.onPanellButtonPressed(
+//                item,
+//                panellTitle,
+//                panell.getId()
+//        );
+//
+//        return super.onContextItemSelected(item);
+//
+//    }
+
+    /**
+     * Mostra informació per pantalla.
+     * @param message missatge que es mostrara per pantalla.
+     * @author Jordi Gómez Lozano.
+     */
+    public void displayToast(String message) {
+        Toast.makeText(getContext(), message,
+                Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -130,8 +195,8 @@ public class PanellFragment extends Fragment{
         }
     }
 
-    private void setEditTextFocusable(boolean focusable){
-        panellTitle.setFocusableInTouchMode(focusable);
-        panellTitle.setFocusable(focusable);
-    }
+//    private void setEditTextFocusable(boolean focusable){
+//        panellTitle.setFocusableInTouchMode(focusable);
+//        panellTitle.setFocusable(focusable);
+//    }
 }

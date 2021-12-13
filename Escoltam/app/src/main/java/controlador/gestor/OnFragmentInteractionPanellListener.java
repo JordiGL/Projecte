@@ -1,5 +1,6 @@
 package controlador.gestor;
 
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -8,5 +9,6 @@ import android.widget.ImageButton;
  * @author Jordi Gómez Lozano
  */
 public interface OnFragmentInteractionPanellListener {
-    void onPanellButtonPressed(ImageButton button, EditText titleEditText, int idPanell);
+   void onPanellButtonPressed(ImageButton button, EditText titleEditText, int idPanell);
+   boolean onPanellButtonPressed(MenuItem menuItem, EditText titleEditText, int idPanell);
 }

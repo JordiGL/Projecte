@@ -116,5 +116,7 @@
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="context_panell_edit_text">Editar</string>
+    <string name="context_panell_delete_text">Eliminar</string>
 
 </resources>
