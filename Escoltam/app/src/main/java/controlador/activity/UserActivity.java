@@ -91,7 +91,7 @@ public class UserActivity extends FragmentActivity
     private static final String EDIT_TEXT_SAVED_INSTANCE = "edit_text";
     private static final String DIALOG_TITLE = "Atenció";
     private static final String DIALOG_MESSAGE_DELETE = "Segur que vols eliminar el panell?";
-    private static final String DIALOG_MESSAGE_EDIT = "Segur que vols guardar el panell?";
+    private static final String DIALOG_MESSAGE_EDIT = "Segur que vols editar el panell?";
     private static final String USER_INFO_EDIT = "Canvia el títol del panell";
     private static final String EDIT_PANELL_OPTION = "edit";
     private static final String PANELL_NOM_BUNDLE_KEY = "panell_name";
@@ -389,8 +389,9 @@ public class UserActivity extends FragmentActivity
                 case EDIT_PANELL_OPTION:
 
                     responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
-
+                    Log.i("Info", "OF responseCode: "+responseCode);
                     if (responseCode == HttpURLConnection.HTTP_CREATED) {
+                        callGetPanellsLoader();
                         displayToast(PANELL_SUCCESSFULLY_EDITED);
 
                     }else if(responseCode == HttpURLConnection.HTTP_NOT_FOUND){
@@ -590,7 +591,16 @@ public class UserActivity extends FragmentActivity
             public void onClick(DialogInterface dialog, int which) {
 
                 Panell panell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem());
+                panell.setNom(panellTitle.getText().toString());
                 callEditPanellLoader(panell);
+
+                final Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        pagerAdapter.addView();
+                    }
+                }, 250);
             }
         });
         alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -635,7 +645,6 @@ public class UserActivity extends FragmentActivity
             default:
                 return super.onContextItemSelected(item);
         }
-
     }
 
     /**
@@ -703,11 +712,6 @@ public class UserActivity extends FragmentActivity
         }
 
         public void addView(){
-            panellList = GestorUser.getPanells();
-            notifyDataSetChanged();
-        }
-
-        public void refresh(){
             panellList = GestorUser.getPanells();
             notifyDataSetChanged();
         }

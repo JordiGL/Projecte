@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import controlador.activity.AdministratorTransitionActivity;
+import controlador.activity.CommunicatorTransitionActivity;
 import controlador.activity.UserActivity;
 
 /**
@@ -33,7 +34,7 @@ public class GestorMain {
             intent = new Intent(context, AdministratorTransitionActivity.class);
         } else {
 
-            intent = new Intent(context, UserActivity.class);
+            intent = new Intent(context, CommunicatorTransitionActivity.class);
         }
 
         intent.putExtra(message, role);

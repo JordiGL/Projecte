@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import controlador.activity.AdministratorTransitionActivity;
+import controlador.activity.CommunicatorTransitionActivity;
 import controlador.activity.UserActivity;
 import model.Usuari;
 
@@ -172,12 +173,11 @@ public class GestorLogin {
             intent = new Intent(context, AdministratorTransitionActivity.class);
         }else{
 
-            intent = new Intent(context, UserActivity.class);
+            intent = new Intent(context, CommunicatorTransitionActivity.class);
         }
 
         intent.putExtra(message, role);
         context.startActivity(intent);
-
     }
 
 }
