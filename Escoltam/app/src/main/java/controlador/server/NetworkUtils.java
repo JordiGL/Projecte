@@ -41,6 +41,7 @@ public class NetworkUtils extends Connexio{
     private static final String DELETE_PANELL_INFO_BUNDLE_KEY = "delete_panell_info";
     private static final String DELETE_PANELL_OPTION = "delete";
     private static final String ID_PANELL_BUNDLE_KEY = "id_panell";
+    public static final String EDIT_PANELL_OPTION = "edit";
 
     /**
      * Post request al servidor per obtenir el token.
@@ -411,6 +412,53 @@ public class NetworkUtils extends Connexio{
             queryBundle.putString(SERVER_INFO_BUNDLE_KEY, serverInfo);
             queryBundle.putString(OPTION_BUNDLE_KEY, ADD_PANELL_OPTION);
 
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+        }
+
+        return queryBundle;
+    }
+
+    /**
+     * Put request al servidor per editar un panell.
+     * @param nom del panell.
+     * @param posicio del panell.
+     * @param favorit si es favorit o no.
+     * @param idPanell ide del panell.
+     * @param username email de l'usuari.
+     * @param token token de l'usuari.
+     * @return un int amb el codi de resposta.
+     * @author Jordi Gómez Lozano.
+     */
+    public static Bundle editPanell(String nom, int posicio, boolean favorit, int idPanell,
+                                 String username, String token){
+        Bundle queryBundle = null;
+        HttpURLConnection connexio = null;
+        int responseCode = 0;
+
+        try{
+            String body = "{\"nom\": \""+nom+"\",\"posicio\": "+posicio+",\"favorit\": "+favorit+"}";
+            byte[] postData = body.getBytes(StandardCharsets.UTF_8);
+            int postDataLength = postData.length;
+            connexio = putRequest(
+                    postDataLength,
+                    METODE_PETICIO_PUT,
+                    PANELLS_URL+username+"/"+idPanell, APPLICATION_JSON, token);
+
+            DataOutputStream wr = new DataOutputStream(connexio.getOutputStream());
+
+            wr.write(postData);
+
+            responseCode = connexio.getResponseCode();
+
+            queryBundle = new Bundle();
+            queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, responseCode);
+            queryBundle.putString(OPTION_BUNDLE_KEY, EDIT_PANELL_OPTION);
 
         } catch (Exception e) {
             e.printStackTrace();

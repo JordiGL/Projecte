@@ -23,19 +23,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.List;
 
 import controlador.fragment.PanellFragment;
@@ -48,8 +44,8 @@ import controlador.gestor.OnFragmentInteractionUserListener;
 import controlador.server.delete.DeletePanellLoader;
 import controlador.server.get.PanellsListLoader;
 import controlador.server.post.NewPanellLoader;
+import controlador.server.put.EditPanellLoader;
 import jordigomez.ioc.cat.escoltam.R;
-import model.Icona;
 import model.Panell;
 
 /**
@@ -89,6 +85,13 @@ public class UserActivity extends FragmentActivity
     public static final String DIALOG_MESSAGE_DELETE = "Segur que vols eliminar el panell?";
     public static final String DIALOG_MESSAGE_EDIT = "Segur que vols guardar el panell?";
     public static final String USER_INFO_EDIT = "Canvia el títol del panell";
+    public static final String EDIT_PANELL_OPTION = "edit";
+    public static final String PANELL_NOM_BUNDLE_KEY = "panell_name";
+    public static final String PANELL_POSITION_BUNDLE_KEY = "panell_position";
+    public static final String PANELL_FAVORITE_BUNDLE_KEY = "panell_favorite";
+    public static final String PANELL_ID_BUNDLE_KEY = "panell_id";
+    public static final String PANELL_SUCCESSFULLY_EDITED = "El panell s'ha editat correctament";
+    public static final String ERROR_EDIT_PANELL = "El panell no es pot editar";
     private int numPanells;
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
@@ -145,10 +148,11 @@ public class UserActivity extends FragmentActivity
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(optionsButton.getId() == R.id.button_screen){
+                if((int)optionsButton.getTag() == R.drawable.ic_action_settings){
                     openMoreMenuOptions(v);
                 }else{
-
+                    editDialog();
+                    setEditTextFocusable(false);
                 }
 
             }
@@ -327,31 +331,32 @@ public class UserActivity extends FragmentActivity
     @Override
     public boolean onPanellButtonPressed(MenuItem menuItem, EditText titleEditText, int idPanell) {
 
-        switch (menuItem.getItemId()) {
-
-            case R.id.context_panell_edit:
-
-                displayToast("Edit");
-                return true;
-
-            case R.id.context_panell_delete:
-                displayToast("Delete");
-
-                if(!titleEditText.getText().toString().equals(NAME_NEW_PANELL)){
-                    callDeletePanellLoader(idPanell);
-                    callGetPanellsLoader();
-                }
-
-                deletePanell(idPanell);
-                if(GestorUser.getNumPanells() == 1){
-
-                    titleEditText.setText(GestorUser.getPanells().get(0).getNom());
-                }
-                return true;
-
-            default:
-                return super.onContextItemSelected(menuItem);
-        }
+//        switch (menuItem.getItemId()) {
+//
+//            case R.id.context_panell_edit:
+//
+//                displayToast("Edit");
+//                return true;
+//
+//            case R.id.context_panell_delete:
+//                displayToast("Delete");
+//
+//                if(!titleEditText.getText().toString().equals(NAME_NEW_PANELL)){
+//                    callDeletePanellLoader(idPanell);
+//                    callGetPanellsLoader();
+//                }
+//
+//                deletePanell(idPanell);
+//                if(GestorUser.getNumPanells() == 1){
+//
+//                    titleEditText.setText(GestorUser.getPanells().get(0).getNom());
+//                }
+//                return true;
+//
+//            default:
+//                return super.onContextItemSelected(menuItem);
+//        }
+        return true;
     }
 
     @NonNull
@@ -362,7 +367,11 @@ public class UserActivity extends FragmentActivity
         String token ="";
         String option ="";
         String url = "";
+        String panellName = "";
+        int panellPosition;
         int idPanell;
+        boolean panellIsFavorite;
+
 
         if (args != null) {
 
@@ -384,9 +393,21 @@ public class UserActivity extends FragmentActivity
                     return new PanellsListLoader(this, url, token);
 
                 case DELETE_PANELL_OPTION:
+
                     token = args.getString(TOKEN_BUNDLE_KEY);
                     idPanell = args.getInt(ID_PANELL_BUNDLE_KEY);
                     return new DeletePanellLoader(this, idPanell, token);
+
+                case EDIT_PANELL_OPTION:
+
+                    panellName = args.getString(PANELL_NOM_BUNDLE_KEY);
+                    panellPosition = args.getInt(PANELL_POSITION_BUNDLE_KEY);
+                    panellIsFavorite = args.getBoolean(PANELL_FAVORITE_BUNDLE_KEY);
+                    idPanell = args.getInt(PANELL_ID_BUNDLE_KEY);
+                    username = args.getString(EMAIL_BUNDLE_KEY);
+                    token = args.getString(TOKEN_BUNDLE_KEY);
+                    return new EditPanellLoader(this, panellName, panellPosition,
+                            panellIsFavorite, idPanell, username, token);
             }
 
         }
@@ -435,6 +456,20 @@ public class UserActivity extends FragmentActivity
                     }else if(responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
 
                         displayToast(ERROR_DELETE_PANELL);
+                    }
+                    break;
+
+                case EDIT_PANELL_OPTION:
+
+                    responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
+
+                    if (responseCode == HttpURLConnection.HTTP_CREATED) {
+                        Log.i("Info", "OK: "+responseCode);
+                        displayToast(PANELL_SUCCESSFULLY_EDITED);
+
+                    }else if(responseCode == HttpURLConnection.HTTP_NOT_FOUND){
+                        Log.i("Info", "ERROR: "+responseCode);
+                        displayToast(ERROR_EDIT_PANELL);
                     }
                     break;
             }
@@ -529,6 +564,39 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
+     * Metode per a fer la crida al LoadManager per obtenir els panells del servidor
+     * @author Jordi Gómez Lozano
+     */
+    private void callEditPanellLoader(Panell panell){
+
+        //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = null;
+        if (connMgr != null) {
+            networkInfo = connMgr.getActiveNetworkInfo();
+        }
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+
+            GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
+            String username = gestorSharedPreferences.getEmail();
+            String token = gestorSharedPreferences.getToken();
+
+            Bundle queryBundle = new Bundle();
+            queryBundle.putString(OPTION_BUNDLE_KEY, EDIT_PANELL_OPTION);
+            queryBundle.putString(PANELL_NOM_BUNDLE_KEY, panell.getNom());
+            queryBundle.putInt(PANELL_POSITION_BUNDLE_KEY, panell.getPosicio());
+            queryBundle.putBoolean(PANELL_FAVORITE_BUNDLE_KEY, panell.isFavorit());
+            queryBundle.putInt(PANELL_ID_BUNDLE_KEY, panell.getId());
+            queryBundle.putString(EMAIL_BUNDLE_KEY, username);
+            queryBundle.putString(TOKEN_BUNDLE_KEY, token);
+            getSupportLoaderManager().restartLoader(0, queryBundle, this);
+        }
+
+    }
+
+    /**
      * PopupMenu per a mostrar les diferents opcions del botó.
      * @param view del component.
      * @author Jordi Gómez Lozano.
@@ -553,7 +621,6 @@ public class UserActivity extends FragmentActivity
 
                 displayToast("Edit");
                 setEditTextFocusable(true);
-
                 return true;
 
             case R.id.context_panell_delete:
@@ -609,15 +676,23 @@ public class UserActivity extends FragmentActivity
 
             public void onClick(DialogInterface dialog, int which) {
                 // continue with delete
-                int idPanell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).getId();
+                Panell panell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem());
 
                 if(panellTitle.getText().toString().equals(NAME_NEW_PANELL)){
+
                     displayToast(USER_INFO_EDIT);
                     setEditTextFocusable(true);
+
                 }else{
+                    if(panell.getId() == 0){
 
+                        callAddPanellLoader(panell);
+
+                    }else{
+
+                        callEditPanellLoader(panell);
+                    }
                 }
-
             }
         });
         alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
