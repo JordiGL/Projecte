@@ -16,23 +16,31 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.InputType;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.net.HttpURLConnection;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import controlador.fragment.PanellFragment;
 import controlador.fragment.UserControlFragment;
@@ -145,19 +153,6 @@ public class UserActivity extends FragmentActivity
         // Instanciar viewpager i adaptador d'aquest
         setUpViewPager();
 
-        optionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if((int)optionsButton.getTag() == R.drawable.ic_action_settings){
-                    openMoreMenuOptions(v);
-                }else{
-                    editDialog();
-                    setEditTextFocusable(false);
-                }
-
-            }
-        });
-
         panellTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
@@ -181,40 +176,41 @@ public class UserActivity extends FragmentActivity
         }
     }
 
-    private void setTextToPanellText(int position){
-        if(pagerAdapter.getCount() > 0){
-            panellTitle.setText(GestorUser.getPanells().get(position).getNom());
-        } else {
-            panellTitle.getText().clear();
-        }
-    }
-
-    private void setEditTextFocusable(boolean focusable){
-        panellTitle.setFocusableInTouchMode(focusable);
-        panellTitle.setFocusable(focusable);
-
-        if(focusable){
-            panellTitle.requestFocusFromTouch();
-        }
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
 
-        setTextToPanellText(0);
-        setEditTextFocusable(false);
+        if(GestorUser.getNumPanells() > 0){
+            panellTitle.setText(GestorUser.getPanells().get(0).getNom());
+        }
+
+        GestorUser.setEditTextFocusable(false, panellTitle);
+
+        optionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if((int)optionsButton.getTag() == R.drawable.ic_action_settings){
+                    if(pagerAdapter.getCount() > 0){
+                        openMoreMenuOptions(v);
+                    }
+                }else{
+                    editDialog();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                    GestorUser.setEditTextFocusable(false, panellTitle);
+                }
+
+            }
+        });
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                setEditTextFocusable(false);
             }
 
             @Override
             public void onPageSelected(int position) {
-
-                setTextToPanellText(position);
+                panellTitle.setText(pagerAdapter.getCurrentPanell(position).getNom());
             }
 
             @Override
@@ -227,7 +223,6 @@ public class UserActivity extends FragmentActivity
             @Override
             public void onClick(View v) {
                 addPanell();
-                setEditTextFocusable(true);
             }
         });
     }
@@ -277,19 +272,26 @@ public class UserActivity extends FragmentActivity
     }
 
     public void addPanell(){
-        if(GestorUser.containsPanell()){
-            displayToast("Acaba d'editar el nou panell creat");
-            setEditTextFocusable(true);
-        }else{
-            int position = GestorUser.getNumPanells()+1;
-            pagerAdapter.addView(GestorUser.newPanell(position));
-            viewPager.setCurrentItem(position);
-        }
+
+        int position = pagerAdapter.getCount()+1;
+        Panell panell = GestorUser.newPanell(position);
+        callAddPanellLoader(panell);
+
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                pagerAdapter.addView();
+                viewPager.setCurrentItem(pagerAdapter.getCount());
+                panellTitle.setText(NAME_NEW_PANELL);
+            }
+        }, 250);
+
     }
 
     public void deletePanell(int idPanell){
         pagerAdapter.removeView(idPanell);
-        //updateViewPager();
     }
 
 //    public void updateViewPager(){
@@ -304,59 +306,8 @@ public class UserActivity extends FragmentActivity
     @Override
     public void onPanellButtonPressed(ImageButton optionsButton, EditText titleEditText, int idPanell) {
         if ((int) optionsButton.getTag() == R.drawable.ic_action_check) {
-
-//            titleEditText.setFocusableInTouchMode(false);
-//            titleEditText.setFocusable(false);
-//
-//            int num_panells = GestorUser.getNumPanells() - 1;
-//
-////            GestorUser.getPanells()
-////                    .get(num_panells)
-////                    .setNom(titleEditText.getText().toString()
-////            );
-//
-//            callAddPanellLoader(GestorUser.getPanells().get(num_panells));
-//            callGetPanellsLoader();
-
         } else if ((int) optionsButton.getTag() == R.drawable.ic_action_settings) {
-//            if(!titleEditText.getText().toString().equals(NAME_NEW_PANELL)){
-//                callDeletePanellLoader(idPanell);
-//                callGetPanellsLoader();
-//            }
-//
-//            deletePanell();
         }
-    }
-
-    @Override
-    public boolean onPanellButtonPressed(MenuItem menuItem, EditText titleEditText, int idPanell) {
-
-//        switch (menuItem.getItemId()) {
-//
-//            case R.id.context_panell_edit:
-//
-//                displayToast("Edit");
-//                return true;
-//
-//            case R.id.context_panell_delete:
-//                displayToast("Delete");
-//
-//                if(!titleEditText.getText().toString().equals(NAME_NEW_PANELL)){
-//                    callDeletePanellLoader(idPanell);
-//                    callGetPanellsLoader();
-//                }
-//
-//                deletePanell(idPanell);
-//                if(GestorUser.getNumPanells() == 1){
-//
-//                    titleEditText.setText(GestorUser.getPanells().get(0).getNom());
-//                }
-//                return true;
-//
-//            default:
-//                return super.onContextItemSelected(menuItem);
-//        }
-        return true;
     }
 
     @NonNull
@@ -418,11 +369,10 @@ public class UserActivity extends FragmentActivity
     @Override
     public void onLoadFinished(@NonNull Loader<Bundle> loader, Bundle data) {
         String panells ="";
-        int idPanell;
         int responseCode;
 
         if(data.getString(OPTION_BUNDLE_KEY) != null) {
-
+            Log.i("Info", data.getString(OPTION_BUNDLE_KEY));
             switch (data.getString(OPTION_BUNDLE_KEY)) {
                 case LIST_PANELLS_OPTION:
                     responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
@@ -442,6 +392,8 @@ public class UserActivity extends FragmentActivity
 
                     if (responseCode != HttpURLConnection.HTTP_CREATED) {
                         displayToast(ERROR_ADD_PANELL);
+                    } else {
+                        callGetPanellsLoader();
                     }
                     break;
 
@@ -450,9 +402,10 @@ public class UserActivity extends FragmentActivity
 
                     if (responseCode == HttpURLConnection.HTTP_OK) {
 
-                        idPanell = data.getInt(ID_PANELL_BUNDLE_KEY);
+                        int idPanell = data.getInt(ID_PANELL_BUNDLE_KEY);
+                        deletePanell(idPanell);
                         displayToast(PANELL_SUCCESSFULLY_REMOVED);
-
+                        callGetPanellsLoader();
                     }else if(responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
 
                         displayToast(ERROR_DELETE_PANELL);
@@ -464,11 +417,9 @@ public class UserActivity extends FragmentActivity
                     responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
 
                     if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                        Log.i("Info", "OK: "+responseCode);
                         displayToast(PANELL_SUCCESSFULLY_EDITED);
 
                     }else if(responseCode == HttpURLConnection.HTTP_NOT_FOUND){
-                        Log.i("Info", "ERROR: "+responseCode);
                         displayToast(ERROR_EDIT_PANELL);
                     }
                     break;
@@ -609,7 +560,6 @@ public class UserActivity extends FragmentActivity
 
         inflater.inflate(R.menu.menu_panell_context, popup.getMenu());
 
-
         popup.show();
     }
 
@@ -619,8 +569,7 @@ public class UserActivity extends FragmentActivity
 
             case R.id.context_panell_edit:
 
-                displayToast("Edit");
-                setEditTextFocusable(true);
+                GestorUser.setEditTextFocusable(true, panellTitle);
                 return true;
 
             case R.id.context_panell_delete:
@@ -645,19 +594,22 @@ public class UserActivity extends FragmentActivity
 
                 int idPanell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).getId();
 
-                if(!panellTitle.getText().toString().equals(NAME_NEW_PANELL)){
+                callDeletePanellLoader(idPanell);
 
-                    callDeletePanellLoader(idPanell);
-                    callGetPanellsLoader();
-                }
+                final Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 
-                deletePanell(idPanell);
+                        if(pagerAdapter.getCount() == 1){
+                            panellTitle.setText(pagerAdapter.getCurrentPanell(0).getNom());
+                        } else if(pagerAdapter.getCount() == 0){
+                            panellTitle.getText().clear();
+                        }
+                    }
+                }, 100);
 
-                if(GestorUser.getNumPanells() == 1){
-                    panellTitle.setText(GestorUser.getPanells().get(0).getNom());
-                } else {
-                    panellTitle.getText().clear();
-                }
+
             }
         });
         alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -675,24 +627,11 @@ public class UserActivity extends FragmentActivity
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                // continue with delete
+
                 Panell panell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem());
 
-                if(panellTitle.getText().toString().equals(NAME_NEW_PANELL)){
+                callEditPanellLoader(panell);
 
-                    displayToast(USER_INFO_EDIT);
-                    setEditTextFocusable(true);
-
-                }else{
-                    if(panell.getId() == 0){
-
-                        callAddPanellLoader(panell);
-
-                    }else{
-
-                        callEditPanellLoader(panell);
-                    }
-                }
             }
         });
         alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -757,6 +696,7 @@ public class UserActivity extends FragmentActivity
         }
 
         public void removeView(int idPanell) {
+            Log.i("Info", "Adapter:"+idPanell);
             Panell panellToDelete = new Panell();
 
             for(Panell panell: panellList){
@@ -768,13 +708,13 @@ public class UserActivity extends FragmentActivity
             notifyDataSetChanged();
         }
 
-        public void addView(Panell panell){
-            panellList.add(panell);
+        public void addView(){
+            panellList = GestorUser.getPanells();
             notifyDataSetChanged();
         }
 
         public void refresh(){
-            viewPager.setAdapter(this);
+            panellList = GestorUser.getPanells();
             notifyDataSetChanged();
         }
 

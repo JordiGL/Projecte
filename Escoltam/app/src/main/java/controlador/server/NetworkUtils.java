@@ -268,7 +268,7 @@ public class NetworkUtils extends Connexio{
 
             connexio = deleteRequest(token, PANELLS_URL+opcio);
             responseCode = connexio.getResponseCode();
-            Log.i("Info", String.valueOf(responseCode));
+            Log.i("Info", "123: "+String.valueOf(responseCode));
             queryBundle = new Bundle();
             queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, responseCode);
 
@@ -292,7 +292,7 @@ public class NetworkUtils extends Connexio{
 
                 infoJSONString = builder.toString();
                 queryBundle.putString(DELETE_PANELL_INFO_BUNDLE_KEY, infoJSONString);
-                queryBundle.putString(OPTION_BUNDLE_KEY, DELETE_PANELL_OPTION);
+                queryBundle.putString(OPTION_BUNDLE_KEY, "delete");
                 queryBundle.putInt(ID_PANELL_BUNDLE_KEY, opcio);
             }
 

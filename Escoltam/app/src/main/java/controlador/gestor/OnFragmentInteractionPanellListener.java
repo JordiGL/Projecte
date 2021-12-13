@@ -10,5 +10,4 @@ import android.widget.ImageButton;
  */
 public interface OnFragmentInteractionPanellListener {
    void onPanellButtonPressed(ImageButton button, EditText titleEditText, int idPanell);
-   boolean onPanellButtonPressed(MenuItem menuItem, EditText titleEditText, int idPanell);
 }

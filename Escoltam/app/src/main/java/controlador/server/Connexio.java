@@ -198,8 +198,6 @@ public class Connexio {
             conn.setConnectTimeout(TIMEOUT_MILLS);
             conn.setReadTimeout(TIMEOUT_MILLS);
 
-            Log.i("Info", "entra");
-
         } catch (IOException e){
 
             e.printStackTrace();

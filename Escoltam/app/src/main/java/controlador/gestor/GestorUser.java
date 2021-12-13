@@ -1,6 +1,7 @@
 package controlador.gestor;
 
 import android.util.Log;
+import android.widget.EditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -131,6 +132,15 @@ public class GestorUser {
             if(panell.getId() == idPanell){
                 mPanells.remove(panell);
             }
+        }
+    }
+
+    public static void setEditTextFocusable(boolean focusable, EditText editText) {
+        editText.setFocusableInTouchMode(focusable);
+        editText.setFocusable(focusable);
+
+        if (focusable) {
+            editText.requestFocusFromTouch();
         }
     }
 }
