@@ -79,7 +79,7 @@ public class UserActivity extends FragmentActivity
     private static final String PANELL_BUNDLE_KEY = "panell";
     private static final String TOKEN_BUNDLE_KEY = "token";
     private static final String NAME_NEW_PANELL = "Nou panell";
-    public static final String ADD_OPTION = "add";
+    private static final String ADD_OPTION = "add";
     private static final String LIST_PANELLS_OPTION = "list";
     private static final String ERROR_GET_PANELLS = "Error en obtenir la llista de panells";
     private static final String ERROR_ADD_PANELL = "Error en afegir el nou panell";
@@ -88,19 +88,18 @@ public class UserActivity extends FragmentActivity
     private static final String ID_PANELL_BUNDLE_KEY = "id_panell";
     private static final String ERROR_DELETE_PANELL = "Error en eliminar el panel del servidor";
     private static final String PANELL_SUCCESSFULLY_REMOVED = "Panell eliminat correctament";
-    public static final String EDIT_TEXT_SAVED_INSTANCE = "edit_text";
-    public static final String DIALOG_TITLE = "Atenció";
-    public static final String DIALOG_MESSAGE_DELETE = "Segur que vols eliminar el panell?";
-    public static final String DIALOG_MESSAGE_EDIT = "Segur que vols guardar el panell?";
-    public static final String USER_INFO_EDIT = "Canvia el títol del panell";
-    public static final String EDIT_PANELL_OPTION = "edit";
-    public static final String PANELL_NOM_BUNDLE_KEY = "panell_name";
-    public static final String PANELL_POSITION_BUNDLE_KEY = "panell_position";
-    public static final String PANELL_FAVORITE_BUNDLE_KEY = "panell_favorite";
-    public static final String PANELL_ID_BUNDLE_KEY = "panell_id";
-    public static final String PANELL_SUCCESSFULLY_EDITED = "El panell s'ha editat correctament";
-    public static final String ERROR_EDIT_PANELL = "El panell no es pot editar";
-    private int numPanells;
+    private static final String EDIT_TEXT_SAVED_INSTANCE = "edit_text";
+    private static final String DIALOG_TITLE = "Atenció";
+    private static final String DIALOG_MESSAGE_DELETE = "Segur que vols eliminar el panell?";
+    private static final String DIALOG_MESSAGE_EDIT = "Segur que vols guardar el panell?";
+    private static final String USER_INFO_EDIT = "Canvia el títol del panell";
+    private static final String EDIT_PANELL_OPTION = "edit";
+    private static final String PANELL_NOM_BUNDLE_KEY = "panell_name";
+    private static final String PANELL_POSITION_BUNDLE_KEY = "panell_position";
+    private static final String PANELL_FAVORITE_BUNDLE_KEY = "panell_favorite";
+    private static final String PANELL_ID_BUNDLE_KEY = "panell_id";
+    private static final String PANELL_SUCCESSFULLY_EDITED = "El panell s'ha editat correctament";
+    private static final String ERROR_EDIT_PANELL = "El panell no es pot editar";
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
     private UserToolbarFragment toolbarFragment;
@@ -113,7 +112,6 @@ public class UserActivity extends FragmentActivity
     private EditText editTextCommunicator;
     private EditText panellTitle;
     private ImageButton optionsButton;
-    private Panell currPanell;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +146,6 @@ public class UserActivity extends FragmentActivity
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
-        numPanells = GestorUser.getNumPanells();
 
         // Instanciar viewpager i adaptador d'aquest
         setUpViewPager();
@@ -271,27 +268,11 @@ public class UserActivity extends FragmentActivity
 //        }
     }
 
-    public void addPanell(){
-
-        int position = pagerAdapter.getCount()+1;
-        Panell panell = GestorUser.newPanell(position);
-        callAddPanellLoader(panell);
-
-        final Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                pagerAdapter.addView();
-                viewPager.setCurrentItem(pagerAdapter.getCount());
-                panellTitle.setText(NAME_NEW_PANELL);
-            }
-        }, 250);
-
-    }
-
-    public void deletePanell(int idPanell){
-        pagerAdapter.removeView(idPanell);
+    @Override
+    public void onPanellButtonPressed(ImageButton optionsButton, EditText titleEditText, int idPanell) {
+        if ((int) optionsButton.getTag() == R.drawable.ic_action_check) {
+        } else if ((int) optionsButton.getTag() == R.drawable.ic_action_settings) {
+        }
     }
 
 //    public void updateViewPager(){
@@ -302,13 +283,6 @@ public class UserActivity extends FragmentActivity
 //        viewPager.setAdapter(pagerAdapter);
 //        pagerAdapter.notifyDataSetChanged();
 //    }
-
-    @Override
-    public void onPanellButtonPressed(ImageButton optionsButton, EditText titleEditText, int idPanell) {
-        if ((int) optionsButton.getTag() == R.drawable.ic_action_check) {
-        } else if ((int) optionsButton.getTag() == R.drawable.ic_action_settings) {
-        }
-    }
 
     @NonNull
     @Override
@@ -547,6 +521,86 @@ public class UserActivity extends FragmentActivity
 
     }
 
+    public void addPanell(){
+
+        int position = pagerAdapter.getCount()+1;
+        Panell panell = GestorUser.newPanell(position);
+        callAddPanellLoader(panell);
+
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                pagerAdapter.addView();
+                viewPager.setCurrentItem(pagerAdapter.getCount());
+                panellTitle.setText(NAME_NEW_PANELL);
+            }
+        }, 250);
+    }
+
+    public void deletePanell(int idPanell){
+        pagerAdapter.removeView(idPanell);
+    }
+
+    public void deleteDialog(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(DIALOG_TITLE);
+        alert.setMessage(DIALOG_MESSAGE_DELETE);
+        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+
+                int idPanell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).getId();
+
+                callDeletePanellLoader(idPanell);
+
+                final Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(pagerAdapter.getCount() == 1){
+                            panellTitle.setText(pagerAdapter.getCurrentPanell(0).getNom());
+                        } else if(pagerAdapter.getCount() == 0){
+                            panellTitle.getText().clear();
+                        }else{
+                            panellTitle.setText(pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).getNom());
+                        }
+                    }
+                }, 250);
+
+
+            }
+        });
+        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        alert.show();
+    }
+
+    public void editDialog(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(DIALOG_TITLE);
+        alert.setMessage(DIALOG_MESSAGE_EDIT);
+        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+
+                Panell panell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem());
+                callEditPanellLoader(panell);
+            }
+        });
+        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        alert.show();
+    }
+
     /**
      * PopupMenu per a mostrar les diferents opcions del botó.
      * @param view del component.
@@ -582,64 +636,6 @@ public class UserActivity extends FragmentActivity
                 return super.onContextItemSelected(item);
         }
 
-    }
-
-    public void deleteDialog(){
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(DIALOG_TITLE);
-        alert.setMessage(DIALOG_MESSAGE_DELETE);
-        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-
-                int idPanell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).getId();
-
-                callDeletePanellLoader(idPanell);
-
-                final Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if(pagerAdapter.getCount() == 1){
-                            panellTitle.setText(pagerAdapter.getCurrentPanell(0).getNom());
-                        } else if(pagerAdapter.getCount() == 0){
-                            panellTitle.getText().clear();
-                        }
-                    }
-                }, 100);
-
-
-            }
-        });
-        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        alert.show();
-    }
-
-    public void editDialog(){
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(DIALOG_TITLE);
-        alert.setMessage(DIALOG_MESSAGE_EDIT);
-        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-
-                Panell panell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem());
-
-                callEditPanellLoader(panell);
-
-            }
-        });
-        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        alert.show();
     }
 
     /**
@@ -680,8 +676,6 @@ public class UserActivity extends FragmentActivity
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            Log.i("Info", "adapter:" + panellList.get(position).getNom());
-            currPanell = panellList.get(position);
             return new PanellFragment(panellList.get(position), panellList.get(position).getNom());
         }
 

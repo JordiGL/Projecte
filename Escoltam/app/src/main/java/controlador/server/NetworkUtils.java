@@ -257,7 +257,7 @@ public class NetworkUtils extends Connexio{
      * @author Jordi Gómez Lozano.
      */
     public static Bundle deletePanell(int opcio, String token){
-        Log.i("Info",""+opcio);
+
         HttpURLConnection connexio = null;
         BufferedReader reader = null;
         String infoJSONString = null;
@@ -268,7 +268,7 @@ public class NetworkUtils extends Connexio{
 
             connexio = deleteRequest(token, PANELLS_URL+opcio);
             responseCode = connexio.getResponseCode();
-            Log.i("Info", "123: "+String.valueOf(responseCode));
+
             queryBundle = new Bundle();
             queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, responseCode);
 
