@@ -1,13 +1,17 @@
 package controlador.fragment;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -35,10 +39,17 @@ public class PanellRecyclerAdapter extends RecyclerView.Adapter<PanellRecyclerAd
     public void onBindViewHolder(@NonNull PanellRecyclerAdapter.ViewHolder holder, int position) {
         if(mIcones != null){
             Icona currentIcona = mIcones.get(position);
-            holder.mIconPosition.setText(String.valueOf(currentIcona.getPosicio()));
             holder.mIconName.setText(currentIcona.getNom());
+
+            if(currentIcona.getImatge() != null){
+                Log.i("Info", "Entra");
+                if(currentIcona.getImatge().length > 3){
+                    Glide.with(mContext).load(currentIcona.getImatge())
+                            .asBitmap()
+                            .into(holder.mIconImage);
+                }
+            }
         }else{
-            holder.mIconPosition.setText("");
             holder.mIconName.setText("");
         }
 
@@ -57,15 +68,14 @@ public class PanellRecyclerAdapter extends RecyclerView.Adapter<PanellRecyclerAd
      */
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView mIconPosition;
         private final TextView mIconName;
-
+        private final ImageView mIconImage;
 
         private ViewHolder(View itemView) {
             super(itemView);
 
-            mIconPosition = itemView.findViewById(R.id.textIconPositionList);
             mIconName = itemView.findViewById(R.id.textIconNameList);
+            mIconImage = itemView.findViewById(R.id.iconImage);
         }
 
     }

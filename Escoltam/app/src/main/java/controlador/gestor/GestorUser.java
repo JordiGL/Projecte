@@ -89,7 +89,6 @@ public class GestorUser {
                             );
                         }
 
-
                         //Afegim el panell a la llista
                         mPanells.add(new Panell(
                                 jsonArray.getJSONObject(i).getString(PANELL_NOM_JSON),
