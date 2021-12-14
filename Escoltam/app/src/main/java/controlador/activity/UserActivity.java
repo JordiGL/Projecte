@@ -55,6 +55,7 @@ import controlador.gestor.OnFragmentInteractionPanellListener;
 import controlador.gestor.OnFragmentInteractionUserListener;
 import controlador.server.delete.DeletePanellLoader;
 import controlador.server.get.PanellsListLoader;
+import controlador.server.post.NewIconLoader;
 import controlador.server.post.NewPanellLoader;
 import controlador.server.put.EditPanellLoader;
 import jordigomez.ioc.cat.escoltam.R;
@@ -85,6 +86,7 @@ public class UserActivity extends FragmentActivity
     private static final String TOKEN_BUNDLE_KEY = "token";
     private static final String NAME_NEW_PANELL = "Nou panell";
     private static final String ADD_OPTION = "add";
+    private static final String CREATE_ICONA_OPTION = "create_icona";
     private static final String LIST_PANELLS_OPTION = "list";
     private static final String ERROR_GET_PANELLS = "Error en obtenir la llista de panells";
     private static final String ERROR_ADD_PANELL = "Error en afegir el nou panell";
@@ -105,6 +107,9 @@ public class UserActivity extends FragmentActivity
     private static final String PANELL_ID_BUNDLE_KEY = "panell_id";
     private static final String PANELL_SUCCESSFULLY_EDITED = "El panell s'ha editat correctament";
     private static final String ERROR_EDIT_PANELL = "El panell no es pot editar";
+    private static final String ICON_NAME_BUNDLE_KEY = "icon_name";
+    private static final String ICON_POSITION_BUNDLE_KEY = "icon_position";
+    private static final String FILE_NAME_BUNDLE_KEY = "file_name";
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
     private UserToolbarFragment toolbarFragment;
@@ -233,17 +238,25 @@ public class UserActivity extends FragmentActivity
             @Override
             public void onClick(View v) {
                 Panell panell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem());
+                Icona icona = new Icona("hola", panell.getIcones().size()+1);
+                addNewIcon(panell.getId(), icona, "");
+
                 pagerAdapter.getCurrentPanell(viewPager.getCurrentItem())
                         .getIcones()
-                        .add(new Icona(
-                                "hola",
-                                panell.getIcones().size()+1)
-                        );
+                        .add(icona);
                 pagerAdapter.notifyDataSetChanged();
+
+                final Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        pagerAdapter.addView();
+                    }
+                }, 750);
+
             }
         });
     }
-
 
 //    @Override
 //    protected void onResume() {
@@ -307,12 +320,15 @@ public class UserActivity extends FragmentActivity
     @NonNull
     @Override
     public Loader<Bundle> onCreateLoader(int id, @Nullable Bundle args) {
-        String username ="";
-        String panell ="";
-        String token ="";
-        String option ="";
+        String username = "";
+        String panell = "";
+        String token = "";
+        String option = "";
         String url = "";
         String panellName = "";
+        String iconName = "";
+        String fileName = "";
+        int iconPosition;
         int panellPosition;
         int idPanell;
         boolean panellIsFavorite;
@@ -353,6 +369,15 @@ public class UserActivity extends FragmentActivity
                     token = args.getString(TOKEN_BUNDLE_KEY);
                     return new EditPanellLoader(this, panellName, panellPosition,
                             panellIsFavorite, idPanell, username, token);
+
+                case CREATE_ICONA_OPTION:
+                    idPanell = args.getInt(PANELL_ID_BUNDLE_KEY);
+                    iconName = args.getString(ICON_NAME_BUNDLE_KEY);
+                    iconPosition = args.getInt(ICON_POSITION_BUNDLE_KEY);
+                    fileName = args.getString(FILE_NAME_BUNDLE_KEY);
+                    token = args.getString(TOKEN_BUNDLE_KEY);
+                    return new NewIconLoader(this, idPanell, iconName,
+                            iconPosition, fileName, token);
             }
 
         }
@@ -409,13 +434,24 @@ public class UserActivity extends FragmentActivity
                 case EDIT_PANELL_OPTION:
 
                     responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
-                    Log.i("Info", "OF responseCode: "+responseCode);
+
                     if (responseCode == HttpURLConnection.HTTP_CREATED) {
                         callGetPanellsLoader();
                         displayToast(PANELL_SUCCESSFULLY_EDITED);
 
                     }else if(responseCode == HttpURLConnection.HTTP_NOT_FOUND){
                         displayToast(ERROR_EDIT_PANELL);
+                    }
+                    break;
+
+                case CREATE_ICONA_OPTION:
+                    responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
+                    Log.i("Info", "OF responseCode: "+responseCode);
+                    if (responseCode == HttpURLConnection.HTTP_CREATED) {
+                        callGetPanellsLoader();
+
+                    }else{
+                        displayToast("La icona no s'ha afegit al servidor");
                     }
                     break;
             }
@@ -542,6 +578,33 @@ public class UserActivity extends FragmentActivity
 
     }
 
+    private void addNewIcon(int idPanell, Icona icon, String fileName){
+
+        //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = null;
+        if (connMgr != null) {
+            networkInfo = connMgr.getActiveNetworkInfo();
+        }
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+
+            GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
+            String token = gestorSharedPreferences.getToken();
+
+            Bundle queryBundle = new Bundle();
+            queryBundle.putString(OPTION_BUNDLE_KEY, CREATE_ICONA_OPTION);
+            queryBundle.putInt(PANELL_ID_BUNDLE_KEY, idPanell);
+            queryBundle.putString(ICON_NAME_BUNDLE_KEY, icon.getNom());
+            queryBundle.putInt(ICON_POSITION_BUNDLE_KEY, icon.getPosicio());
+            queryBundle.putString(FILE_NAME_BUNDLE_KEY, fileName);
+            queryBundle.putString(TOKEN_BUNDLE_KEY, token);
+            getSupportLoaderManager().restartLoader(0, queryBundle, this);
+        }
+
+    }
+
     public void addPanell(){
 
         int position = pagerAdapter.getCount()+1;
@@ -563,6 +626,8 @@ public class UserActivity extends FragmentActivity
     public void deletePanell(int idPanell){
         pagerAdapter.removeView(idPanell);
     }
+
+
 
     public void deleteDialog(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);

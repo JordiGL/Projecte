@@ -1,11 +1,13 @@
 package controlador.server;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,6 +16,12 @@ import java.nio.charset.StandardCharsets;
 
 import controlador.gestor.JsonUtils;
 import model.Usuari;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Classe d'utilitats per a connectar amb el servidor.
@@ -21,6 +29,8 @@ import model.Usuari;
  * @author Jordi Gómez Lozano.
  */
 public class NetworkUtils extends Connexio{
+    private static final String AUTHORIZATION_KEY = "Authorization";
+    private static final String BEARER = "Bearer ";
     private static final String CHARSET_NAME = "UTF-8";
     private static final String METODE_PETICIO_POST = "POST";
     private static final String METODE_PETICIO_PUT = "PUT";
@@ -41,7 +51,9 @@ public class NetworkUtils extends Connexio{
     private static final String DELETE_PANELL_INFO_BUNDLE_KEY = "delete_panell_info";
     private static final String DELETE_PANELL_OPTION = "delete";
     private static final String ID_PANELL_BUNDLE_KEY = "id_panell";
-    public static final String EDIT_PANELL_OPTION = "edit";
+    private static final String EDIT_PANELL_OPTION = "edit";
+    private static final String URL_NEW_ICON = "http://10.0.2.2:8080/app/icones/icona/panell/";
+    private static final String CREATE_ICONA_OPTION = "create_icona";
 
     /**
      * Post request al servidor per obtenir el token.
@@ -465,6 +477,50 @@ public class NetworkUtils extends Connexio{
         } finally {
             if (connexio != null) {
                 connexio.disconnect();
+            }
+        }
+
+        return queryBundle;
+    }
+
+    public static Bundle addNewIcon(Context context, int idPanell, String name, int position,
+                                    String fileName, String token){
+        Bundle queryBundle = null;
+        OkHttpClient client = null;
+        try{
+
+            client = new OkHttpClient().newBuilder()
+                    .build();
+            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                    .addFormDataPart("id","")
+                    .addFormDataPart("nom",name)
+                    .addFormDataPart("posicio",String.valueOf(position))
+                    .addFormDataPart("foto",fileName,
+                            //Per defecte content vuit, per assignar una imatge fer new File(context.getFilesDir(),fileName)
+                            //En PC posar la ruta del directori on hi tenim la imatge en comptes de context.getFilesDir().
+                            RequestBody.create(MediaType.parse("application/octet-stream"),""))
+                    .build();
+            Request request = new Request.Builder()
+                    .url(URL_NEW_ICON +String.valueOf(idPanell))
+                    .method(METODE_PETICIO_POST, body)
+                    .addHeader(AUTHORIZATION_KEY, BEARER + token)
+                    .build();
+            Response response = client.newCall(request).execute();
+            queryBundle = new Bundle();
+            queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, response.code());
+            queryBundle.putString(OPTION_BUNDLE_KEY, CREATE_ICONA_OPTION);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (client != null) {
+                client.dispatcher().executorService().shutdown();
+                client.connectionPool().evictAll();
+//                try {
+//                    client.cache().close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
             }
         }
 
