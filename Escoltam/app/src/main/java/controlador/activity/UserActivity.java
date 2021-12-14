@@ -22,29 +22,27 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.Task;
-
+import java.io.File;
 import java.net.HttpURLConnection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import controlador.fragment.PanellFragment;
 import controlador.fragment.UserControlFragment;
@@ -75,6 +73,7 @@ public class UserActivity extends FragmentActivity
         LoaderManager.LoaderCallbacks<Bundle>,
         PopupMenu.OnMenuItemClickListener{
 
+    private static final int PICK_IMAGE = 1;
     private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     private static final String URL_BUNDLE_KEY = "url";
     private static final String PANELLS_BUNDLE_KEY = "panells";
@@ -121,6 +120,7 @@ public class UserActivity extends FragmentActivity
     private EditText editTextCommunicator;
     private EditText panellTitle;
     private ImageButton optionsButton;
+    private Uri uriIconImage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,25 +237,30 @@ public class UserActivity extends FragmentActivity
         newIconButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Panell panell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem());
-                Icona icona = new Icona("hola", panell.getIcones().size()+1);
-                addNewIcon(panell.getId(), icona, "");
-
-                pagerAdapter.getCurrentPanell(viewPager.getCurrentItem())
-                        .getIcones()
-                        .add(icona);
-                pagerAdapter.notifyDataSetChanged();
-
-                final Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        pagerAdapter.addView();
-                    }
-                }, 750);
+                addNewIconDialog();
+                //Intent implicit per a seleccionar la imatge.
+//                Intent intent = new Intent();
+//                intent.setType("image/*");
+//                intent.setAction(Intent.ACTION_GET_CONTENT);
+//                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
 
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE) {
+            try {
+                //Obtenim la imatge seleccionada per l'usuari.
+                uriIconImage = data.getData();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 //    @Override
@@ -578,7 +583,7 @@ public class UserActivity extends FragmentActivity
 
     }
 
-    private void addNewIcon(int idPanell, Icona icon, String fileName){
+    private void callNewIconLoader(int idPanell, Icona icon, String fileName){
 
         //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -627,9 +632,73 @@ public class UserActivity extends FragmentActivity
         pagerAdapter.removeView(idPanell);
     }
 
+    private void addNewIcon(File file){
+
+        Panell panell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem());
+        Icona icona = new Icona(file.getName(), panell.getIcones().size()+1);
+        callNewIconLoader(panell.getId(), icona, file.getName());
+        pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).getIcones().add(icona);
+        pagerAdapter.notifyDataSetChanged();
+
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                pagerAdapter.addView();
+            }
+        }, 750);
+    }
+
+    private void addNewIconDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Crear icona");
+
+        View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_new_icon,
+                (ViewGroup) findViewById(android.R.id.content), false);
+
+        final EditText inputText = (EditText) viewInflated.findViewById(R.id.textIconInput);
+        final Button imageButton = (Button) viewInflated.findViewById(R.id.btnSelectImage);
+        builder.setView(viewInflated);
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent implicit per a seleccionar la imatge.
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(
+                        intent,
+                        "Selecciona la imatge de la icona"),
+                        PICK_IMAGE);
+            }
+        });
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                File iconFile = GestorUser.createFile(
+                        UserActivity.this,
+                        getContentResolver(),
+                        uriIconImage,
+                        inputText.getText().toString());
+                addNewIcon(iconFile);
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
+    }
 
 
-    public void deleteDialog(){
+    private void deleteDialog(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(DIALOG_TITLE);
         alert.setMessage(DIALOG_MESSAGE_DELETE);
@@ -667,7 +736,7 @@ public class UserActivity extends FragmentActivity
         alert.show();
     }
 
-    public void editDialog(){
+    private void editDialog(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(DIALOG_TITLE);
         alert.setMessage(DIALOG_MESSAGE_EDIT);

@@ -1,4 +1,4 @@
-package controlador.activity;
+package controlador.fragment;
 
 import android.content.Context;
 import android.view.LayoutInflater;

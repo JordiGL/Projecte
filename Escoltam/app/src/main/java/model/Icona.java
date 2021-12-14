@@ -3,19 +3,20 @@ package model;
 public class Icona {
     private String nom;
     private int posicio;
-//    private byte[] imatge;
+    private byte[] imatge;
 
 
     public Icona(String nom, int posicio) {
         this.nom = nom;
         this.posicio = posicio;
+        this.imatge = null;
     }
 
-//    public Icona(String nom, int posicio, byte[] imatge) {
-//        this.nom = nom;
-//        this.posicio = posicio;
-//        this.imatge = imatge;
-//    }
+    public Icona(String nom, int posicio, byte[] imatge) {
+        this.nom = nom;
+        this.posicio = posicio;
+        this.imatge = imatge;
+    }
 
     public String getNom() {
         return nom;
@@ -33,11 +34,11 @@ public class Icona {
         this.posicio = posicio;
     }
 
-//    public byte[] getImatge() {
-//        return imatge;
-//    }
-//
-//    public void setImatge(byte[] imatge) {
-//        this.imatge = imatge;
-//    }
+    public byte[] getImatge() {
+        return imatge;
+    }
+
+    public void setImatge(byte[] imatge) {
+        this.imatge = imatge;
+    }
 }

@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import controlador.gestor.JsonUtils;
 import model.Usuari;
@@ -487,25 +488,42 @@ public class NetworkUtils extends Connexio{
                                     String fileName, String token){
         Bundle queryBundle = null;
         OkHttpClient client = null;
+        RequestBody body = null;
+        Response response = null;
+        File file = null;
+
         try{
 
             client = new OkHttpClient().newBuilder()
                     .build();
-            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                    .addFormDataPart("id","")
-                    .addFormDataPart("nom",name)
-                    .addFormDataPart("posicio",String.valueOf(position))
-                    .addFormDataPart("foto",fileName,
-                            //Per defecte content vuit, per assignar una imatge fer new File(context.getFilesDir(),fileName)
-                            //En PC posar la ruta del directori on hi tenim la imatge en comptes de context.getFilesDir().
-                            RequestBody.create(MediaType.parse("application/octet-stream"),""))
-                    .build();
+
+            if(fileName.isEmpty()){
+
+                body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("id","")
+                        .addFormDataPart("nom",name)
+                        .addFormDataPart("posicio",String.valueOf(position))
+                        .addFormDataPart("foto",fileName,
+                                RequestBody.create(MediaType.parse("application/octet-stream"),
+                                        fileName))
+                        .build();
+            } else {
+                file = new File(context.getFilesDir(),fileName);
+                body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("id","")
+                        .addFormDataPart("nom",name)
+                        .addFormDataPart("posicio",String.valueOf(position))
+                        .addFormDataPart("foto",fileName,
+                                RequestBody.create(MediaType.parse("application/octet-stream"), file))
+                        .build();
+            }
+
             Request request = new Request.Builder()
                     .url(URL_NEW_ICON +String.valueOf(idPanell))
                     .method(METODE_PETICIO_POST, body)
                     .addHeader(AUTHORIZATION_KEY, BEARER + token)
                     .build();
-            Response response = client.newCall(request).execute();
+            response = client.newCall(request).execute();
             queryBundle = new Bundle();
             queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, response.code());
             queryBundle.putString(OPTION_BUNDLE_KEY, CREATE_ICONA_OPTION);
@@ -516,11 +534,9 @@ public class NetworkUtils extends Connexio{
             if (client != null) {
                 client.dispatcher().executorService().shutdown();
                 client.connectionPool().evictAll();
-//                try {
-//                    client.cache().close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
+            }
+            if(response != null){
+                response.close();
             }
         }
 

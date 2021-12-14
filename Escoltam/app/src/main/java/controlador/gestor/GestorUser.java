@@ -1,12 +1,29 @@
 package controlador.gestor;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.OpenableColumns;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.EditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -67,9 +84,11 @@ public class GestorUser {
 
                             icones.add(new Icona(
                                     iconesJsonList.getJSONObject(j).getString(ICONA_NOM_JSON),
-                                    iconesJsonList.getJSONObject(j).getInt(ICONA_POSICIO_JSON))
+                                    iconesJsonList.getJSONObject(j).getInt(ICONA_POSICIO_JSON),
+                                    Base64.decode(iconesJsonList.getJSONObject(j).getString("foto"), Base64.DEFAULT))
                             );
                         }
+
 
                         //Afegim el panell a la llista
                         mPanells.add(new Panell(
@@ -150,4 +169,64 @@ public class GestorUser {
         }
 
     }
+
+//Icones
+
+    public static File createFile(Context context, ContentResolver resolver, Uri uri, String name){
+        FileOutputStream out = null;
+        InputStream stream = null;
+        File file = null;
+        try {
+            //Obtenim els bytes de la imatge.
+            stream =   resolver.openInputStream(uri);
+            byte[] imatgeEnBytes = getBytes(stream);
+            //Creem la imatge.
+            file = new File(context.getFilesDir(),name);
+
+            out = new FileOutputStream(file);
+            out.write(imatgeEnBytes);
+            stream =   new FileInputStream(file);
+            byte[] fileContent = getBytes(stream);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(out != null){
+                    out.close();
+                    stream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return file;
+    }
+
+    public static byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+
+        }
+
+        Log.i("Info", String.valueOf(byteBuffer));
+        return byteBuffer.toByteArray();
+    }
+
+//    public static String queryName(ContentResolver resolver, Uri uri) {
+//        Cursor returnCursor = resolver.query(uri, null, null, null, null);
+//        assert returnCursor != null;
+//        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+//        returnCursor.moveToFirst();
+//        String name = returnCursor.getString(nameIndex);
+//        returnCursor.close();
+//        return name;
+//    }
+
 }
