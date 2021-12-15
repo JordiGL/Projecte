@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -844,12 +845,18 @@ public class UserActivity extends FragmentActivity
     private void editIconDialog(int idIcona){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(DIALOG_EDIT_ICONA_TITLE);
+        Icona icona = GestorUser.findIcona(idIcona);
 
         View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_new_icon,
                 (ViewGroup) findViewById(android.R.id.content), false);
 
         final EditText inputText = (EditText) viewInflated.findViewById(R.id.textIconInput);
         final Button imageButton = (Button) viewInflated.findViewById(R.id.btnSelectImage);
+
+        if (icona != null) {
+            inputText.setText(icona.getNom());
+        }
+
         builder.setView(viewInflated);
 
         imageButton.setOnClickListener(new View.OnClickListener() {
@@ -872,11 +879,11 @@ public class UserActivity extends FragmentActivity
                 dialog.dismiss();
                 File iconFile = null;
                 String newIconName = inputText.getText().toString();
-                Icona icona = GestorUser.findIcona(idIcona);
 
                 if(icona != null) {
 
-                    if (!newIconName.isEmpty()) {
+                    if (!newIconName.matches("")) {
+
                         icona.setNom(newIconName);
                     }
 
@@ -886,25 +893,19 @@ public class UserActivity extends FragmentActivity
                                 UserActivity.this,
                                 getContentResolver(),
                                 uriIconImage,
-                                inputText.getText().toString());
+                                icona.getNom());
                     } else {
-                        try {
-                            String uriImage = new String(icona != null ? icona.getImatge() : new byte[0], "UTF-8");
-                            iconFile = GestorUser.createFile(
-                                    UserActivity.this,
-                                    getContentResolver(),
-                                    Uri.parse(uriImage),
-                                    inputText.getText().toString());
 
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
+                        iconFile = GestorUser.createFileByte(
+                                UserActivity.this,
+                                icona.getImatge(),
+                                icona.getNom());
                     }
 
                     if (iconFile != null) {
                         editIcon(icona, iconFile);
                     } else {
-                        displayToast(ERROR_EDIT_ICONA + " dialog");
+                        displayToast(ERROR_EDIT_ICONA);
                     }
                 }
             }

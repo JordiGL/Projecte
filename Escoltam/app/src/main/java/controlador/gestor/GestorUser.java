@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Base64;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,9 +36,8 @@ public class GestorUser {
     private static final String PANELL_NOM_JSON = "nom";
     private static final String PANELL_POSICIO_JSON = "posicio";
     private static final String PANELL_FAVORIT_JSON = "favorit";
-    private static final String NEW_PANELL = "Nou panell";
-    public static final String ICONA_FOTO_JSON = "foto";
-    public static final String ICONA_ID_JSON = "id";
+    private static final String ICONA_FOTO_JSON = "foto";
+    private static final String ICONA_ID_JSON = "id";
     private static List<Panell> mPanells;
 
     public GestorUser(List<Panell> mPanells) {
@@ -130,6 +130,7 @@ public class GestorUser {
         FileOutputStream out = null;
         InputStream stream = null;
         File file = null;
+
         try {
             //Obtenim els bytes de la imatge.
             stream =   resolver.openInputStream(uri);
@@ -139,8 +140,6 @@ public class GestorUser {
 
             out = new FileOutputStream(file);
             out.write(imatgeEnBytes);
-            stream =   new FileInputStream(file);
-            byte[] fileContent = getBytes(stream);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -149,6 +148,32 @@ public class GestorUser {
                 if(out != null){
                     out.close();
                     stream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return file;
+    }
+
+    public static File createFileByte(Context context, byte[] imageBytes, String name){
+        FileOutputStream out = null;
+        File file = null;
+        try {
+
+            //Creem la imatge.
+            file = new File(context.getFilesDir(),name);
+
+            out = new FileOutputStream(file);
+            out.write(imageBytes);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(out != null){
+                    out.close();
                 }
             } catch (IOException e) {
                 e.printStackTrace();

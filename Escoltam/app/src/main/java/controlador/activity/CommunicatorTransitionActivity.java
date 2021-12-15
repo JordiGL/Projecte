@@ -130,8 +130,5 @@ public class CommunicatorTransitionActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<Bundle> loader) {
-
-    }
-
+    public void onLoaderReset(@NonNull Loader<Bundle> loader) {}
 }
