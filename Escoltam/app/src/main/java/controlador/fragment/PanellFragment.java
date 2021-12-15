@@ -20,6 +20,7 @@ import android.widget.Toast;
 import java.util.List;
 
 import controlador.gestor.GestorText;
+import controlador.gestor.GestorUser;
 import controlador.gestor.OnFragmentInteractionPanellListener;
 import controlador.gestor.OnIconInteractionListener;
 import jordigomez.ioc.cat.escoltam.R;
@@ -34,20 +35,16 @@ import model.Panell;
  */
 public class PanellFragment extends Fragment implements OnIconInteractionListener, PopupMenu.OnMenuItemClickListener{
     private static final String ERROR = "Error";
-    private static final String NAME_NEW_PANELL = "Nou panell";
     private OnFragmentInteractionPanellListener mListener;
     private static List<Icona> mIcones;
     private RecyclerView mRecyclerView;
     private PanellRecyclerAdapter mAdapter;
-    private int spanCount = 3;
     private Panell panell;
-    private EditText editText;
     private View rootView;
     private int idIcona;
 
-    public PanellFragment(Panell panell, EditText editText) {
+    public PanellFragment(Panell panell) {
         this.panell = panell;
-        this.editText = editText;
     }
 
     @Override
@@ -64,7 +61,7 @@ public class PanellFragment extends Fragment implements OnIconInteractionListene
 
         //RecyclerView i adapter.
         mRecyclerView = rootView.findViewById(R.id.recyclerViewPanell);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), GestorUser.getFileIcons()));
         mAdapter = new PanellRecyclerAdapter(mIcones, rootView.getContext(), this);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -104,17 +101,6 @@ public class PanellFragment extends Fragment implements OnIconInteractionListene
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionPanellListener) {
-            mListener = (OnFragmentInteractionPanellListener) context;
-        } else {
-            throw new ClassCastException(context.toString()
-                    + ERROR);
-        }
-    }
-
-    @Override
     public void onIconClicked(String iconText) {
 
         GestorText.getTextList().add(iconText + " ");
@@ -125,5 +111,16 @@ public class PanellFragment extends Fragment implements OnIconInteractionListene
     public void onIconLongClicked(View v, String id) {
         idIcona = Integer.parseInt(id);
         openMoreMenuOptions(v);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionPanellListener) {
+            mListener = (OnFragmentInteractionPanellListener) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + ERROR);
+        }
     }
 }

@@ -104,6 +104,22 @@
         <item>Cerca per rol</item>
     </string-array>
 
+    <string-array name="icons_files_options_portrait">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="icons_files_options_landscape">
+        <item>3</item>
+        <item>5</item>
+        <item>8</item>
+        <item>10</item>
+        <item>12</item>
+        <item>15</item>
+    </string-array>
+
     //Selectable
     <string-array name="autocomplete_voice_options">
         <item>FEMALE</item>

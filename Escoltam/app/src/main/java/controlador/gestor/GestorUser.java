@@ -39,6 +39,7 @@ public class GestorUser {
     private static final String ICONA_FOTO_JSON = "foto";
     private static final String ICONA_ID_JSON = "id";
     private static List<Panell> mPanells;
+    private static int fileIcons = 3;
 
     public GestorUser(List<Panell> mPanells) {
         GestorUser.mPanells = mPanells;
@@ -132,14 +133,16 @@ public class GestorUser {
         File file = null;
 
         try {
-            //Obtenim els bytes de la imatge.
-            stream =   resolver.openInputStream(uri);
-            byte[] imatgeEnBytes = getBytes(stream);
-            //Creem la imatge.
-            file = new File(context.getFilesDir(),name);
+            if(uri != null){
+                //Obtenim els bytes de la imatge.
+                stream =   resolver.openInputStream(uri);
+                byte[] imatgeEnBytes = getBytes(stream);
+                //Creem la imatge.
+                file = new File(context.getFilesDir(),name);
 
-            out = new FileOutputStream(file);
-            out.write(imatgeEnBytes);
+                out = new FileOutputStream(file);
+                out.write(imatgeEnBytes);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -208,6 +211,14 @@ public class GestorUser {
         }
 
         return byteBuffer.toByteArray();
+    }
+
+    public static int getFileIcons(){
+        return fileIcons;
+    }
+
+    public static void setFileIcons(int number){
+        fileIcons = number;
     }
 
     public static class PanellPositionComparator implements Comparator<Panell> {
