@@ -2,9 +2,8 @@ package controlador.gestor;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.database.Cursor;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
-import android.provider.OpenableColumns;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.EditText;
@@ -12,18 +11,13 @@ import android.widget.EditText;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -45,9 +39,9 @@ public class GestorUser {
     private static final String PANELL_POSICIO_JSON = "posicio";
     private static final String PANELL_FAVORIT_JSON = "favorit";
     private static final String NEW_PANELL = "Nou panell";
+    public static final String ICONA_FOTO_JSON = "foto";
+    public static final String ICONA_ID_JSON = "id";
     private static List<Panell> mPanells;
-
-
 
     public GestorUser(List<Panell> mPanells) {
         GestorUser.mPanells = mPanells;
@@ -85,7 +79,8 @@ public class GestorUser {
                             icones.add(new Icona(
                                     iconesJsonList.getJSONObject(j).getString(ICONA_NOM_JSON),
                                     iconesJsonList.getJSONObject(j).getInt(ICONA_POSICIO_JSON),
-                                    Base64.decode(iconesJsonList.getJSONObject(j).getString("foto"), Base64.DEFAULT))
+                                    Base64.decode(iconesJsonList.getJSONObject(j).getString(ICONA_FOTO_JSON), Base64.DEFAULT),
+                                    iconesJsonList.getJSONObject(j).getInt(ICONA_ID_JSON))
                             );
                         }
 
@@ -133,10 +128,10 @@ public class GestorUser {
         return false;
     }
 
-    public static Panell newPanell(int position){
+    public static Panell newPanell(int position, String panellName){
 
         return new Panell(
-                NEW_PANELL,
+                panellName,
                 position,
                 false,
                 new ArrayList<Icona>()
@@ -203,6 +198,19 @@ public class GestorUser {
         return file;
     }
 
+    public static Icona findIcona(int id){
+
+        for(Panell panell: mPanells){
+            for(Icona icona: panell.getIcones()){
+                if(icona.getId() == id){
+                    return icona;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public static byte[] getBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
         int bufferSize = 1024;
@@ -217,6 +225,8 @@ public class GestorUser {
         Log.i("Info", String.valueOf(byteBuffer));
         return byteBuffer.toByteArray();
     }
+
+
 
 //    public static String queryName(ContentResolver resolver, Uri uri) {
 //        Cursor returnCursor = resolver.query(uri, null, null, null, null);

@@ -2,7 +2,6 @@ package controlador.server;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -13,7 +12,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 import controlador.gestor.JsonUtils;
 import model.Usuari;
@@ -50,11 +48,17 @@ public class NetworkUtils extends Connexio{
     private static final String LIST_PANELLS_OPTION = "list";
     private static final String ADD_PANELL_OPTION = "add";
     private static final String DELETE_PANELL_INFO_BUNDLE_KEY = "delete_panell_info";
-    private static final String DELETE_PANELL_OPTION = "delete";
+    private static final String DELETE_PANELL_OPTION = "delete_panell";
     private static final String ID_PANELL_BUNDLE_KEY = "id_panell";
     private static final String EDIT_PANELL_OPTION = "edit";
     private static final String URL_NEW_ICON = "http://10.0.2.2:8080/app/icones/icona/panell/";
     private static final String CREATE_ICONA_OPTION = "create_icona";
+    public static final String EDIT_ICONA_OPTION = "edit_icona";
+    public static final String URL_EDIT_ICON = "http://10.0.2.2:8080/app/icones/icona/";
+    public static final String URL_DELETE_ICONA = "http://10.0.2.2:8080/app/icones/icona/";
+    public static final String DELETE_OPTION = "delete";
+    public static final String ID_ICONA_BUNDLE_KEY = "icon_id";
+    public static final String DELETE_ICONA_OPTION = "delete_icona";
 
     /**
      * Post request al servidor per obtenir el token.
@@ -264,12 +268,12 @@ public class NetworkUtils extends Connexio{
 //DELETE PANELL
     /**
      * Delete request per a eliminar un panell.
-     * @param opcio part de la url del request.
+     * @param idPanell part de la url del request.
      * @param token token de l'usuari.
      * @return dades obtingudes del servidor.
      * @author Jordi Gómez Lozano.
      */
-    public static Bundle deletePanell(int opcio, String token){
+    public static Bundle deletePanell(int idPanell, String token){
 
         HttpURLConnection connexio = null;
         BufferedReader reader = null;
@@ -279,7 +283,7 @@ public class NetworkUtils extends Connexio{
 
         try{
 
-            connexio = deleteRequest(token, PANELLS_URL+opcio);
+            connexio = deleteRequest(token, PANELLS_URL+idPanell);
             responseCode = connexio.getResponseCode();
 
             queryBundle = new Bundle();
@@ -305,8 +309,8 @@ public class NetworkUtils extends Connexio{
 
                 infoJSONString = builder.toString();
                 queryBundle.putString(DELETE_PANELL_INFO_BUNDLE_KEY, infoJSONString);
-                queryBundle.putString(OPTION_BUNDLE_KEY, "delete");
-                queryBundle.putInt(ID_PANELL_BUNDLE_KEY, opcio);
+                queryBundle.putString(OPTION_BUNDLE_KEY, DELETE_PANELL_OPTION);
+                queryBundle.putInt(ID_PANELL_BUNDLE_KEY, idPanell);
             }
 
         } catch (IOException e){
@@ -326,6 +330,72 @@ public class NetworkUtils extends Connexio{
 
         return queryBundle;
     }
+
+    /**
+     * Delete request per a eliminar una icona.
+     * @param idIcona part de la url del request.
+     * @param token token de l'usuari.
+     * @return dades obtingudes del servidor.
+     * @author Jordi Gómez Lozano.
+     */
+    public static Bundle deleteIcona(int idIcona, String token){
+
+        HttpURLConnection connexio = null;
+        BufferedReader reader = null;
+        String infoJSONString = null;
+        Bundle queryBundle = null;
+        int responseCode;
+
+        try{
+
+            connexio = deleteRequest(token, URL_DELETE_ICONA +idIcona);
+            responseCode = connexio.getResponseCode();
+
+            queryBundle = new Bundle();
+            queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, responseCode);
+
+            if(responseCode == HttpURLConnection.HTTP_OK) {
+
+                InputStream inputStream = connexio.getInputStream();
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                // StringBuilder on hi guardarem la resposta.
+                StringBuilder builder = new StringBuilder();
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                    builder.append("\n");
+                }
+
+                if (builder.length() == 0) {
+                    return null;
+                }
+
+                infoJSONString = builder.toString();
+                queryBundle.putString(DELETE_PANELL_INFO_BUNDLE_KEY, infoJSONString);
+                queryBundle.putString(OPTION_BUNDLE_KEY, DELETE_ICONA_OPTION);
+                queryBundle.putInt(ID_ICONA_BUNDLE_KEY, idIcona);
+            }
+
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally{
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return queryBundle;
+    }
+
 
     /**
      * Get request per a obtenir els panells dels usuaris o usuari.
@@ -527,6 +597,63 @@ public class NetworkUtils extends Connexio{
             queryBundle = new Bundle();
             queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, response.code());
             queryBundle.putString(OPTION_BUNDLE_KEY, CREATE_ICONA_OPTION);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (client != null) {
+                client.dispatcher().executorService().shutdown();
+                client.connectionPool().evictAll();
+            }
+            if(response != null){
+                response.close();
+            }
+        }
+
+        return queryBundle;
+    }
+
+    public static Bundle editIcon(Context context, int idIcona, String name, int position,
+                                    String fileName, String token){
+        Bundle queryBundle = null;
+        OkHttpClient client = null;
+        RequestBody body = null;
+        Response response = null;
+        File file = null;
+
+        try{
+
+            client = new OkHttpClient().newBuilder()
+                    .build();
+
+            if(fileName.isEmpty()){
+
+                body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("nom",name)
+                        .addFormDataPart("posicio",String.valueOf(position))
+                        .addFormDataPart("foto",fileName,
+                                RequestBody.create(MediaType.parse("application/octet-stream"),
+                                        fileName))
+                        .build();
+            } else {
+                file = new File(context.getFilesDir(),fileName);
+                body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("nom",name)
+                        .addFormDataPart("posicio",String.valueOf(position))
+                        .addFormDataPart("foto",file.getPath(),
+                                RequestBody.create(MediaType.parse("application/octet-stream"), file))
+                        .build();
+            }
+
+            Request request = new Request.Builder()
+                    .url(URL_EDIT_ICON +String.valueOf(idIcona))
+                    .method(METODE_PETICIO_PUT, body)
+                    .addHeader(AUTHORIZATION_KEY, BEARER + token)
+                    .build();
+            response = client.newCall(request).execute();
+            queryBundle = new Bundle();
+            queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, response.code());
+            queryBundle.putString(OPTION_BUNDLE_KEY, EDIT_ICONA_OPTION);
 
         } catch (Exception e) {
             e.printStackTrace();

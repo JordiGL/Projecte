@@ -55,19 +55,16 @@
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintTop_toBottomOf="@+id/toolbar_fragment_container" />-->
 
-    <EditText
+    <TextView
         android:id="@+id/titolPanell"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
-        android:paddingStart="8dp"
-        android:background="@color/white"
-        android:paddingTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:textSize="30sp"
         android:textColor="@color/colorPrimaryDark"
         android:maxLines="1"
-        android:inputType="text"
-        android:imeOptions="actionNext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_fragment_container" />

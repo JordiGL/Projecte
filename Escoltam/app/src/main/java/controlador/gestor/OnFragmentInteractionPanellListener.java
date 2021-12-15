@@ -9,5 +9,5 @@ import android.widget.ImageButton;
  * @author Jordi Gómez Lozano
  */
 public interface OnFragmentInteractionPanellListener {
-   void onPanellButtonPressed(ImageButton button, EditText titleEditText, int idPanell);
+   void onIconMenuItemPressed(MenuItem menuItem, int idIcona);
 }

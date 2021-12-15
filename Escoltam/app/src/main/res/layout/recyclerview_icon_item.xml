@@ -69,5 +69,13 @@
             android:layout_below="@+id/iconImage"
             style="@style/TextAppearance.AppCompat.Subhead" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textIconIdList"
+            android:layout_below="@+id/iconImage"
+            android:visibility="invisible"
+            style="@style/TextAppearance.AppCompat.Subhead" />
+
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

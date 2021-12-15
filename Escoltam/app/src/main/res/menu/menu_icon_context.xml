@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/context_icona_edit"
+        android:orderInCategory="10"
+        android:title="@string/context_panell_edit_text"/>
+
+    <item
+        android:id="@+id/context_icona_delete"
+        android:orderInCategory="20"
+        android:title="@string/context_panell_delete_text"/>
+
+</menu>

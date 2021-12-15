@@ -37,7 +37,6 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
     private static final String ROLE_KEY = "role";
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private static final String ROLE_USER = "ROLE_USER";
-    private OnFragmentInteractionUserListener mListener;
     private static String role;
     private View rootView;
 
@@ -67,8 +66,6 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
         final ImageButton addPanel = rootView.findViewById(R.id.button_screen);
 
         editText.setShowSoftInputOnFocus(false);
-        editText.setInputType(InputType.TYPE_NULL);
-        editText.setFocusable(false);
 
         if (getArguments().containsKey(ROLE_KEY)) {
             role = getArguments().getString(ROLE_KEY);
@@ -77,16 +74,7 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 openMoreMenuOptions(v);
-
-            }
-        });
-
-        addPanel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onToolbarButtonPressed(addPanel);
             }
         });
 
@@ -147,17 +135,4 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
                 return super.onContextItemSelected(item);
         }
     }
-
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionUserListener) {
-            mListener = (OnFragmentInteractionUserListener) context;
-        } else {
-            throw new ClassCastException(context.toString()
-                    + ERROR);
-        }
-    }
-
 }
