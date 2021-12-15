@@ -59,6 +59,7 @@ public class NetworkUtils extends Connexio{
     public static final String DELETE_OPTION = "delete";
     public static final String ID_ICONA_BUNDLE_KEY = "icon_id";
     public static final String DELETE_ICONA_OPTION = "delete_icona";
+    public static final String PANELL_NAME_BUNDLE_KEY = "panell_name";
 
     /**
      * Post request al servidor per obtenir el token.
@@ -542,6 +543,7 @@ public class NetworkUtils extends Connexio{
             queryBundle = new Bundle();
             queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, responseCode);
             queryBundle.putString(OPTION_BUNDLE_KEY, EDIT_PANELL_OPTION);
+            queryBundle.putString(PANELL_NAME_BUNDLE_KEY, nom);
 
         } catch (Exception e) {
             e.printStackTrace();

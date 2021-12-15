@@ -1,9 +1,12 @@
 package controlador.gestor;
 
 import android.view.View;
-import android.widget.TextView;
 
+/**
+ * Interficie callback per a passar informació del recyclerview de les icones
+ * @author Jordi Gómez Lozano
+ */
 public interface OnIconInteractionListener {
-    public void onIconClicked(String iconText);
-    public void onIconLongClicked(View v, String id);
+    void onIconClicked(String iconText);
+    void onIconLongClicked(View v, String id);
 }

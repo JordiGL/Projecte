@@ -85,7 +85,7 @@ public class PanellRecyclerAdapter extends RecyclerView.Adapter<PanellRecyclerAd
                 mIconId.setText(String.valueOf(currentIcona.getId()));
 
                 if(currentIcona.getImatge() != null){
-                    Log.i("Info", "Entra");
+
                     if(currentIcona.getImatge().length > 3){
                         Glide.with(mContext).load(currentIcona.getImatge())
                                 .asBitmap()
@@ -105,7 +105,7 @@ public class PanellRecyclerAdapter extends RecyclerView.Adapter<PanellRecyclerAd
 
         @Override
         public boolean onLongClick(View v) {
-            Log.i("Info", "recycler");
+
             mListener.onIconLongClicked(v, mIconId.getText().toString());
             return true;
         }

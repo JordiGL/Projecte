@@ -26,7 +26,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,7 +51,6 @@ import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.GestorText;
 import controlador.gestor.GestorUser;
 import controlador.gestor.OnFragmentInteractionPanellListener;
-import controlador.gestor.OnFragmentInteractionUserListener;
 import controlador.server.delete.DeleteIconaLoader;
 import controlador.server.delete.DeletePanellLoader;
 import controlador.server.get.PanellsListLoader;
@@ -65,10 +63,12 @@ import model.Icona;
 import model.Panell;
 
 /**
- * Activitat del client.
+ * Activitat del comunicador.
  * @see AppCompatActivity
  * @see FragmentActivity
- * @see OnFragmentInteractionUserListener
+ * @see OnFragmentInteractionPanellListener
+ * @see LoaderManager
+ * @see PopupMenu
  * @author Jordi Gómez Lozano
  */
 public class UserActivity extends FragmentActivity
@@ -77,33 +77,25 @@ public class UserActivity extends FragmentActivity
         PopupMenu.OnMenuItemClickListener{
 
     private static final int PICK_IMAGE = 1;
-    private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     private static final String URL_BUNDLE_KEY = "url";
     private static final String PANELLS_BUNDLE_KEY = "panells";
     private static final String RESPONSE_CODE_BUNDLE_KEY = "responseCode";
-    private static final String SERVER_INFO_BUNDLE_KEY = "serverInfo";
     private static final String OPTION_BUNDLE_KEY = "opcio";
     private static final String EMAIL_BUNDLE_KEY = "email";
     private static final String PANELL_BUNDLE_KEY = "panell";
     private static final String TOKEN_BUNDLE_KEY = "token";
-    private static final String NAME_NEW_PANELL = "Nou panell";
     private static final String ADD_OPTION = "add";
     private static final String CREATE_ICONA_OPTION = "create_icona";
     private static final String LIST_PANELLS_OPTION = "list";
     private static final String ERROR_GET_PANELLS = "Error en obtenir la llista de panells";
     private static final String ERROR_ADD_PANELL = "Error en afegir el nou panell";
-    private static final String DELETE_PANELL_INFO_BUNDLE_KEY = "delete_panell_info";
-    private static final String DELETE_OPTION = "delete";
     private static final String ID_PANELL_BUNDLE_KEY = "id_panell";
     private static final String ERROR_DELETE_PANELL = "Error en eliminar el panel del servidor";
     private static final String PANELL_SUCCESSFULLY_REMOVED = "Panell eliminat correctament";
-    private static final String EDIT_TEXT_SAVED_INSTANCE = "edit_text";
     private static final String DIALOG_TITLE = "Atenció";
     private static final String DIALOG_MESSAGE_DELETE = "Segur que vols eliminar el panell?";
-    private static final String DIALOG_MESSAGE_EDIT = "Segur que vols editar el panell?";
-    private static final String USER_INFO_EDIT = "Canvia el títol del panell";
     private static final String EDIT_PANELL_OPTION = "edit";
-    private static final String PANELL_NOM_BUNDLE_KEY = "panell_name";
+    private static final String PANELL_NAME_BUNDLE_KEY = "panell_name";
     private static final String PANELL_POSITION_BUNDLE_KEY = "panell_position";
     private static final String PANELL_FAVORITE_BUNDLE_KEY = "panell_favorite";
     private static final String PANELL_ID_BUNDLE_KEY = "panell_id";
@@ -114,15 +106,16 @@ public class UserActivity extends FragmentActivity
     private static final String FILE_NAME_BUNDLE_KEY = "file_name";
     private static final String EDIT_ICONA_OPTION = "edit_icona";
     private static final String ICON_ID_BUNDLE_KEY = "icon_id";
-    public static final String DIALOG_CREATE_ICONA_TITLE = "Crear icona";
-    public static final String DIALOG_CREATE_ICONA_INFO = "Selecciona la imatge de la icona";
-    public static final String DIALOG_EDIT_ICONA_TITLE = "Editar icona";
-    public static final String ERROR_ADD_ICONA = "La icona no s'ha afegit al servidor";
-    public static final String ERROR_EDIT_ICONA = "La icona no s'ha editat";
-    public static final String DELETE_PANELL_OPTION = "delete_panell";
-    public static final String DELETE_ICONA_OPTION = "delete_icona";
-    public static final String ERROR_DELETE_ICONA = "Error en eliminar la icona en el servidor";
-    public static final String DIALOG_CREATE_PANELL_TITLE = "Crear panell";
+    private static final String DIALOG_CREATE_ICONA_TITLE = "Crear icona";
+    private static final String DIALOG_CREATE_ICONA_INFO = "Selecciona la imatge de la icona";
+    private static final String DIALOG_EDIT_ICONA_TITLE = "Editar icona";
+    private static final String ERROR_ADD_ICONA = "La icona no s'ha afegit al servidor";
+    private static final String ERROR_EDIT_ICONA = "La icona no s'ha editat";
+    private static final String DELETE_PANELL_OPTION = "delete_panell";
+    private static final String DELETE_ICONA_OPTION = "delete_icona";
+    private static final String ERROR_DELETE_ICONA = "Error en eliminar la icona en el servidor";
+    private static final String DIALOG_CREATE_PANELL_TITLE = "Crear panell";
+    private static final String DIALOG_EDIT_PANELL_TITLE = "Editar panell";
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
     private UserToolbarFragment toolbarFragment;
@@ -209,7 +202,7 @@ public class UserActivity extends FragmentActivity
         btnDeleteLast = findViewById(R.id.button_delete_back);
         btnTranslator = findViewById(R.id.button_translator);
 
-        GestorText.initializeLifoText(editTextCommunicator);
+        GestorText.initializeTextList(editTextCommunicator);
 
         if(GestorUser.getNumPanells() > 0){
             panellTitle.setText(GestorUser.getPanells().get(0).getNom());
@@ -263,8 +256,8 @@ public class UserActivity extends FragmentActivity
             @Override
             public void onClick(View v) {
 
-                if(!GestorText.getLifoText().isEmpty()){
-                    GestorText.getLifoText().removeLast();
+                if(!GestorText.getTextList().isEmpty()){
+                    GestorText.getTextList().removeLast();
                     GestorText.refreshEditText();
                 }
             }
@@ -273,7 +266,7 @@ public class UserActivity extends FragmentActivity
         btnDeleteAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GestorText.getLifoText().clear();
+                GestorText.getTextList().clear();
                 GestorText.refreshEditText();
             }
         });
@@ -374,7 +367,7 @@ public class UserActivity extends FragmentActivity
 
                 case EDIT_PANELL_OPTION:
 
-                    panellName = args.getString(PANELL_NOM_BUNDLE_KEY);
+                    panellName = args.getString(PANELL_NAME_BUNDLE_KEY);
                     panellPosition = args.getInt(PANELL_POSITION_BUNDLE_KEY);
                     panellIsFavorite = args.getBoolean(PANELL_FAVORITE_BUNDLE_KEY);
                     idPanell = args.getInt(PANELL_ID_BUNDLE_KEY);
@@ -415,12 +408,15 @@ public class UserActivity extends FragmentActivity
     @Override
     public void onLoadFinished(@NonNull Loader<Bundle> loader, Bundle data) {
         String panells ="";
+        String panellName = "";
         int responseCode;
 
         if(data.getString(OPTION_BUNDLE_KEY) != null) {
-            Log.i("Info", data.getString(OPTION_BUNDLE_KEY));
+
             switch (data.getString(OPTION_BUNDLE_KEY)) {
+
                 case LIST_PANELLS_OPTION:
+
                     responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
 
                     if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -434,6 +430,7 @@ public class UserActivity extends FragmentActivity
 
                     break;
                 case ADD_OPTION:
+
                     responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
 
                     if (responseCode != HttpURLConnection.HTTP_CREATED) {
@@ -448,8 +445,11 @@ public class UserActivity extends FragmentActivity
 
                     if (responseCode == HttpURLConnection.HTTP_OK) {
 
+                        int idPanell = data.getInt(ID_PANELL_BUNDLE_KEY);
+                        pagerAdapter.removePanelView(idPanell);
                         displayToast(PANELL_SUCCESSFULLY_REMOVED);
                         callGetPanellsLoader();
+
                     }else if(responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
 
                         displayToast(ERROR_DELETE_PANELL);
@@ -461,6 +461,9 @@ public class UserActivity extends FragmentActivity
                     responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
 
                     if (responseCode == HttpURLConnection.HTTP_CREATED) {
+
+                        panellName = data.getString(PANELL_NAME_BUNDLE_KEY);
+                        panellTitle.setText(panellName);
                         callGetPanellsLoader();
                         displayToast(PANELL_SUCCESSFULLY_EDITED);
 
@@ -470,7 +473,9 @@ public class UserActivity extends FragmentActivity
                     break;
 
                 case CREATE_ICONA_OPTION:
+
                     responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
+
                     if (responseCode == HttpURLConnection.HTTP_CREATED) {
                         callGetPanellsLoader();
                         uriIconImage = null;
@@ -480,8 +485,9 @@ public class UserActivity extends FragmentActivity
                     break;
 
                 case EDIT_ICONA_OPTION:
+
                     responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
-                    Log.i("Info", "OF responseCode: "+responseCode);
+
                     if (responseCode == HttpURLConnection.HTTP_CREATED) {
 
                         callGetPanellsLoader();
@@ -492,6 +498,7 @@ public class UserActivity extends FragmentActivity
                     break;
 
                 case DELETE_ICONA_OPTION:
+
                     responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
 
                     if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -509,6 +516,7 @@ public class UserActivity extends FragmentActivity
     @Override
     public void onLoaderReset(@NonNull Loader<Bundle> loader) {}
 
+//Loader Callers
     /**
      * Metode per a fer la crida al LoadManager per afegir un nou panell al servidor
      * @param panell panell a afegir.
@@ -642,7 +650,7 @@ public class UserActivity extends FragmentActivity
 
             Bundle queryBundle = new Bundle();
             queryBundle.putString(OPTION_BUNDLE_KEY, EDIT_PANELL_OPTION);
-            queryBundle.putString(PANELL_NOM_BUNDLE_KEY, panell.getNom());
+            queryBundle.putString(PANELL_NAME_BUNDLE_KEY, panell.getNom());
             queryBundle.putInt(PANELL_POSITION_BUNDLE_KEY, panell.getPosicio());
             queryBundle.putBoolean(PANELL_FAVORITE_BUNDLE_KEY, panell.isFavorit());
             queryBundle.putInt(PANELL_ID_BUNDLE_KEY, panell.getId());
@@ -725,16 +733,6 @@ public class UserActivity extends FragmentActivity
                 viewPager.setCurrentItem(pagerAdapter.getCount());
             }
         }, 500);
-    }
-
-    public void deletePanell(){
-        final Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                pagerAdapter.refreshView();
-            }
-        }, 750);
     }
 
     private void addNewIcon(File file){
@@ -963,11 +961,10 @@ public class UserActivity extends FragmentActivity
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(DIALOG_TITLE);
         alert.setMessage(DIALOG_MESSAGE_DELETE);
-        Log.i("Info", String.valueOf(idIcona));
 
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                Log.i("Info", String.valueOf(idIcona));
+
                 callDeleteIconaLoader(idIcona);
 
                 final Handler handler = new Handler(Looper.getMainLooper());
@@ -988,15 +985,22 @@ public class UserActivity extends FragmentActivity
     }
 
     private void editPanellDialog(){
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(DIALOG_TITLE);
-        alert.setMessage(DIALOG_MESSAGE_EDIT);
-        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(DIALOG_EDIT_PANELL_TITLE);
 
+        View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_new_panell,
+                (ViewGroup) findViewById(android.R.id.content), false);
+
+        final EditText inputText = (EditText) viewInflated.findViewById(R.id.textPanellInput);
+
+        builder.setView(viewInflated);
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                dialog.dismiss();
                 Panell panell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem());
-                panell.setNom(panellTitle.getText().toString());
+                panell.setNom(inputText.getText().toString());
                 callEditPanellLoader(panell);
 
                 final Handler handler = new Handler(Looper.getMainLooper());
@@ -1005,15 +1009,18 @@ public class UserActivity extends FragmentActivity
                     public void run() {
                         pagerAdapter.refreshView();
                     }
-                }, 250);
+                }, 1000);
+
             }
         });
-        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });
-        alert.show();
+
+        builder.show();
     }
 
     /**
@@ -1032,13 +1039,18 @@ public class UserActivity extends FragmentActivity
         popup.show();
     }
 
+    /**
+     * Context popup menu per a editar el panell
+     * @param item opció escollida del menu.
+     * @return la opcio escollida.
+     */
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
 
             case R.id.context_panell_edit:
 
-                addNewPanellDialog();
+                editPanellDialog();
                 return true;
 
             case R.id.context_panell_delete:
@@ -1048,6 +1060,25 @@ public class UserActivity extends FragmentActivity
 
             default:
                 return super.onContextItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onIconMenuItemPressed(MenuItem menuItem, int idIcona) {
+        switch (menuItem.getItemId()) {
+
+            case R.id.context_icona_edit:
+
+                editIconDialog(idIcona);
+                break;
+
+            case R.id.context_icona_delete:
+
+                deleteIconDialog(idIcona);
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -1067,25 +1098,6 @@ public class UserActivity extends FragmentActivity
             moveTaskToBack(true);
         } else {
             viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
-        }
-    }
-
-    @Override
-    public void onIconMenuItemPressed(MenuItem menuItem, int idIcona) {
-        switch (menuItem.getItemId()) {
-
-            case R.id.context_icona_edit:
-                editIconDialog(idIcona);
-                displayToast("edit: "+String.valueOf(idIcona));
-                break;
-
-            case R.id.context_icona_delete:
-                deleteIconDialog(idIcona);
-                displayToast("delete");
-                break;
-
-            default:
-                break;
         }
     }
 
@@ -1141,7 +1153,5 @@ public class UserActivity extends FragmentActivity
         public Panell getCurrentPanell(int position){
             return panellList.get(position);
         }
-
     }
-
 }

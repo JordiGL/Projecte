@@ -23,7 +23,6 @@ import controlador.activity.LoginActivity;
 import controlador.activity.UserSettingsActivity;
 import controlador.gestor.GestorSharedPreferences;
 
-import controlador.gestor.OnFragmentInteractionUserListener;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**

@@ -2,11 +2,8 @@ package controlador.gestor;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.util.Base64;
-import android.util.Log;
-import android.widget.EditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -98,7 +95,7 @@ public class GestorUser {
             e.printStackTrace();
         }
 
-        Collections.sort(mPanells, new PanellSequenceComparator());
+        Collections.sort(mPanells, new PanellPositionComparator());
         return mPanells;
     }
 
@@ -117,17 +114,6 @@ public class GestorUser {
         return 0;
     }
 
-    public static boolean containsPanell(){
-
-        for(Panell panell: mPanells){
-            if(panell.getNom().equals(NEW_PANELL)){
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public static Panell newPanell(int position, String panellName){
 
         return new Panell(
@@ -136,32 +122,6 @@ public class GestorUser {
                 false,
                 new ArrayList<Icona>()
         );
-    }
-
-    public static void removePanell(int idPanell){
-        for(Panell panell: mPanells){
-            if(panell.getId() == idPanell){
-                mPanells.remove(panell);
-            }
-        }
-    }
-
-    public static void setEditTextFocusable(boolean focusable, EditText editText) {
-        editText.setFocusableInTouchMode(focusable);
-        editText.setFocusable(focusable);
-
-        if (focusable) {
-            editText.requestFocusFromTouch();
-        }
-    }
-
-    public static class PanellSequenceComparator implements Comparator<Panell> {
-
-        @Override
-        public int compare(Panell one, Panell two) {
-            return one.getPosicio() - two.getPosicio();
-        }
-
     }
 
 //Icones
@@ -222,20 +182,14 @@ public class GestorUser {
 
         }
 
-        Log.i("Info", String.valueOf(byteBuffer));
         return byteBuffer.toByteArray();
     }
 
+    public static class PanellPositionComparator implements Comparator<Panell> {
 
-
-//    public static String queryName(ContentResolver resolver, Uri uri) {
-//        Cursor returnCursor = resolver.query(uri, null, null, null, null);
-//        assert returnCursor != null;
-//        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-//        returnCursor.moveToFirst();
-//        String name = returnCursor.getString(nameIndex);
-//        returnCursor.close();
-//        return name;
-//    }
-
+        @Override
+        public int compare(Panell one, Panell two) {
+            return one.getPosicio() - two.getPosicio();
+        }
+    }
 }
