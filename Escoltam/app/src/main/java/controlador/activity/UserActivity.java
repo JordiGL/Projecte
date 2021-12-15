@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -119,6 +120,8 @@ public class UserActivity extends FragmentActivity
     private static final String ERROR_DELETE_ICONA = "Error en eliminar la icona en el servidor";
     private static final String DIALOG_CREATE_PANELL_TITLE = "Crear panell";
     private static final String DIALOG_EDIT_PANELL_TITLE = "Editar panell";
+    public static final String ERROR_NO_ICON_TEXT = "No has introduit el text de la icona";
+    public static final String INTENT_TYPE = "image/*";
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
     private UserToolbarFragment toolbarFragment;
@@ -134,7 +137,6 @@ public class UserActivity extends FragmentActivity
     private ImageButton btnDeleteAll;
     private ImageButton btnTranslator;
     private Uri uriIconImage = null;
-    private int fileIcons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,23 +174,9 @@ public class UserActivity extends FragmentActivity
         // Instanciar viewpager i adaptador d'aquest
         setUpViewPager();
 
-        panellTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-
-                if (hasFocus) {
-
-                    optionsButton.setImageResource(R.drawable.ic_action_check);
-                    optionsButton.setTag(R.drawable.ic_action_check);
-                } else {
-
-                    optionsButton.setImageResource(R.drawable.ic_action_settings);
-                    optionsButton.setTag(R.drawable.ic_action_settings);
-                }
-            }
-        });
-
+        if(GestorUser.getNumPanells() > 0){
+            panellTitle.setText(GestorUser.getPanells().get(0).getNom());
+        }
 
         if(getSupportLoaderManager().getLoader(0)!=null){
             getSupportLoaderManager().initLoader(0,null,this);
@@ -206,10 +194,6 @@ public class UserActivity extends FragmentActivity
         btnTranslator = findViewById(R.id.button_translator);
 
         GestorText.initializeTextList(editTextCommunicator);
-
-        if(GestorUser.getNumPanells() > 0){
-            panellTitle.setText(GestorUser.getPanells().get(0).getNom());
-        }
 
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -284,10 +268,13 @@ public class UserActivity extends FragmentActivity
                 //Obtenim la imatge seleccionada per l'usuari.
                 uriIconImage = data.getData();
 
+                Log.i("Info", "Act: "+panellTitle.getText().toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
         }
+
     }
 
 //    @Override
@@ -412,6 +399,7 @@ public class UserActivity extends FragmentActivity
     public void onLoadFinished(@NonNull Loader<Bundle> loader, Bundle data) {
         String panells ="";
         String panellName = "";
+        int idIcona;
         int responseCode;
 
         if(data.getString(OPTION_BUNDLE_KEY) != null) {
@@ -505,6 +493,14 @@ public class UserActivity extends FragmentActivity
                     responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
 
                     if (responseCode == HttpURLConnection.HTTP_OK) {
+                        idIcona = data.getInt(ICON_ID_BUNDLE_KEY);
+                        Icona icona = GestorUser.findIcona(idIcona);
+                        File file = new File(getFilesDir(),icona.getNom());
+
+                        if(file.delete()){
+                            displayToast("Icona borrada correctament");
+                        }
+
                         callGetPanellsLoader();
                     }else if(responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
 
@@ -733,15 +729,19 @@ public class UserActivity extends FragmentActivity
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                viewPager.setCurrentItem(pagerAdapter.getCount());
+                if(pagerAdapter.getCount() > 0){
+                    panellTitle.setText(pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).getNom());
+                    viewPager.setCurrentItem(pagerAdapter.getCount());
+                }
             }
         }, 500);
     }
 
     private void addNewIcon(File file, String iconName){
         Icona icona;
-        Panell panell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem());
-        //Log.i("Info", "file name: "+file.getName());
+        int posicio = viewPager.getCurrentItem();
+
+        Panell panell = pagerAdapter.getCurrentPanell(posicio);
 
         if(file == null){
             icona = new Icona(iconName, panell.getIcones().size()+1);
@@ -751,9 +751,7 @@ public class UserActivity extends FragmentActivity
             callNewIconLoader(panell.getId(), icona, file.getName());
         }
 
-
         pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).getIcones().add(icona);
-        pagerAdapter.notifyDataSetChanged();
 
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
@@ -762,6 +760,7 @@ public class UserActivity extends FragmentActivity
                 pagerAdapter.refreshView();
             }
         }, 750);
+
     }
 
     private void editIcon(Icona icona, File file){
@@ -807,6 +806,7 @@ public class UserActivity extends FragmentActivity
     }
 
     private void addNewIconDialog(){
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(DIALOG_CREATE_ICONA_TITLE);
 
@@ -820,9 +820,10 @@ public class UserActivity extends FragmentActivity
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //Intent implicit per a seleccionar la imatge.
                 Intent intent = new Intent();
-                intent.setType("image/*");
+                intent.setType(INTENT_TYPE);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(
                         intent,
@@ -834,7 +835,6 @@ public class UserActivity extends FragmentActivity
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 String iconName = inputText.getText().toString();
 
                 if(!iconName.matches("")){
@@ -846,7 +846,7 @@ public class UserActivity extends FragmentActivity
                             iconName);
                     addNewIcon(iconFile, iconName);
                 } else {
-                    displayToast("No has introduit el text de la icona");
+                    displayToast(ERROR_NO_ICON_TEXT);
                 }
             }
         });
