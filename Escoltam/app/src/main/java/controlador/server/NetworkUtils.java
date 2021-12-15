@@ -546,8 +546,8 @@ public class NetworkUtils extends Connexio{
         return queryBundle;
     }
 
-    public static Bundle editIcon(Context context, int idIcona, String name, int position,
-                                    String fileName, String token){
+    public static Bundle editIcona(Context context, int idIcona, String name, int position,
+                                   String fileName, String token){
         Bundle queryBundle = null;
         OkHttpClient client = null;
         RequestBody body = null;
@@ -647,7 +647,6 @@ public class NetworkUtils extends Connexio{
                 queryBundle.putString(OPTION_BUNDLE_KEY, DELETE_ICONA_OPTION);
                 queryBundle.putInt(ID_ICONA_BUNDLE_KEY, idIcona);
             }
-
         } catch (IOException e){
             e.printStackTrace();
         } finally{
@@ -662,7 +661,6 @@ public class NetworkUtils extends Connexio{
                 }
             }
         }
-
         return queryBundle;
     }
 

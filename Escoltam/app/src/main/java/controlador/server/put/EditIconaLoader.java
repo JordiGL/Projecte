@@ -37,7 +37,7 @@ public class EditIconaLoader extends AsyncTaskLoader<Bundle> {
     @Nullable
     @Override
     public Bundle loadInBackground() {
-        return NetworkUtils.editIcon(context, idIcona, name, position, fileName, token);
+        return NetworkUtils.editIcona(context, idIcona, name, position, fileName, token);
     }
 
     /**
