@@ -27,6 +27,14 @@ public class Panell {
         this.id = id;
     }
 
+    public Panell(String nom, int posicio, List<Icona> icones, int id) {
+        this.nom = nom;
+        this.posicio = posicio;
+        this.favorit = false;
+        this.icones = icones;
+        this.id = id;
+    }
+
     public String getNom() {
         return nom;
     }

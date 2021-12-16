@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,7 +12,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginStart="21dp"
         android:layout_marginEnd="21dp"
-        android:hint="Títol del panell"
+        android:hint="@string/dialog_panell_title_hint"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +43,7 @@
         android:layout_marginStart="4dp"
         android:textColor="@color/black"
         android:textSize="12sp"
-        android:text="Icones per fila:"
+        android:text="@string/dialog_panell_spinner_text"
         app:layout_constraintStart_toStartOf="@+id/textInputPanellLayout"
         app:layout_constraintTop_toBottomOf="@+id/textInputPanellLayout" />
 

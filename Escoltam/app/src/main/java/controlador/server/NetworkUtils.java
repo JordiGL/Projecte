@@ -2,7 +2,6 @@ package controlador.server;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -59,6 +58,7 @@ public class NetworkUtils extends Connexio{
     private static final String ID_ICONA_BUNDLE_KEY = "icon_id";
     private static final String DELETE_ICONA_OPTION = "delete_icona";
     private static final String PANELL_NAME_BUNDLE_KEY = "panell_name";
+    public static final String PANELL_PREDEFINIT_DELETE_URL = "http://10.0.2.2:8080/app/panellPredefinit/";
 
     /**
      * Post request al servidor per obtenir el token.
@@ -273,7 +273,7 @@ public class NetworkUtils extends Connexio{
      * @return dades obtingudes del servidor.
      * @author Jordi Gómez Lozano.
      */
-    public static Bundle deletePanell(int idPanell, String token){
+    public static Bundle deletePanell(int idPanell, String username, String token){
 
         HttpURLConnection connexio = null;
         BufferedReader reader = null;
@@ -282,8 +282,13 @@ public class NetworkUtils extends Connexio{
         int responseCode;
 
         try{
+            if(idPanell == 0){
+                connexio = deleteRequest(token, PANELL_PREDEFINIT_DELETE_URL
+                        +username+"/"+idPanell);
+            } else {
+                connexio = deleteRequest(token, PANELLS_URL+idPanell);
+            }
 
-            connexio = deleteRequest(token, PANELLS_URL+idPanell);
             responseCode = connexio.getResponseCode();
 
             queryBundle = new Bundle();
@@ -395,7 +400,6 @@ public class NetworkUtils extends Connexio{
 
         return queryBundle;
     }
-
 
     /**
      * Post request al servidor per afegir un nou panell.

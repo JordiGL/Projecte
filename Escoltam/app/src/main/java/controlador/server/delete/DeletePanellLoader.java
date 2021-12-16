@@ -11,11 +11,13 @@ import controlador.server.NetworkUtils;
 
 public class DeletePanellLoader extends AsyncTaskLoader<Bundle> {
     private int idPanell;
+    private String username;
     private String token;
 
-    public DeletePanellLoader(@NonNull Context context, int idPanell, String token) {
+    public DeletePanellLoader(@NonNull Context context, int idPanell, String username, String token) {
         super(context);
         this.idPanell = idPanell;
+        this.username = username;
         this.token = token;
     }
 
@@ -23,7 +25,7 @@ public class DeletePanellLoader extends AsyncTaskLoader<Bundle> {
     @Nullable
     @Override
     public Bundle loadInBackground() {
-        return NetworkUtils.deletePanell(idPanell, token);
+        return NetworkUtils.deletePanell(idPanell, username, token);
     }
 
     /**

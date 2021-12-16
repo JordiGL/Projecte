@@ -27,7 +27,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,7 +43,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.List;
 
@@ -88,7 +86,7 @@ public class UserActivity extends FragmentActivity
     private static final String EMAIL_BUNDLE_KEY = "email";
     private static final String PANELL_BUNDLE_KEY = "panell";
     private static final String TOKEN_BUNDLE_KEY = "token";
-    private static final String ADD_OPTION = "add";
+    private static final String CREATE_NEW_PANELL_OPTION = "add";
     private static final String CREATE_ICONA_OPTION = "create_icona";
     private static final String LIST_PANELLS_OPTION = "list";
     private static final String ERROR_GET_PANELLS = "Error en obtenir la llista de panells";
@@ -198,16 +196,9 @@ public class UserActivity extends FragmentActivity
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if((int)optionsButton.getTag() == R.drawable.ic_action_settings){
-                    if(pagerAdapter.getCount() > 0){
-                        openMoreMenuOptions(v);
-                    }
-                }else{
-                    editPanellDialog();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                if(pagerAdapter.getCount() > 0){
+                    openMoreMenuOptions(v);
                 }
-
             }
         });
 
@@ -335,7 +326,7 @@ public class UserActivity extends FragmentActivity
             option = args.getString(OPTION_BUNDLE_KEY);
 
             switch (option) {
-                case ADD_OPTION:
+                case CREATE_NEW_PANELL_OPTION:
 
                     username = args.getString(EMAIL_BUNDLE_KEY);
                     panell = args.getString(PANELL_BUNDLE_KEY);
@@ -353,7 +344,8 @@ public class UserActivity extends FragmentActivity
 
                     token = args.getString(TOKEN_BUNDLE_KEY);
                     idPanell = args.getInt(ID_PANELL_BUNDLE_KEY);
-                    return new DeletePanellLoader(this, idPanell, token);
+                    username = args.getString(EMAIL_BUNDLE_KEY);
+                    return new DeletePanellLoader(this, idPanell, username, token);
 
                 case EDIT_PANELL_OPTION:
 
@@ -420,7 +412,7 @@ public class UserActivity extends FragmentActivity
                     }
 
                     break;
-                case ADD_OPTION:
+                case CREATE_NEW_PANELL_OPTION:
 
                     responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
 
@@ -536,7 +528,7 @@ public class UserActivity extends FragmentActivity
             String token = gestorSharedPreferences.getToken();
 
             Bundle queryBundle = new Bundle();
-            queryBundle.putString(OPTION_BUNDLE_KEY, ADD_OPTION);
+            queryBundle.putString(OPTION_BUNDLE_KEY, CREATE_NEW_PANELL_OPTION);
             queryBundle.putString(EMAIL_BUNDLE_KEY, username);
             queryBundle.putString(PANELL_BUNDLE_KEY, panell.toString());
             queryBundle.putString(TOKEN_BUNDLE_KEY, token);
@@ -562,11 +554,13 @@ public class UserActivity extends FragmentActivity
 
             GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
             String token = gestorSharedPreferences.getToken();
+            String username = gestorSharedPreferences.getEmail();
 
             Bundle queryBundle = new Bundle();
             queryBundle.putString(OPTION_BUNDLE_KEY, DELETE_PANELL_OPTION);
             queryBundle.putInt(ID_PANELL_BUNDLE_KEY, idPanell);
             queryBundle.putString(TOKEN_BUNDLE_KEY, token);
+            queryBundle.putString(EMAIL_BUNDLE_KEY, username);
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
         }
     }
@@ -784,15 +778,28 @@ public class UserActivity extends FragmentActivity
         View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_new_panell,
                 (ViewGroup) findViewById(android.R.id.content), false);
 
+        //Objecte selector.
+        final Spinner spinner = (Spinner) viewInflated.findViewById(R.id.spinnerFileIcons);
+        //Creem l'ArrayAdapter utilitzant l'Array i l'spinner predeterminat
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(UserActivity.this,
+                R.array.icons_files_options_portrait, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         final EditText inputText = (EditText) viewInflated.findViewById(R.id.textPanellInput);
 
         builder.setView(viewInflated);
+        spinner.setAdapter(adapter);
 
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 addNewPanell(inputText.getText().toString());
+
+                String iconNumberDelected = (String) spinner.getSelectedItem();
+                if(iconNumberDelected != null){
+                    GestorUser.setFileIcons(Integer.parseInt(iconNumberDelected));
+                }
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -1060,6 +1067,7 @@ public class UserActivity extends FragmentActivity
         builder.show();
     }
 
+//Menus
     /**
      * PopupMenu per a mostrar les diferents opcions del botó.
      * @param view del component.
@@ -1071,7 +1079,15 @@ public class UserActivity extends FragmentActivity
         popup.setOnMenuItemClickListener(this);
         MenuInflater inflater = popup.getMenuInflater();
 
-        inflater.inflate(R.menu.menu_panell_context, popup.getMenu());
+        int position = viewPager.getCurrentItem();
+
+        if(pagerAdapter.getCurrentPanell(position).getId() == 0){
+
+            inflater.inflate(R.menu.menu_panell_predefined_context, popup.getMenu());
+        } else {
+
+            inflater.inflate(R.menu.menu_panell_context, popup.getMenu());
+        }
 
         popup.show();
     }
@@ -1119,6 +1135,7 @@ public class UserActivity extends FragmentActivity
         }
     }
 
+//Utils
     /**
      * Mostra informació per pantalla.
      * @param message missatge que es mostrara per pantalla.

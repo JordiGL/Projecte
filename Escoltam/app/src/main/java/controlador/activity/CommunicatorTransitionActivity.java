@@ -49,7 +49,7 @@ public class CommunicatorTransitionActivity extends AppCompatActivity implements
         GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
         String username = gestorSharedPreferences.getEmail();
         String token = gestorSharedPreferences.getToken();
-        obtenirInformacio(username, token);
+        getPanellsData(username, token);
     }
 
 
@@ -59,7 +59,7 @@ public class CommunicatorTransitionActivity extends AppCompatActivity implements
      * @param token El token de l'usuari.
      * @author Jordi Gómez Lozano.
      */
-    private void obtenirInformacio(String username, String token) {
+    private void getPanellsData(String username, String token) {
         Bundle queryBundle = null;
 
 
@@ -80,7 +80,6 @@ public class CommunicatorTransitionActivity extends AppCompatActivity implements
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
         }
     }
-
 
     @NonNull
     @Override

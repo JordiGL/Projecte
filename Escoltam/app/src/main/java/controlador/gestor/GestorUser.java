@@ -7,6 +7,7 @@ import android.util.Base64;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -63,6 +64,9 @@ public class GestorUser {
 
                     JSONArray jsonArray = new JSONArray(obtainedServerData);
 
+                    //Panell predefinit
+                    getPanellPredefinedIfExists(jsonArray);
+
                     for (int i = 0; i < jsonArray.length(); i++) {
                         icones = new ArrayList<>();
 
@@ -93,9 +97,39 @@ public class GestorUser {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         Collections.sort(mPanells, new PanellPositionComparator());
         return mPanells;
+    }
+
+    private static void getPanellPredefinedIfExists(JSONArray jsonArray) throws JSONException {
+        List<Icona> icones;
+        JSONObject usuariJSON =  jsonArray.getJSONObject(0).getJSONObject("usuari");
+        JSONArray predefinedJsonList = usuariJSON.getJSONArray("panellPredefinits");
+
+        if(predefinedJsonList.length() > 0){
+            icones = new ArrayList<>();
+
+            //Obtenim l'array d'icones.
+            JSONArray iconesJsonList = predefinedJsonList.getJSONObject(0).getJSONArray(ICONES_JSON);
+
+            //Ferm la cerca de les icones, les creem i les afegim a la llista.
+            for (int j = 0; j < iconesJsonList.length(); j++){
+
+                icones.add(new Icona(
+                        iconesJsonList.getJSONObject(j).getString(ICONA_NOM_JSON),
+                        iconesJsonList.getJSONObject(j).getInt(ICONA_POSICIO_JSON),
+                        Base64.decode(iconesJsonList.getJSONObject(j).getString(ICONA_FOTO_JSON), Base64.DEFAULT),
+                        iconesJsonList.getJSONObject(j).getInt(ICONA_ID_JSON))
+                );
+            }
+
+            //Afegim el panell predefinit a la llista, utilitzo un constructor amb favorit=false.
+            mPanells.add(new Panell(
+                    predefinedJsonList.getJSONObject(0).getString(PANELL_NOM_JSON),
+                    predefinedJsonList.getJSONObject(0).getInt(PANELL_POSICIO_JSON),
+                    icones,
+                    predefinedJsonList.getJSONObject(0).getInt(PANELL_ID_JSON)));
+        }
     }
 
     public static List<Panell> getPanells() {

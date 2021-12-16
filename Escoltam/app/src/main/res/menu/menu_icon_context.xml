@@ -3,11 +3,11 @@
     <item
         android:id="@+id/context_icona_edit"
         android:orderInCategory="10"
-        android:title="@string/context_panell_edit_text"/>
+        android:title="@string/context_icona_edit_text"/>
 
     <item
         android:id="@+id/context_icona_delete"
         android:orderInCategory="20"
-        android:title="@string/context_panell_delete_text"/>
+        android:title="@string/context_icona_delete_text"/>
 
 </menu>
