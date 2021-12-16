@@ -532,6 +532,7 @@ public class NetworkUtils extends Connexio{
                     .addHeader(AUTHORIZATION_KEY, BEARER + token)
                     .build();
             response = client.newCall(request).execute();
+
             queryBundle = new Bundle();
             queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, response.code());
             queryBundle.putString(OPTION_BUNDLE_KEY, CREATE_ICONA_OPTION);
@@ -543,7 +544,7 @@ public class NetworkUtils extends Connexio{
                 client.dispatcher().executorService().shutdown();
                 client.connectionPool().evictAll();
             }
-            if(response != null){
+            if (response != null && !response.isSuccessful()) {
                 response.close();
             }
         }
@@ -599,7 +600,7 @@ public class NetworkUtils extends Connexio{
                 client.dispatcher().executorService().shutdown();
                 client.connectionPool().evictAll();
             }
-            if(response != null){
+            if (response != null && !response.isSuccessful()) {
                 response.close();
             }
         }

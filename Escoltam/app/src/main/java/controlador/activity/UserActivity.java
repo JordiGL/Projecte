@@ -18,12 +18,15 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.speech.tts.TextToSpeech;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -40,10 +43,12 @@ import android.widget.Toast;
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.util.List;
+import java.util.Locale;
 
 import controlador.fragment.PanellFragment;
 import controlador.fragment.UserControlFragment;
 import controlador.fragment.UserToolbarFragment;
+import controlador.gestor.GestorException;
 import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.GestorText;
 import controlador.gestor.GestorUser;
@@ -58,6 +63,7 @@ import controlador.server.put.EditPanellLoader;
 import jordigomez.ioc.cat.escoltam.R;
 import model.Icona;
 import model.Panell;
+import model.Reproductor;
 
 /**
  * Activitat del comunicador.
@@ -130,7 +136,10 @@ public class UserActivity extends FragmentActivity
     private ImageButton btnDeleteLast;
     private ImageButton btnDeleteAll;
     private ImageButton btnTranslator;
+    private ImageButton btnPlay;
     private Uri uriIconImage = null;
+    private Reproductor reproductor;
+    private TextToSpeech textToSpeechSystem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,12 +189,15 @@ public class UserActivity extends FragmentActivity
     @Override
     protected void onStart() {
         super.onStart();
+        setUpReproductor();
+
         ImageButton newPanellButton = findViewById(R.id.button_screen);
         ImageButton newIconButton = findViewById(R.id.button_icon);
         editTextCommunicator = findViewById(R.id.appCompatEditText);
         btnDeleteAll = findViewById(R.id.button_top_left);
         btnDeleteLast = findViewById(R.id.button_delete_back);
         btnTranslator = findViewById(R.id.button_translator);
+        btnPlay = findViewById(R.id.button_play);
 
         GestorText.initializeTextList(editTextCommunicator);
 
@@ -244,6 +256,46 @@ public class UserActivity extends FragmentActivity
                 GestorText.refreshEditText();
             }
         });
+
+        btnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reproduir();
+            }
+        });
+    }
+
+    public void setUpReproductor(){
+        String ubicacio = "francecentral";
+//        String aTraduir = "Estic traduint aquesta frase";
+        String idiomaFinal = "ca";
+        //Variables de configuració del reproductor.
+        String reproductorKey = "d45fc56967c9409a9695c6c06bceed9f";
+        String toDeVeu = "masculi";
+
+        try {
+            reproductor = new Reproductor(
+                    reproductorKey,
+                    ubicacio,
+                    idiomaFinal,
+                    toDeVeu
+            );
+        } catch (GestorException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void reproduir(){
+
+        try {
+            String text = editTextCommunicator.getText().toString();
+
+            if(!text.isEmpty()){
+                reproductor.reproduir(text);
+            }
+        } catch (GestorException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
