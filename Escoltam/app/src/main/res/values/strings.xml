@@ -140,5 +140,10 @@
     <string name="dialog_icona_select_image_button_text">Seleccionar imatge</string>
     <string name="context_icona_edit_text">Editar</string>
     <string name="context_icona_delete_text">Eliminar</string>
+    <string name="context_panell_icon_size_text">Icones per fila</string>
+    <string name="panell_row_size_two">2</string>
+    <string name="panell_row_size_three">3</string>
+    <string name="panell_row_size_four">4</string>
+    <string name="panell_row_size_five">5</string>
 
 </resources>

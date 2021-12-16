@@ -1,8 +1,6 @@
 package controlador.fragment;
 
 import android.content.Context;
-import android.graphics.drawable.Icon;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +41,6 @@ public class PanellRecyclerAdapter extends RecyclerView.Adapter<PanellRecyclerAd
     public void onBindViewHolder(@NonNull PanellRecyclerAdapter.ViewHolder holder, int position) {
         Icona currentIcona = mIcones.get(position);
         holder.bindTo(currentIcona);
-
     }
 
     @Override
@@ -101,7 +98,6 @@ public class PanellRecyclerAdapter extends RecyclerView.Adapter<PanellRecyclerAd
         public void onClick(View v) {
             mListener.onIconClicked(mIconName.getText().toString());
         }
-
 
         @Override
         public boolean onLongClick(View v) {

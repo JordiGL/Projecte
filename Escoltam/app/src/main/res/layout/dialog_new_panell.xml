@@ -26,25 +26,4 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Spinner
-        android:id="@+id/spinnerFileIcons"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/fileIconTextView"
-        app:layout_constraintStart_toStartOf="@+id/fileIconTextView"
-        app:layout_constraintTop_toBottomOf="@+id/fileIconTextView" />
-
-    <TextView
-        android:id="@+id/fileIconTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="4dp"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        android:text="@string/dialog_panell_spinner_text"
-        app:layout_constraintStart_toStartOf="@+id/textInputPanellLayout"
-        app:layout_constraintTop_toBottomOf="@+id/textInputPanellLayout" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

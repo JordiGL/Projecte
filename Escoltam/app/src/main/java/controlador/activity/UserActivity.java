@@ -15,8 +15,6 @@ import androidx.loader.content.Loader;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,19 +24,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -118,8 +113,9 @@ public class UserActivity extends FragmentActivity
     private static final String ERROR_DELETE_ICONA = "Error en eliminar la icona en el servidor";
     private static final String DIALOG_CREATE_PANELL_TITLE = "Crear panell";
     private static final String DIALOG_EDIT_PANELL_TITLE = "Editar panell";
-    public static final String ERROR_NO_ICON_TEXT = "No has introduit el text de la icona";
-    public static final String INTENT_TYPE = "image/*";
+    private static final String ERROR_NO_ICON_TEXT = "No has introduit el text de la icona";
+    private static final String INTENT_TYPE = "image/*";
+    private static final String DIALOG_MODIFY_ROW_ICONS_TITLE = "Modificar icones per fila";
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
     private UserToolbarFragment toolbarFragment;
@@ -259,7 +255,6 @@ public class UserActivity extends FragmentActivity
                 //Obtenim la imatge seleccionada per l'usuari.
                 uriIconImage = data.getData();
 
-                Log.i("Info", "Act: "+panellTitle.getText().toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -778,17 +773,10 @@ public class UserActivity extends FragmentActivity
         View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_new_panell,
                 (ViewGroup) findViewById(android.R.id.content), false);
 
-        //Objecte selector.
-        final Spinner spinner = (Spinner) viewInflated.findViewById(R.id.spinnerFileIcons);
-        //Creem l'ArrayAdapter utilitzant l'Array i l'spinner predeterminat
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(UserActivity.this,
-                R.array.icons_files_options_portrait, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         final EditText inputText = (EditText) viewInflated.findViewById(R.id.textPanellInput);
 
         builder.setView(viewInflated);
-        spinner.setAdapter(adapter);
 
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
@@ -796,10 +784,6 @@ public class UserActivity extends FragmentActivity
                 dialog.dismiss();
                 addNewPanell(inputText.getText().toString());
 
-                String iconNumberDelected = (String) spinner.getSelectedItem();
-                if(iconNumberDelected != null){
-                    GestorUser.setFileIcons(Integer.parseInt(iconNumberDelected));
-                }
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -1017,18 +1001,9 @@ public class UserActivity extends FragmentActivity
         View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_new_panell,
                 (ViewGroup) findViewById(android.R.id.content), false);
 
-        //Objecte selector.
-        final Spinner spinner = (Spinner) viewInflated.findViewById(R.id.spinnerFileIcons);
-        //Creem l'ArrayAdapter utilitzant l'Array i l'spinner predeterminat
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(UserActivity.this,
-                R.array.icons_files_options_portrait, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         final EditText inputText = (EditText) viewInflated.findViewById(R.id.textPanellInput);
 
         builder.setView(viewInflated);
-
-        spinner.setAdapter(adapter);
 
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
@@ -1051,10 +1026,6 @@ public class UserActivity extends FragmentActivity
                     }
                 }, 1000);
 
-                String iconNumberDelected = (String) spinner.getSelectedItem();
-                if(iconNumberDelected != null){
-                    GestorUser.setFileIcons(Integer.parseInt(iconNumberDelected));
-                }
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -1064,6 +1035,51 @@ public class UserActivity extends FragmentActivity
             }
         });
 
+        builder.show();
+    }
+
+    private void rowIconsNumber(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(DIALOG_MODIFY_ROW_ICONS_TITLE);
+
+        View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_icons_number,
+                (ViewGroup) findViewById(android.R.id.content), false);
+        final RadioGroup radioNumberGroup = viewInflated.findViewById(R.id.radio_number);
+
+        builder.setView(viewInflated);
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                int selectedId = radioNumberGroup.getCheckedRadioButtonId();
+
+                switch(selectedId){
+                    case R.id.radio_two:
+                        GestorUser.setFileIcons(2);
+                        break;
+                    case R.id.radio_three:
+                        GestorUser.setFileIcons(3);
+                        break;
+                    case R.id.radio_four:
+                        GestorUser.setFileIcons(4);
+                        break;
+                    case R.id.radio_five:
+                        GestorUser.setFileIcons(5);
+                        break;
+                    default:
+                        break;
+                }
+                pagerAdapter.refreshView();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
         builder.show();
     }
 
@@ -1111,6 +1127,10 @@ public class UserActivity extends FragmentActivity
                 deletePanellDialog();
                 return true;
 
+            case R.id.context_panell_icon_size:
+
+                rowIconsNumber();
+                return true;
             default:
                 return super.onContextItemSelected(item);
         }
