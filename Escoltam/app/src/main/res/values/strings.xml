@@ -145,5 +145,7 @@
     <string name="panell_row_size_three">3</string>
     <string name="panell_row_size_four">4</string>
     <string name="panell_row_size_five">5</string>
+    <string name="context_translator_enable_text">Activar</string>
+    <string name="context_translator_disable_text">Desactivar</string>
 
 </resources>

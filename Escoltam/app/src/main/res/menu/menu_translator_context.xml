@@ -3,11 +3,11 @@
     <item
         android:id="@+id/context_translator_enabled"
         android:orderInCategory="10"
-        android:title="acrivar"/>
+        android:title="@string/context_translator_enable_text"/>
 
     <item
         android:id="@+id/context_translator_disabled"
         android:orderInCategory="20"
-        android:title="desactivar"/>
+        android:title="@string/context_translator_disable_text"/>
 
 </menu>

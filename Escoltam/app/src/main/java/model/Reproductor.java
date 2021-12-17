@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.microsoft.cognitiveservices.speech.AudioDataStream;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
+import com.microsoft.cognitiveservices.speech.SpeechSynthesisOutputFormat;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesisResult;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesizer;
 
@@ -206,8 +207,7 @@ public class Reproductor {
 
             SpeechSynthesisResult result = synthesizer.SpeakText(text);
             AudioDataStream stream = AudioDataStream.fromResult(result);
-            stream.saveToWavFile(context.getFilesDir()+ AUDIO_FILE);
-
+            stream.saveToWavFileAsync(context.getFilesDir()+ AUDIO_FILE);
 
         }catch(Exception e){
             throw new GestorException(ERROR_FAILED_TO_PLAY + e);

@@ -18,6 +18,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -227,8 +228,25 @@ public class UserActivity extends FragmentActivity
 
         try {
             mediaPlayer = new MediaPlayer();
+            mediaPlayer.setVolume(0.8f,0.8f);
             mediaPlayer.setDataSource(getFilesDir()+AUDIO_FILE);
             mediaPlayer.prepareAsync();
+
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    try {
+                        speechPlayerAudio.stop();
+                        mp.stop();
+                        mp.reset();
+                        mp.setDataSource(getFilesDir() + AUDIO_FILE);
+                        mp.prepareAsync();
+                    } catch (GestorException | IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
 
         } catch (IOException e) {
             e.printStackTrace();
