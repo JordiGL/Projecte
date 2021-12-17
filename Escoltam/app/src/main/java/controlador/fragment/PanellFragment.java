@@ -35,6 +35,7 @@ import model.Panell;
  */
 public class PanellFragment extends Fragment implements OnIconInteractionListener, PopupMenu.OnMenuItemClickListener{
     private static final String ERROR = "Error";
+    private static final String CHOICE = "choice";
     private OnFragmentInteractionPanellListener mListener;
     private static List<Icona> mIcones;
     private RecyclerView mRecyclerView;
@@ -47,6 +48,19 @@ public class PanellFragment extends Fragment implements OnIconInteractionListene
         this.panell = panell;
     }
 
+    public PanellFragment() {
+    }
+
+    public static PanellFragment newInstance(int posicio) {
+        PanellFragment fragment = new PanellFragment();
+
+        Bundle arguments = new Bundle();
+        arguments.putInt(CHOICE, posicio);
+        fragment.setArguments(arguments);
+
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +70,8 @@ public class PanellFragment extends Fragment implements OnIconInteractionListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_panell, container, false);
+
+        panell = GestorUser.
 
         mIcones = panell.getIcones();
 

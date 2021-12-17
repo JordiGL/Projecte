@@ -18,7 +18,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -41,9 +40,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
-import java.util.Locale;
 
 import controlador.fragment.PanellFragment;
 import controlador.fragment.UserControlFragment;
@@ -137,9 +136,13 @@ public class UserActivity extends FragmentActivity
     private ImageButton btnDeleteAll;
     private ImageButton btnTranslator;
     private ImageButton btnPlay;
+    private ImageButton btnPause;
+    private ImageButton btnStop;
     private Uri uriIconImage = null;
     private Reproductor reproductor;
-    private TextToSpeech textToSpeechSystem;
+    private MediaPlayer mediaPlayer;
+    private ImageButton newPanellButton;
+    private ImageButton newIconButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,10 +153,11 @@ public class UserActivity extends FragmentActivity
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         panellTitle = findViewById(R.id.titolPanell);
+
         optionsButton = findViewById(R.id.optionsPanell);
         optionsButton.setTag(R.drawable.ic_action_settings);
-
         registerForContextMenu(optionsButton);
+
 //        TextView textInfo = findViewById(R.id.textMostrarRol);
 
         Intent intent = getIntent();
@@ -161,6 +165,45 @@ public class UserActivity extends FragmentActivity
         role = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
 
         //Fragments
+        setUpFragmentManager();
+
+        // Instanciar viewpager i adaptador d'aquest
+        setUpViewPager();
+
+        if(GestorUser.getNumPanells() > 0){
+            panellTitle.setText(GestorUser.getPanells().get(0).getNom());
+        }
+
+        //Inicialitzem el reproductor i el mediaplayer per a controlar aquest.
+        setUpReproductor();
+        setUpMediaPlayer();
+
+        if(getSupportLoaderManager().getLoader(0)!=null){
+            getSupportLoaderManager().initLoader(0,null,this);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        newPanellButton = findViewById(R.id.button_screen);
+        newIconButton = findViewById(R.id.button_icon);
+        editTextCommunicator = findViewById(R.id.appCompatEditText);
+        btnDeleteAll = findViewById(R.id.button_top_left);
+        btnDeleteLast = findViewById(R.id.button_delete_back);
+        btnTranslator = findViewById(R.id.button_translator);
+        btnPlay = findViewById(R.id.button_play);
+        btnPause = findViewById(R.id.button_pause);
+        btnStop = findViewById(R.id.button_stop);
+
+        //Inicialitzem el gestor de text;
+        GestorText.initializeTextList(editTextCommunicator);
+        setUpTopBarListeners();
+        setUpPanellListeners();
+        setUpUserControlListeners();
+    }
+
+    public void setUpFragmentManager(){
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction =  fragmentManager.beginTransaction();
 
@@ -173,33 +216,40 @@ public class UserActivity extends FragmentActivity
         fragmentTransaction.add(R.id.control_fragment_container, controlFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
 
-        // Instanciar viewpager i adaptador d'aquest
-        setUpViewPager();
+    public void setUpReproductor(){
 
-        if(GestorUser.getNumPanells() > 0){
-            panellTitle.setText(GestorUser.getPanells().get(0).getNom());
-        }
+        String veu = GestorUser.getVeu();
 
-        if(getSupportLoaderManager().getLoader(0)!=null){
-            getSupportLoaderManager().initLoader(0,null,this);
+        try {
+            reproductor = new Reproductor(veu, this);
+        } catch (GestorException e) {
+            e.printStackTrace();
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        setUpReproductor();
+    public void setUpMediaPlayer(){
 
-        ImageButton newPanellButton = findViewById(R.id.button_screen);
-        ImageButton newIconButton = findViewById(R.id.button_icon);
-        editTextCommunicator = findViewById(R.id.appCompatEditText);
-        btnDeleteAll = findViewById(R.id.button_top_left);
-        btnDeleteLast = findViewById(R.id.button_delete_back);
-        btnTranslator = findViewById(R.id.button_translator);
-        btnPlay = findViewById(R.id.button_play);
+        try {
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setDataSource(getFilesDir()+"audio.wav");
+            mediaPlayer.prepareAsync();
 
-        GestorText.initializeTextList(editTextCommunicator);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setUpViewPager() {
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        pagerAdapter = new UserActivity.ScreenSlidePagerAdapter(getSupportFragmentManager(), GestorUser.getPanells());
+        viewPager.setAdapter(pagerAdapter);
+        pagerAdapter.notifyDataSetChanged();
+    }
+
+    public void setUpPanellListeners(){
 
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -223,7 +273,9 @@ public class UserActivity extends FragmentActivity
             @Override
             public void onPageScrollStateChanged(int state) {}
         });
+    }
 
+    public void setUpTopBarListeners(){
         newPanellButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -256,46 +308,56 @@ public class UserActivity extends FragmentActivity
                 GestorText.refreshEditText();
             }
         });
+    }
 
+    public void setUpUserControlListeners(){
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reproduir();
+                String text = editTextCommunicator.getText().toString();
+
+                if(!text.isEmpty()){
+
+                    try {
+
+                        reproductor.getAudio(text);
+                        mediaPlayer.start();
+
+                    } catch (GestorException e) {
+
+                        e.printStackTrace();
+                    }
+                }
             }
         });
-    }
 
-    public void setUpReproductor(){
-        String ubicacio = "francecentral";
-//        String aTraduir = "Estic traduint aquesta frase";
-        String idiomaFinal = "ca";
-        //Variables de configuració del reproductor.
-        String reproductorKey = "d45fc56967c9409a9695c6c06bceed9f";
-        String toDeVeu = "masculi";
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        try {
-            reproductor = new Reproductor(
-                    reproductorKey,
-                    ubicacio,
-                    idiomaFinal,
-                    toDeVeu
-            );
-        } catch (GestorException e) {
-            e.printStackTrace();
-        }
-    }
+                try {
+                    reproductor.stop();
+                    mediaPlayer.stop();
+                    mediaPlayer.reset();
+                    mediaPlayer.setDataSource(getFilesDir()+"audio.wav");
+                    mediaPlayer.prepareAsync();
 
-    public void reproduir(){
+                } catch (GestorException | IOException e) {
 
-        try {
-            String text = editTextCommunicator.getText().toString();
-
-            if(!text.isEmpty()){
-                reproductor.reproduir(text);
+                    e.printStackTrace();
+                }
             }
-        } catch (GestorException e) {
-            e.printStackTrace();
-        }
+        });
+
+        btnPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                }
+            }
+        });
     }
 
     @Override
@@ -310,9 +372,7 @@ public class UserActivity extends FragmentActivity
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
-
     }
 
 //    @Override
@@ -341,13 +401,6 @@ public class UserActivity extends FragmentActivity
 //        editTextCommunicator.setText(savedInstanceState.getString(EDIT_TEXT_SAVED_INSTANCE));
 //    }
 
-    private void setUpViewPager() {
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
-        pagerAdapter = new UserActivity.ScreenSlidePagerAdapter(getSupportFragmentManager(), GestorUser.getPanells());
-        viewPager.setAdapter(pagerAdapter);
-        pagerAdapter.notifyDataSetChanged();
-    }
 
 
     @NonNull

@@ -39,6 +39,7 @@ public class GestorUser {
     private static final String ICONA_ID_JSON = "id";
     private static List<Panell> mPanells;
     private static int fileIcons = 3;
+    private static String veu;
 
     public GestorUser(List<Panell> mPanells) {
         GestorUser.mPanells = mPanells;
@@ -63,6 +64,8 @@ public class GestorUser {
                 if(firstChar.equalsIgnoreCase("[")) {
 
                     JSONArray jsonArray = new JSONArray(obtainedServerData);
+                    JSONObject usuariJSON =  jsonArray.getJSONObject(0).getJSONObject("usuari");
+                    veu = usuariJSON.getString("voice");
 
                     //Panell predefinit
                     getPanellPredefinedIfExists(jsonArray);
@@ -251,6 +254,10 @@ public class GestorUser {
 
     public static void setFileIcons(int number){
         fileIcons = number;
+    }
+
+    public static String getVeu(){
+        return veu;
     }
 
     public static class PanellPositionComparator implements Comparator<Panell> {
