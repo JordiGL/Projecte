@@ -20,6 +20,7 @@ import controlador.activity.LoginActivity;
 import controlador.activity.UserSettingsActivity;
 import controlador.gestor.GestorSharedPreferences;
 
+import controlador.gestor.GestorText;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**
@@ -62,7 +63,7 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
         final ImageButton addPanel = rootView.findViewById(R.id.button_screen);
 
         editText.setShowSoftInputOnFocus(false);
-
+        GestorText.initializeTextList(editText);
         if (getArguments().containsKey(ROLE_KEY)) {
             role = getArguments().getString(ROLE_KEY);
         }

@@ -159,6 +159,16 @@ public class GestorUser {
                 new ArrayList<Icona>()
         );
     }
+    public static Panell getPanellPerId(int id){
+
+        for(Panell panell: mPanells){
+            if(panell.getId() == id){
+                return panell;
+            }
+        }
+
+        return new Panell();
+    }
 
 //Icones
 

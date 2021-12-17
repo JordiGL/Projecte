@@ -197,7 +197,7 @@ public class UserActivity extends FragmentActivity
         btnStop = findViewById(R.id.button_stop);
 
         //Inicialitzem el gestor de text;
-        GestorText.initializeTextList(editTextCommunicator);
+//        GestorText.initializeTextList(editTextCommunicator);
         setUpTopBarListeners();
         setUpPanellListeners();
         setUpUserControlListeners();
@@ -1298,7 +1298,15 @@ public class UserActivity extends FragmentActivity
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            return new PanellFragment(panellList.get(position));
+//            if(panellList.get(position).getId() == 0){
+//                controlador = true;
+//                return PanellFragment.newInstance(position);
+//            }
+//
+//            if(controlador){
+//                position--;
+//            }
+            return PanellFragment.newInstance(panellList.get(position));
         }
 
         @Override

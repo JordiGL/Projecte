@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Panell {
+public class Panell implements Serializable {
     private int id;
     private String nom;
     private int posicio;

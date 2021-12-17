@@ -51,11 +51,11 @@ public class PanellFragment extends Fragment implements OnIconInteractionListene
     public PanellFragment() {
     }
 
-    public static PanellFragment newInstance(int posicio) {
+    public static PanellFragment newInstance(Panell panell) {
         PanellFragment fragment = new PanellFragment();
 
         Bundle arguments = new Bundle();
-        arguments.putInt(CHOICE, posicio);
+        arguments.putSerializable(CHOICE, panell);
         fragment.setArguments(arguments);
 
         return fragment;
@@ -71,7 +71,7 @@ public class PanellFragment extends Fragment implements OnIconInteractionListene
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_panell, container, false);
 
-        panell = GestorUser.
+        panell = (Panell) getArguments().getSerializable(CHOICE);
 
         mIcones = panell.getIcones();
 
