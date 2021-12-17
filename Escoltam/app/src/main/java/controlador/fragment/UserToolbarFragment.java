@@ -1,8 +1,10 @@
 package controlador.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 
@@ -14,6 +16,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import controlador.activity.AdminSettingsActivity;
 import controlador.activity.AdministratorActivity;
 import controlador.activity.LoginActivity;
@@ -21,6 +26,7 @@ import controlador.activity.UserSettingsActivity;
 import controlador.gestor.GestorSharedPreferences;
 
 import controlador.gestor.GestorText;
+import controlador.gestor.OnFragmentInteractionUserToolbarListener;
 import jordigomez.ioc.cat.escoltam.R;
 
 /**
@@ -36,6 +42,7 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
     private static final String ROLE_USER = "ROLE_USER";
     private static String role;
     private View rootView;
+    private OnFragmentInteractionUserToolbarListener mListener;
 
     public UserToolbarFragment() {
     }
@@ -60,10 +67,15 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
         rootView =  inflater.inflate(R.layout.fragment_user_toolbar, container, false);
         final EditText editText = rootView.findViewById(R.id.appCompatEditText);
         final ImageButton settings = (ImageButton) rootView.findViewById(R.id.user_button_top_right);
-        final ImageButton addPanel = rootView.findViewById(R.id.button_screen);
+        final ImageButton btnNewPanell = rootView.findViewById(R.id.button_screen);
+        final ImageButton btnNewIcona = rootView.findViewById(R.id.button_icon);
+        final ImageButton btnDeleteLast = rootView.findViewById(R.id.button_delete_back);
+        final ImageButton btnDeleteAll = rootView.findViewById(R.id.button_delete_all);
+        final ImageButton btnTranslator = rootView.findViewById(R.id.button_translator);
 
         editText.setShowSoftInputOnFocus(false);
         GestorText.initializeTextList(editText);
+
         if (getArguments().containsKey(ROLE_KEY)) {
             role = getArguments().getString(ROLE_KEY);
         }
@@ -75,6 +87,21 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
             }
         });
 
+        List<ImageButton> buttons = new ArrayList<>();
+        buttons.add(btnNewPanell);
+        buttons.add(btnNewIcona);
+        buttons.add(btnDeleteLast);
+        buttons.add(btnDeleteAll);
+        buttons.add(btnTranslator);
+
+        for(ImageButton imageButton: buttons){
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onToolbarButtonPressed((ImageButton) v);
+                }
+            });
+        }
         return rootView;
     }
 
@@ -130,6 +157,17 @@ public class UserToolbarFragment extends Fragment implements PopupMenu.OnMenuIte
 
             default:
                 return super.onContextItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionUserToolbarListener) {
+            mListener = (OnFragmentInteractionUserToolbarListener) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + ERROR);
         }
     }
 }

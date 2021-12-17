@@ -25,7 +25,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,17 +52,21 @@ import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.GestorText;
 import controlador.gestor.GestorUser;
 import controlador.gestor.OnFragmentInteractionPanellListener;
+import controlador.gestor.OnFragmentInteractionUserControlListener;
+import controlador.gestor.OnFragmentInteractionUserToolbarListener;
 import controlador.server.delete.DeleteIconaLoader;
 import controlador.server.delete.DeletePanellLoader;
 import controlador.server.get.PanellsListLoader;
 import controlador.server.post.NewIconLoader;
 import controlador.server.post.NewPanellLoader;
+import controlador.server.post.TranslatorLoader;
 import controlador.server.put.EditIconaLoader;
 import controlador.server.put.EditPanellLoader;
 import jordigomez.ioc.cat.escoltam.R;
 import model.Icona;
 import model.Panell;
 import model.Reproductor;
+import model.Traductor;
 
 /**
  * Activitat del comunicador.
@@ -75,6 +79,8 @@ import model.Reproductor;
  */
 public class UserActivity extends FragmentActivity
         implements OnFragmentInteractionPanellListener,
+        OnFragmentInteractionUserControlListener,
+        OnFragmentInteractionUserToolbarListener,
         LoaderManager.LoaderCallbacks<Bundle>,
         PopupMenu.OnMenuItemClickListener{
 
@@ -121,6 +127,12 @@ public class UserActivity extends FragmentActivity
     private static final String ERROR_NO_ICON_TEXT = "No has introduit el text de la icona";
     private static final String INTENT_TYPE = "image/*";
     private static final String DIALOG_MODIFY_ROW_ICONS_TITLE = "Modificar icones per fila";
+    private static final String SUB_BUNDLE_KEY = "subscription";
+    private static final String LOCATION_BUNDLE_KEY = "location";
+    private static final String TEXT_BUNDLE_KEY = "text";
+    private static final String TRANSLATE_TEXT_OPTION = "translate_text";
+    private static final String AUDIO_FILE = "audio.wav";
+    private static final String TRANSLATED_TEXT_BUNDLE_KEY = "translated";
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
     private UserToolbarFragment toolbarFragment;
@@ -129,20 +141,14 @@ public class UserActivity extends FragmentActivity
     private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
     private String role;
-    private EditText editTextCommunicator;
     private TextView panellTitle;
     private ImageButton optionsButton;
-    private ImageButton btnDeleteLast;
-    private ImageButton btnDeleteAll;
-    private ImageButton btnTranslator;
-    private ImageButton btnPlay;
-    private ImageButton btnPause;
-    private ImageButton btnStop;
     private Uri uriIconImage = null;
-    private Reproductor reproductor;
+    private Reproductor speechPlayerAudio;
     private MediaPlayer mediaPlayer;
-    private ImageButton newPanellButton;
-    private ImageButton newIconButton;
+    private Traductor translator;
+    private String translatedText;
+    private boolean transletorEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,8 +181,11 @@ public class UserActivity extends FragmentActivity
         }
 
         //Inicialitzem el reproductor i el mediaplayer per a controlar aquest.
-        setUpReproductor();
+        setUpSpeechPlayerAudio();
+        //setUpEnglishSpeechPlayer();
         setUpMediaPlayer();
+        translator = new Traductor();
+        transletorEnabled = false;
 
         if(getSupportLoaderManager().getLoader(0)!=null){
             getSupportLoaderManager().initLoader(0,null,this);
@@ -186,21 +195,7 @@ public class UserActivity extends FragmentActivity
     @Override
     protected void onStart() {
         super.onStart();
-        newPanellButton = findViewById(R.id.button_screen);
-        newIconButton = findViewById(R.id.button_icon);
-        editTextCommunicator = findViewById(R.id.appCompatEditText);
-        btnDeleteAll = findViewById(R.id.button_top_left);
-        btnDeleteLast = findViewById(R.id.button_delete_back);
-        btnTranslator = findViewById(R.id.button_translator);
-        btnPlay = findViewById(R.id.button_play);
-        btnPause = findViewById(R.id.button_pause);
-        btnStop = findViewById(R.id.button_stop);
-
-        //Inicialitzem el gestor de text;
-//        GestorText.initializeTextList(editTextCommunicator);
-        setUpTopBarListeners();
         setUpPanellListeners();
-        setUpUserControlListeners();
     }
 
     public void setUpFragmentManager(){
@@ -218,12 +213,12 @@ public class UserActivity extends FragmentActivity
         fragmentTransaction.commit();
     }
 
-    public void setUpReproductor(){
+    public void setUpSpeechPlayerAudio(){
 
         String veu = GestorUser.getVeu();
 
         try {
-            reproductor = new Reproductor(veu, this);
+            speechPlayerAudio = new Reproductor(veu, this);
         } catch (GestorException e) {
             e.printStackTrace();
         }
@@ -255,7 +250,7 @@ public class UserActivity extends FragmentActivity
             @Override
             public void onClick(View v) {
                 if(pagerAdapter.getCount() > 0){
-                    openMoreMenuOptions(v);
+                    openPanellMenuOptions(v);
                 }
             }
         });
@@ -272,91 +267,6 @@ public class UserActivity extends FragmentActivity
 
             @Override
             public void onPageScrollStateChanged(int state) {}
-        });
-    }
-
-    public void setUpTopBarListeners(){
-        newPanellButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addNewPanellDialog();
-            }
-        });
-
-        newIconButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addNewIconDialog();
-            }
-        });
-
-        btnDeleteLast.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(!GestorText.getTextList().isEmpty()){
-                    GestorText.getTextList().removeLast();
-                    GestorText.refreshEditText();
-                }
-            }
-        });
-
-        btnDeleteAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GestorText.getTextList().clear();
-                GestorText.refreshEditText();
-            }
-        });
-    }
-
-    public void setUpUserControlListeners(){
-        btnPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = editTextCommunicator.getText().toString();
-
-                if(!text.isEmpty()){
-
-                    try {
-
-                        reproductor.getAudio(text);
-                        mediaPlayer.start();
-
-                    } catch (GestorException e) {
-
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        btnStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                try {
-                    reproductor.stop();
-                    mediaPlayer.stop();
-                    mediaPlayer.reset();
-                    mediaPlayer.setDataSource(getFilesDir()+"audio.wav");
-                    mediaPlayer.prepareAsync();
-
-                } catch (GestorException | IOException e) {
-
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        btnPause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                }
-            }
         });
     }
 
@@ -401,8 +311,6 @@ public class UserActivity extends FragmentActivity
 //        editTextCommunicator.setText(savedInstanceState.getString(EDIT_TEXT_SAVED_INSTANCE));
 //    }
 
-
-
     @NonNull
     @Override
     public Loader<Bundle> onCreateLoader(int id, @Nullable Bundle args) {
@@ -414,6 +322,9 @@ public class UserActivity extends FragmentActivity
         String panellName = "";
         String iconName = "";
         String fileName = "";
+        String sub = "";
+        String text = "";
+        String location = "";
         int iconPosition;
         int panellPosition;
         int idPanell;
@@ -480,6 +391,13 @@ public class UserActivity extends FragmentActivity
                     token = args.getString(TOKEN_BUNDLE_KEY);
                     idIcona = args.getInt(ICON_ID_BUNDLE_KEY);
                     return new DeleteIconaLoader(this, idIcona, token);
+
+                    case TRANSLATE_TEXT_OPTION:
+                        sub = args.getString(SUB_BUNDLE_KEY);
+                        text = args.getString(TEXT_BUNDLE_KEY);
+                        location = args.getString(LOCATION_BUNDLE_KEY);
+                        return new TranslatorLoader(this, text, sub, location);
+
             }
 
         }
@@ -487,6 +405,7 @@ public class UserActivity extends FragmentActivity
         return new PanellsListLoader(this, url, token);
     }
 
+//Loader methods
     @Override
     public void onLoadFinished(@NonNull Loader<Bundle> loader, Bundle data) {
         String panells ="";
@@ -597,6 +516,17 @@ public class UserActivity extends FragmentActivity
                     }else if(responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
 
                         displayToast(ERROR_DELETE_ICONA);
+                    }
+                    break;
+
+                case TRANSLATE_TEXT_OPTION:
+
+
+                    try {
+                        translatedText = GestorUser.getTranslatedText(data.getString(TRANSLATED_TEXT_BUNDLE_KEY));
+
+                    } catch (GestorException e) {
+                        e.printStackTrace();
                     }
                     break;
             }
@@ -716,6 +646,29 @@ public class UserActivity extends FragmentActivity
             queryBundle.putString(OPTION_BUNDLE_KEY, LIST_PANELLS_OPTION);
             queryBundle.putString(TOKEN_BUNDLE_KEY, token);
             queryBundle.putString(URL_BUNDLE_KEY, username);
+            getSupportLoaderManager().restartLoader(0, queryBundle, this);
+        }
+
+    }
+
+    private void callGetTranslatedTextLoader(){
+
+        //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = null;
+        if (connMgr != null) {
+            networkInfo = connMgr.getActiveNetworkInfo();
+        }
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            String textToTranslate = GestorText.getText();
+
+            Bundle queryBundle = new Bundle();
+            queryBundle.putString(OPTION_BUNDLE_KEY, TRANSLATE_TEXT_OPTION);
+            queryBundle.putString(TEXT_BUNDLE_KEY, textToTranslate);
+            queryBundle.putString(SUB_BUNDLE_KEY, translator.getSubscriptionKey());
+            queryBundle.putString(LOCATION_BUNDLE_KEY, translator.getLocation());
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
         }
 
@@ -870,7 +823,7 @@ public class UserActivity extends FragmentActivity
         }, 750);
     }
 
-//Dialog
+//Dialogs
     private void addNewPanellDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(DIALOG_CREATE_PANELL_TITLE);
@@ -1194,7 +1147,7 @@ public class UserActivity extends FragmentActivity
      * @param view del component.
      * @author Jordi Gómez Lozano.
      */
-    public void openMoreMenuOptions(View view) {
+    public void openPanellMenuOptions(View view) {
 
         PopupMenu popup = new PopupMenu(this, view);
         popup.setOnMenuItemClickListener(this);
@@ -1209,6 +1162,18 @@ public class UserActivity extends FragmentActivity
 
             inflater.inflate(R.menu.menu_panell_context, popup.getMenu());
         }
+
+        popup.show();
+    }
+
+    public void openTraductorMenuOptions(View view) {
+
+        PopupMenu popup = new PopupMenu(this, view);
+        popup.setOnMenuItemClickListener(this);
+        MenuInflater inflater = popup.getMenuInflater();
+
+        inflater.inflate(R.menu.menu_translator_context, popup.getMenu());
+
 
         popup.show();
     }
@@ -1236,11 +1201,33 @@ public class UserActivity extends FragmentActivity
 
                 rowIconsNumber();
                 return true;
+
+            case R.id.context_translator_enabled:
+
+                try {
+                    transletorEnabled = true;
+                    speechPlayerAudio.changeSynthesizer("en-GB", GestorUser.getVeu());
+                } catch (GestorException e) {
+                    e.printStackTrace();
+                }
+                return true;
+
+            case R.id.context_translator_disabled:
+
+                try {
+                    transletorEnabled = false;
+                    speechPlayerAudio.changeSynthesizer("ca-ES", GestorUser.getVeu());
+                } catch (GestorException e) {
+                    e.printStackTrace();
+                }
+
+                return true;
             default:
                 return super.onContextItemSelected(item);
         }
     }
 
+//Fragment listeners
     @Override
     public void onIconMenuItemPressed(@NonNull MenuItem menuItem, int idIcona) {
         switch (menuItem.getItemId()) {
@@ -1256,6 +1243,102 @@ public class UserActivity extends FragmentActivity
                 break;
 
             default:
+                break;
+        }
+    }
+
+    @Override
+    public void onControlButtonPressed(ImageButton imageButton) {
+
+        switch (imageButton.getId()) {
+            case R.id.button_play:
+                String text = GestorText.getText();
+
+                if (!text.isEmpty()) {
+
+                    try {
+                        if (transletorEnabled) {
+                            callGetTranslatedTextLoader();
+
+                            final Handler handler = new Handler(Looper.getMainLooper());
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        speechPlayerAudio.getAudio(translatedText);
+                                        mediaPlayer.start();
+                                    } catch (GestorException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            }, 1000);
+
+                        } else {
+                            speechPlayerAudio.getAudio(text);
+                            mediaPlayer.start();
+                        }
+                    } catch (GestorException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                break;
+
+            case R.id.button_pause:
+
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                }
+                break;
+
+            case R.id.button_stop:
+
+                try {
+                    speechPlayerAudio.stop();
+                    mediaPlayer.stop();
+                    mediaPlayer.reset();
+                    mediaPlayer.setDataSource(getFilesDir() + AUDIO_FILE);
+                    mediaPlayer.prepareAsync();
+
+                } catch (GestorException | IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onToolbarButtonPressed(ImageButton imageButton) {
+
+        switch (imageButton.getId()) {
+
+            case R.id.button_screen:
+
+                addNewPanellDialog();
+                break;
+
+            case R.id.button_icon:
+
+                addNewIconDialog();
+                break;
+
+            case R.id.button_delete_back:
+
+                GestorText.getList().removeLast();
+                GestorText.refreshEditText();
+                break;
+
+            case R.id.button_delete_all:
+
+                GestorText.getList().clear();
+                GestorText.refreshEditText();
+                break;
+
+            case R.id.button_translator:
+
+                openTraductorMenuOptions(imageButton);
+
                 break;
         }
     }
@@ -1298,14 +1381,6 @@ public class UserActivity extends FragmentActivity
         @NonNull
         @Override
         public Fragment getItem(int position) {
-//            if(panellList.get(position).getId() == 0){
-//                controlador = true;
-//                return PanellFragment.newInstance(position);
-//            }
-//
-//            if(controlador){
-//                position--;
-//            }
             return PanellFragment.newInstance(panellList.get(position));
         }
 

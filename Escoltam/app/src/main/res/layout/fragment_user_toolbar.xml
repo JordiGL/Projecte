@@ -10,7 +10,7 @@
 
 
     <ImageButton
-        android:id="@+id/button_top_left"
+        android:id="@+id/button_delete_all"
         android:layout_width="@dimen/control_dimen_button"
         android:layout_height="@dimen/control_dimen_button"
         android:layout_marginStart="@dimen/control_dimen_basic_margin"
@@ -46,7 +46,7 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/user_button_top_right"
-        app:layout_constraintStart_toStartOf="@+id/button_top_left"
+        app:layout_constraintStart_toStartOf="@+id/button_delete_all"
         app:layout_constraintTop_toBottomOf="@+id/appCompatEditText">
 
         <ImageButton

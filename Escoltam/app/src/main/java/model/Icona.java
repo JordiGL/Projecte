@@ -1,6 +1,8 @@
 package model;
 
-public class Icona {
+import java.io.Serializable;
+
+public class Icona implements Serializable {
     private int id;
     private String nom;
     private int posicio;

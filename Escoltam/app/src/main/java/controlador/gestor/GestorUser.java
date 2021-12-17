@@ -37,6 +37,7 @@ public class GestorUser {
     private static final String PANELL_FAVORIT_JSON = "favorit";
     private static final String ICONA_FOTO_JSON = "foto";
     private static final String ICONA_ID_JSON = "id";
+    public static final String ERROR_JSON_TRANSLATOR = "Error a l'hora d'extreure la paraula traduida de l'arxiu JSON rebut";
     private static List<Panell> mPanells;
     private static int fileIcons = 3;
     private static String veu;
@@ -242,6 +243,21 @@ public class GestorUser {
         }
 
         return null;
+    }
+
+    public static String getTranslatedText(String json) throws GestorException{
+
+        try{
+            JSONArray jsonArray = new JSONArray(json);
+            JSONArray jsonArray2 = (JSONArray)jsonArray.getJSONObject(0).get("translations");
+            JSONObject jsonArray3 = jsonArray2.getJSONObject(0);
+            String text = jsonArray3.get("text").toString();
+
+            return text;
+
+        }catch(Exception e){
+            throw new GestorException(ERROR_JSON_TRANSLATOR + e);
+        }
     }
 
     public static byte[] getBytes(InputStream inputStream) throws IOException {

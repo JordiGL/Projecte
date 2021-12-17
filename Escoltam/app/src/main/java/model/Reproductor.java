@@ -1,19 +1,14 @@
 package model;
 
 import android.content.Context;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.microsoft.cognitiveservices.speech.AudioDataStream;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesisResult;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesizer;
-import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 
-import java.io.File;
-
-import controlador.activity.MainActivity;
 import controlador.gestor.GestorException;
 
 public class Reproductor {
@@ -30,31 +25,26 @@ public class Reproductor {
     private static final String ERROR_VOICE_SELECTED = "S'ha produit un error en la selecció de la veu";
     private static final String ERROR_SYNTHESIZER = "S'ha produit un error a l'hora de configurar el sintetitzador del reproductor";
     private static final String ERROR_FAILED_TO_PLAY = "S'ha produit un error a l'hora d'efectuar la reproducció";
+    private static final String LANGUAGE_ENGLISH = "en-GB";
+    private static final String VOICE_FEMALE_ENGLISH = "LibbyNeural";
+    private static final String VOICE_MALE_ENGLISH = "RyanNeural";
+    private static final String FILE_NAME = "audio.wav";
     private String subscriptionKey;
     private String location;
     private String idioma;
-    private String veu;
-    private String toDeVeu;
+    private String systemVoice;
+    private String userVoice;
     private static SpeechSynthesizer synthesizer;
     private Context context;
 
-    public Reproductor(String subscriptionKey, String location, String idioma, String toDeVeu) throws GestorException{
-        this.subscriptionKey = subscriptionKey;
-        this.location = location;
-        this.toDeVeu = toDeVeu;
-        setIdioma(idioma);
-        setVeu(idioma, toDeVeu);
-        synthesizer = setSynthesizer();
-    }
-
-    public Reproductor(String toDeVeu, Context context) throws GestorException{
+    public Reproductor(String userVoice, Context context) throws GestorException{
         this.context = context;
         this.subscriptionKey = SERVICE_KEY;
         this.location = SERVICE_LOCATION;
-        this.toDeVeu = toDeVeu;
-        setIdioma(LANGUAGE_CATALA);
-        setVeu(idioma, toDeVeu);
-        synthesizer = setSynthesizer();
+        this.userVoice = userVoice;
+        this.idioma = LANGUAGE_CATALA;
+        setUpSystemVoice(idioma);
+        synthesizer = setUpSynthesizer();
     }
 
     public void setSubscriptionKey(String subscriptionKey) {
@@ -69,12 +59,12 @@ public class Reproductor {
         this.location = location;
     }
 
-    public String getToDeVeu() {
-        return toDeVeu;
+    public String getUserVoice() {
+        return userVoice;
     }
 
-    public void setToDeVeu(String toDeVeu) {
-        this.toDeVeu = toDeVeu;
+    public void setUserVoice(String userVoice) {
+        this.userVoice = userVoice;
     }
 
 
@@ -82,7 +72,9 @@ public class Reproductor {
 
         try{
 
-            if(idioma.equalsIgnoreCase(LANGUAGE_CATALA)){
+            if (idioma.equalsIgnoreCase("en")){
+                this.idioma = LANGUAGE_ENGLISH;
+            }else if(idioma.equalsIgnoreCase("ca")){
                 this.idioma = LANGUAGE_CATALA;
             }else{
                 throw new GestorException(ERROR_LANGUAGE);
@@ -97,18 +89,56 @@ public class Reproductor {
         return idioma;
     }
 
-    private void setVeu(String idioma, String toDeVeu) throws GestorException{
+    public void setSystemVoice(String systemVoice){
+        this.systemVoice = systemVoice;
+    }
+
+    public String getSystemVoice(String idioma, @NonNull String userVoice) throws GestorException {
+        String systemVoice = "";
+        if(userVoice.equalsIgnoreCase(VOICE_FEMALE) || userVoice.equalsIgnoreCase(VOICE_MALE)){
+
+            if (idioma.equalsIgnoreCase(LANGUAGE_ENGLISH)){
+
+                if (userVoice.equalsIgnoreCase(VOICE_FEMALE)){
+                    systemVoice = VOICE_FEMALE_ENGLISH;
+                } else if(userVoice.equalsIgnoreCase(VOICE_MALE)){
+                    systemVoice = VOICE_MALE_ENGLISH;
+                }
+            }else if(idioma.equalsIgnoreCase(LANGUAGE_CATALA)){
+
+                if (userVoice.equalsIgnoreCase(VOICE_FEMALE)){
+                    systemVoice = VOICE_FEMALE_CATALA;
+                } else if(userVoice.equalsIgnoreCase(VOICE_MALE)){
+                    systemVoice = VOICE_MALE_CATALA;
+                }
+            }
+
+        }else{
+            throw new GestorException(ERROR_VOICE);
+        }
+
+        return systemVoice;
+    }
+
+    public void setUpSystemVoice(String idioma) throws GestorException{
 
         try{
 
-            if(toDeVeu.equalsIgnoreCase(VOICE_FEMALE) || toDeVeu.equalsIgnoreCase(VOICE_MALE)){
+            if(userVoice.equalsIgnoreCase(VOICE_FEMALE) || userVoice.equalsIgnoreCase(VOICE_MALE)){
 
-                if(idioma.equalsIgnoreCase(LANGUAGE_CATALA)){
+                if (idioma.equalsIgnoreCase(LANGUAGE_ENGLISH)){
 
-                    if (toDeVeu.equalsIgnoreCase(VOICE_FEMALE)){
-                        veu = VOICE_FEMALE_CATALA;
-                    } else if(toDeVeu.equalsIgnoreCase(VOICE_MALE)){
-                        veu = VOICE_MALE_CATALA;
+                    if (userVoice.equalsIgnoreCase(VOICE_FEMALE)){
+                        systemVoice = VOICE_FEMALE_ENGLISH;
+                    } else if(userVoice.equalsIgnoreCase(VOICE_MALE)){
+                        systemVoice = VOICE_MALE_ENGLISH;
+                    }
+                }else if(idioma.equalsIgnoreCase(LANGUAGE_CATALA)){
+
+                    if (userVoice.equalsIgnoreCase(VOICE_FEMALE)){
+                        systemVoice = VOICE_FEMALE_CATALA;
+                    } else if(userVoice.equalsIgnoreCase(VOICE_MALE)){
+                        systemVoice = VOICE_MALE_CATALA;
                     }
                 }
 
@@ -121,11 +151,8 @@ public class Reproductor {
         }
     }
 
-    public String getVeu() {
-        return veu;
-    }
 
-    private SpeechSynthesizer setSynthesizer() throws GestorException{
+    private SpeechSynthesizer setUpSynthesizer() throws GestorException{
 
         try{
 
@@ -137,7 +164,7 @@ public class Reproductor {
             speechConfig.setSpeechSynthesisVoiceName(
                     "Microsoft Server Speech Text to Speech Voice ("
                             + idioma +", "
-                            + veu +")"
+                            + systemVoice +")"
             );
 
             synthesizer = new SpeechSynthesizer(speechConfig, null);
@@ -149,29 +176,38 @@ public class Reproductor {
         }
     }
 
+    public void changeSynthesizer(String language, String userVoice) throws GestorException{
+
+        try{
+            String systemVoice = getSystemVoice(language, userVoice);
+
+            SpeechConfig speechConfig = SpeechConfig.fromSubscription(
+                    subscriptionKey,
+                    location
+            );
+
+            speechConfig.setSpeechSynthesisVoiceName(
+                    "Microsoft Server Speech Text to Speech Voice ("
+                            + language +", "
+                            + systemVoice +")"
+            );
+
+            synthesizer = new SpeechSynthesizer(speechConfig, null);
+
+        }catch(Exception e){
+            throw new GestorException(ERROR_SYNTHESIZER + e);
+        }
+    }
+
+
     public void getAudio(String text) throws GestorException{
 
         try{
 
             SpeechSynthesisResult result = synthesizer.SpeakText(text);
             AudioDataStream stream = AudioDataStream.fromResult(result);
-            stream.saveToWavFile(context.getFilesDir()+"audio.wav");
+            stream.saveToWavFile(context.getFilesDir()+ FILE_NAME);
 
-//            mediaPlayer = new MediaPlayer();
-//            mediaPlayer.setDataSource(context.getFilesDir()+"audio.wav");
-//            mediaPlayer.prepareAsync();
-//            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-//                @Override
-//                public void onPrepared(MediaPlayer mp) {
-//                    mediaPlayer.start();
-//                }
-//            });
-//
-//            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//                public void onCompletion(MediaPlayer mp) {
-//                    synthesizer.StopSpeakingAsync();
-//                }
-//            });
 
         }catch(Exception e){
             throw new GestorException(ERROR_FAILED_TO_PLAY + e);
@@ -182,18 +218,6 @@ public class Reproductor {
 
         try{
             synthesizer.StopSpeakingAsync();
-//            mediaPlayer.stop();
-
-        }catch(Exception e){
-            throw new GestorException(ERROR_FAILED_TO_PLAY + e);
-        }
-    }
-
-    public void pause() throws GestorException{
-
-        try{
-
-//            mediaPlayer.pause();
 
         }catch(Exception e){
             throw new GestorException(ERROR_FAILED_TO_PLAY + e);

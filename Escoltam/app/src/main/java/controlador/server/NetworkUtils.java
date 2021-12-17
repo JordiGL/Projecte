@@ -2,6 +2,7 @@ package controlador.server;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 
 import controlador.gestor.JsonUtils;
 import model.Usuari;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -58,7 +60,9 @@ public class NetworkUtils extends Connexio{
     private static final String ID_ICONA_BUNDLE_KEY = "icon_id";
     private static final String DELETE_ICONA_OPTION = "delete_icona";
     private static final String PANELL_NAME_BUNDLE_KEY = "panell_name";
-    public static final String PANELL_PREDEFINIT_DELETE_URL = "http://10.0.2.2:8080/app/panellPredefinit/";
+    private static final String PANELL_PREDEFINIT_DELETE_URL = "http://10.0.2.2:8080/app/panellPredefinit/";
+    private static final String TRANSLATOR_DATA_BUNDLE_KEY = "translated";
+    private static final String TRANSLATE_TEXT_OPTION = "translate_text";
 
     /**
      * Post request al servidor per obtenir el token.
@@ -94,7 +98,60 @@ public class NetworkUtils extends Connexio{
                 connexio.disconnect();
             }
         }
+        return queryBundle;
+    }
 
+    public static Bundle requestTranslator(String text, String subscriptionKey, String location){
+
+        Bundle queryBundle = null;
+        OkHttpClient client = null;
+        Response response = null;
+
+        try {
+
+            HttpUrl url = new HttpUrl.Builder()
+                    .scheme("https")
+                    .host("api.cognitive.microsofttranslator.com")
+                    .addPathSegment("/translate")
+                    .addQueryParameter("api-version", "3.0")
+                    .addQueryParameter("from", "ca")
+                    .addQueryParameter("to", "en")
+                    .build();
+
+            client = new OkHttpClient();
+            MediaType mediaType = MediaType.parse("application/json");
+
+            RequestBody body = RequestBody.create(mediaType,
+                    "[{\"Text\": \"" + text + "\"}]");
+
+            Request request = new Request.Builder().url(url).post(body)
+                    .addHeader("Ocp-Apim-Subscription-Key", subscriptionKey)
+                    .addHeader("Ocp-Apim-Subscription-Region", location)
+                    .addHeader("Content-type", "application/json")
+                    .build();
+
+            //Enviem la sol·licitud i n'obtenim la resposta.
+            response = client.newCall(request).execute();
+            String textJSONString = response.body().string();
+
+            queryBundle = new Bundle();
+            queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, response.code());
+
+            if(response.code() == HttpURLConnection.HTTP_OK){
+                queryBundle.putString(OPTION_BUNDLE_KEY, TRANSLATE_TEXT_OPTION);
+                queryBundle.putString(TRANSLATOR_DATA_BUNDLE_KEY, textJSONString);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (client != null) {
+                client.dispatcher().executorService().shutdown();
+                client.connectionPool().evictAll();
+            }
+            if (response != null && !response.isSuccessful()) {
+                response.close();
+            }
+        }
         return queryBundle;
     }
 

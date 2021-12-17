@@ -13,7 +13,7 @@ public class GestorText {
         comunicadorEditText = editText;
     }
 
-    public static LinkedList<String> getTextList(){
+    public static LinkedList<String> getList(){
         return textList;
     }
 
@@ -24,5 +24,9 @@ public class GestorText {
                 comunicadorEditText.append(text);
             }
         }
+    }
+
+    public static String getText(){
+        return comunicadorEditText.getText().toString();
     }
 }

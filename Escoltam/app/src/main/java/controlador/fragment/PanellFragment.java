@@ -14,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.List;
@@ -119,7 +118,7 @@ public class PanellFragment extends Fragment implements OnIconInteractionListene
     @Override
     public void onIconClicked(String iconText) {
 
-        GestorText.getTextList().add(iconText + " ");
+        GestorText.getList().add(iconText + " ");
         GestorText.refreshEditText();
     }
 
