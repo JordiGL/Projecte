@@ -28,7 +28,7 @@ public class Reproductor {
     private static final String LANGUAGE_ENGLISH = "en-GB";
     private static final String VOICE_FEMALE_ENGLISH = "LibbyNeural";
     private static final String VOICE_MALE_ENGLISH = "RyanNeural";
-    private static final String FILE_NAME = "audio.wav";
+    private static final String AUDIO_FILE = "/audio.wav";
     private String subscriptionKey;
     private String location;
     private String idioma;
@@ -206,7 +206,7 @@ public class Reproductor {
 
             SpeechSynthesisResult result = synthesizer.SpeakText(text);
             AudioDataStream stream = AudioDataStream.fromResult(result);
-            stream.saveToWavFile(context.getFilesDir()+ FILE_NAME);
+            stream.saveToWavFile(context.getFilesDir()+ AUDIO_FILE);
 
 
         }catch(Exception e){

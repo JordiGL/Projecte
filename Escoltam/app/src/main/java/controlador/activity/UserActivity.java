@@ -25,7 +25,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -131,7 +130,7 @@ public class UserActivity extends FragmentActivity
     private static final String LOCATION_BUNDLE_KEY = "location";
     private static final String TEXT_BUNDLE_KEY = "text";
     private static final String TRANSLATE_TEXT_OPTION = "translate_text";
-    private static final String AUDIO_FILE = "audio.wav";
+    private static final String AUDIO_FILE = "/audio.wav";
     private static final String TRANSLATED_TEXT_BUNDLE_KEY = "translated";
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
@@ -148,7 +147,7 @@ public class UserActivity extends FragmentActivity
     private MediaPlayer mediaPlayer;
     private Traductor translator;
     private String translatedText;
-    private boolean transletorEnabled;
+    private boolean translatorEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,7 +184,7 @@ public class UserActivity extends FragmentActivity
         //setUpEnglishSpeechPlayer();
         setUpMediaPlayer();
         translator = new Traductor();
-        transletorEnabled = false;
+        translatorEnabled = false;
 
         if(getSupportLoaderManager().getLoader(0)!=null){
             getSupportLoaderManager().initLoader(0,null,this);
@@ -228,7 +227,7 @@ public class UserActivity extends FragmentActivity
 
         try {
             mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDataSource(getFilesDir()+"audio.wav");
+            mediaPlayer.setDataSource(getFilesDir()+AUDIO_FILE);
             mediaPlayer.prepareAsync();
 
         } catch (IOException e) {
@@ -1205,7 +1204,7 @@ public class UserActivity extends FragmentActivity
             case R.id.context_translator_enabled:
 
                 try {
-                    transletorEnabled = true;
+                    translatorEnabled = true;
                     speechPlayerAudio.changeSynthesizer("en-GB", GestorUser.getVeu());
                 } catch (GestorException e) {
                     e.printStackTrace();
@@ -1215,7 +1214,7 @@ public class UserActivity extends FragmentActivity
             case R.id.context_translator_disabled:
 
                 try {
-                    transletorEnabled = false;
+                    translatorEnabled = false;
                     speechPlayerAudio.changeSynthesizer("ca-ES", GestorUser.getVeu());
                 } catch (GestorException e) {
                     e.printStackTrace();
@@ -1257,7 +1256,7 @@ public class UserActivity extends FragmentActivity
                 if (!text.isEmpty()) {
 
                     try {
-                        if (transletorEnabled) {
+                        if (translatorEnabled) {
                             callGetTranslatedTextLoader();
 
                             final Handler handler = new Handler(Looper.getMainLooper());
