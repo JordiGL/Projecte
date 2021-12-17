@@ -60,44 +60,41 @@ public class GestorUser {
 
             if(obtainedServerData != null) {
 
-                String firstChar = String.valueOf(obtainedServerData.charAt(0));
+                JSONObject dataJSON = new JSONObject(obtainedServerData);
+                veu = dataJSON.getString("voice");
 
-                if(firstChar.equalsIgnoreCase("[")) {
 
-                    JSONArray jsonArray = new JSONArray(obtainedServerData);
-                    JSONObject usuariJSON =  jsonArray.getJSONObject(0).getJSONObject("usuari");
-                    veu = usuariJSON.getString("voice");
+                //Panell predefinit
+                getPanellPredefinedIfExists(dataJSON);
 
-                    //Panell predefinit
-                    getPanellPredefinedIfExists(jsonArray);
+                JSONArray jsonArrayPanells = dataJSON.getJSONArray("panells");
+                for (int i = 0; i < jsonArrayPanells.length(); i++) {
+                    icones = new ArrayList<>();
 
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        icones = new ArrayList<>();
+                    //Obtenim l'array d'icones.
+                    JSONArray iconesJsonList = jsonArrayPanells.getJSONObject(i).getJSONArray(ICONES_JSON);
 
-                        //Obtenim l'array d'icones.
-                        JSONArray iconesJsonList = jsonArray.getJSONObject(i).getJSONArray(ICONES_JSON);
+                    //Ferm la cerca de les icones, les creem i les afegim a la llista.
+                    for (int j = 0; j < iconesJsonList.length(); j++){
 
-                        //Ferm la cerca de les icones, les creem i les afegim a la llista.
-                        for (int j = 0; j < iconesJsonList.length(); j++){
-
-                            icones.add(new Icona(
-                                    iconesJsonList.getJSONObject(j).getString(ICONA_NOM_JSON),
-                                    iconesJsonList.getJSONObject(j).getInt(ICONA_POSICIO_JSON),
-                                    Base64.decode(iconesJsonList.getJSONObject(j).getString(ICONA_FOTO_JSON), Base64.DEFAULT),
-                                    iconesJsonList.getJSONObject(j).getInt(ICONA_ID_JSON))
-                            );
-                        }
-
-                        //Afegim el panell a la llista
-                        mPanells.add(new Panell(
-                                jsonArray.getJSONObject(i).getString(PANELL_NOM_JSON),
-                                jsonArray.getJSONObject(i).getInt(PANELL_POSICIO_JSON),
-                                jsonArray.getJSONObject(i).getBoolean(PANELL_FAVORIT_JSON),
-                                icones,
-                                jsonArray.getJSONObject(i).getInt(PANELL_ID_JSON)));
+                        icones.add(new Icona(
+                                iconesJsonList.getJSONObject(j).getString(ICONA_NOM_JSON),
+                                iconesJsonList.getJSONObject(j).getInt(ICONA_POSICIO_JSON),
+                                Base64.decode(iconesJsonList.getJSONObject(j).getString(ICONA_FOTO_JSON), Base64.DEFAULT),
+                                iconesJsonList.getJSONObject(j).getInt(ICONA_ID_JSON))
+                        );
                     }
+
+                    //Afegim el panell a la llista
+                    mPanells.add(new Panell(
+                            jsonArrayPanells.getJSONObject(i).getString(PANELL_NOM_JSON),
+                            jsonArrayPanells.getJSONObject(i).getInt(PANELL_POSICIO_JSON),
+                            jsonArrayPanells.getJSONObject(i).getBoolean(PANELL_FAVORIT_JSON),
+                            icones,
+                            jsonArrayPanells.getJSONObject(i).getInt(PANELL_ID_JSON)));
                 }
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -105,10 +102,10 @@ public class GestorUser {
         return mPanells;
     }
 
-    private static void getPanellPredefinedIfExists(JSONArray jsonArray) throws JSONException {
+    private static void getPanellPredefinedIfExists(JSONObject jsonObject) throws JSONException {
         List<Icona> icones;
-        JSONObject usuariJSON =  jsonArray.getJSONObject(0).getJSONObject("usuari");
-        JSONArray predefinedJsonList = usuariJSON.getJSONArray("panellPredefinits");
+
+        JSONArray predefinedJsonList = jsonObject.getJSONArray("panellPredefinits");
 
         if(predefinedJsonList.length() > 0){
             icones = new ArrayList<>();

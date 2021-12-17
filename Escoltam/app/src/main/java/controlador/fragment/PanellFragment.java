@@ -105,16 +105,6 @@ public class PanellFragment extends Fragment implements OnIconInteractionListene
         return super.onContextItemSelected(item);
     }
 
-    /**
-     * Mostra informació per pantalla.
-     * @param message missatge que es mostrara per pantalla.
-     * @author Jordi Gómez Lozano.
-     */
-    public void displayToast(String message) {
-        Toast.makeText(getContext(), message,
-                Toast.LENGTH_LONG).show();
-    }
-
     @Override
     public void onIconClicked(String iconText) {
 

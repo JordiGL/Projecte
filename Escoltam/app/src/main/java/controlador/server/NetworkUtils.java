@@ -33,7 +33,7 @@ public class NetworkUtils extends Connexio{
     private static final String SIGN_UP_URL = "http://10.0.2.2:8080/signin";
     private static final String CHANGE_PASS_URL = "http://10.0.2.2:8080/changePassword/";
     private static final String BASIC_GET_URL = "http://10.0.2.2:8080/api/usuaris";
-    private static final String PANELLS_URL = "http://10.0.2.2:8080/app/panells/";
+    private static final String PANELLS_URL = "http://10.0.2.2:8080/api/usuaris/profile/";
     private static final String URL_TOKEN = "http://10.0.2.2:8080/oauth/token";
     private static final String URL_NEW_ICONA = "http://10.0.2.2:8080/app/icones/icona/panell/";
     private static final String URL_BASIC_ICONA = "http://10.0.2.2:8080/app/icones/icona/";
