@@ -56,7 +56,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         TextView btnAlta = findViewById(R.id.textAlta);
         Button btnIniciSessio = findViewById(R.id.btnLogin);
-        TextView btnClauPerduda = findViewById(R.id.clauPerduda);
         email = findViewById(R.id.inputEmailLogin);
         password = findViewById(R.id.inputPasswordLogin);
 
@@ -76,14 +75,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 }
             }
         });
-
-        btnClauPerduda.setOnClickListener(view -> {
-
-            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-            startActivity(intent);
-            finish();
-        });
-
     }
 
     /**

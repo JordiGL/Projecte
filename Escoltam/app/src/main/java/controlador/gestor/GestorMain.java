@@ -22,11 +22,10 @@ public class GestorMain {
     /**
      * Dirigieix l'usuari a la corresponent Activitat segons el seu role.
      * @param role role de l'usuari
-     * @param email email de l'usuari
      * @param message missatge clau de l'intent
      * @author Jordi Gómez Lozano
      */
-    public void dirigirUsuari(String role, String email, String message){
+    public void dirigirUsuari(String role, String message){
         Intent intent;
 
         if (role.equals(ROLE_ADMIN)) {

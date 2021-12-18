@@ -16,8 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnChangePasswordAdmin"
-        tools:layout="@layout/fragment_user_favorites">
+        app:layout_constraintTop_toBottomOf="@+id/btnChangePasswordAdmin">
 
     </FrameLayout>
 
@@ -27,6 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/text_canviar_clau_settings"
+        android:paddingStart="0dp"
+        android:paddingEnd="10dp"
         android:background="@drawable/principal_button_settings_top_round"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -38,6 +39,8 @@
         android:layout_height="wrap_content"
         android:text="@string/text_canviar_veu_settings"
         android:textColor="@color/white"
+        android:paddingStart="0dp"
+        android:paddingEnd="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/btnChangePasswordAdmin"
         app:layout_constraintStart_toEndOf="@+id/btnChangePasswordAdmin"
         app:layout_constraintTop_toTopOf="@+id/btnChangePasswordAdmin"

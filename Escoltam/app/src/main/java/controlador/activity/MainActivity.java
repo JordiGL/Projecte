@@ -57,11 +57,10 @@ public class MainActivity extends AppCompatActivity {
                 if(expiredData.after(new Date())) {
 
                     role = JsonUtils.getRoleFromToken(token);
-                    email = JsonUtils.getEmailFromToken(token);
 
                     if(role != null) {
 
-                        gestorMain.dirigirUsuari(role, email, EXTRA_MESSAGE);
+                        gestorMain.dirigirUsuari(role, EXTRA_MESSAGE);
 
                     } else {
                         dirigirALogin();

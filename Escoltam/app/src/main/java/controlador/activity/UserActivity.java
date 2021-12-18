@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -81,7 +82,7 @@ public class UserActivity extends FragmentActivity
         OnFragmentInteractionUserToolbarListener,
         LoaderManager.LoaderCallbacks<Bundle>,
         PopupMenu.OnMenuItemClickListener{
-
+    private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
     private static final int PICK_IMAGE = 1;
     private static final String URL_BUNDLE_KEY = "url";
     private static final String EDIT_TEXT_SAVED_INSTANCE = "text_content";
@@ -167,11 +168,9 @@ public class UserActivity extends FragmentActivity
         registerForContextMenu(optionsButton);
 
         gestorUser = new GestorUser();
-//        TextView textInfo = findViewById(R.id.textMostrarRol);
 
         Intent intent = getIntent();
-//        textInfo.setText(intent.getStringExtra(LoginActivity.EXTRA_MESSAGE));
-        role = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
+        role = intent.getStringExtra(EXTRA_MESSAGE);
 
         //Fragments
         setUpFragmentManager();
@@ -210,15 +209,14 @@ public class UserActivity extends FragmentActivity
      * @author Jordi Gomez Lozano
      */
     public void setUpFragmentManager(){
+
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction =  fragmentManager.beginTransaction();
 
         toolbarFragment = UserToolbarFragment.newInstance(role);
-//        favoritesFragment = UserFavoritesFragment.newInstance();
         controlFragment = UserControlFragment.newInstance();
 
         fragmentTransaction.add(R.id.toolbar_fragment_container, toolbarFragment);
-//        fragmentTransaction.add(R.id.favorites_fragment_container, favoritesFragment);
         fragmentTransaction.add(R.id.control_fragment_container, controlFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -260,9 +258,21 @@ public class UserActivity extends FragmentActivity
                         speechPlayerAudio.stop();
                         mp.stop();
                         mp.reset();
-                        mp.setDataSource(getFilesDir() + AUDIO_FILE);
-                        mp.prepareAsync();
-                    } catch (GestorException | IOException e) {
+                        final Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                try {
+                                    mp.setDataSource(getFilesDir() + AUDIO_FILE);
+                                    mp.prepareAsync();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, 250);
+
+                    } catch (GestorException e) {
                         e.printStackTrace();
                     }
 

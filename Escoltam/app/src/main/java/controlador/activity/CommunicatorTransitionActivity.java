@@ -33,6 +33,7 @@ public class CommunicatorTransitionActivity extends AppCompatActivity implements
     private static final String TOKEN_BUNDLE_KEY = "token";
     private static final String URL_BUNDLE_KEY = "url";
     private static final String ERROR_GET_PANELLS = "Error en obtenir la llista de panells";
+    private String role;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +43,13 @@ public class CommunicatorTransitionActivity extends AppCompatActivity implements
         //Amagar barra superior de la info del dispositiu.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        Intent intent = getIntent();
+        role = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
+
         if(getSupportLoaderManager().getLoader(0)!=null){
             getSupportLoaderManager().initLoader(0,null,this);
         }
+
 
         GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
         String username = gestorSharedPreferences.getEmail();
@@ -110,7 +115,7 @@ public class CommunicatorTransitionActivity extends AppCompatActivity implements
                 GestorUser.createObjectsFromObtainedData(panells);
                 Intent intentComunicador = new Intent(this, UserActivity.class);
 //Eliminar
-                intentComunicador.putExtra(EXTRA_MESSAGE, "ROLE_ADMIN");
+                intentComunicador.putExtra(EXTRA_MESSAGE, role);
                 startActivity(intentComunicador);
             } else {
                 displayToast(ERROR_GET_PANELLS);
