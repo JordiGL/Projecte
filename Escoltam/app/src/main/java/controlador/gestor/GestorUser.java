@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Base64;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +42,7 @@ public class GestorUser {
     private static List<Panell> mPanells;
     private static int fileIcons = 3;
     private static String veu;
+    private static int panellFavoritePosition;
 
     public GestorUser(List<Panell> mPanells) {
         GestorUser.mPanells = mPanells;
@@ -157,15 +159,37 @@ public class GestorUser {
                 new ArrayList<Icona>()
         );
     }
-    public static Panell getPanellPerId(int id){
+
+    public void setPanellFavoritPosition(int position){
+        panellFavoritePosition = position;
+    }
+
+    public static int getPanellFavoritePosition(){
+        return panellFavoritePosition;
+    }
+
+    public static void setUpPanellFavoritePosition(){
+        boolean control = true;
+
+        for(int i = 0; i<mPanells.size(); i++){
+            control = false;
+            if(mPanells.get(i).isFavorit()){
+                panellFavoritePosition = i+1;
+            }
+        }
+        if(control){
+            panellFavoritePosition = -1;
+        }
+    }
+
+    public static Panell getPanellFavorite(){
 
         for(Panell panell: mPanells){
-            if(panell.getId() == id){
+            if(panell.isFavorit()){
                 return panell;
             }
         }
-
-        return new Panell();
+        return null;
     }
 
 //Icones

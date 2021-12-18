@@ -147,5 +147,9 @@
     <string name="panell_row_size_five">5</string>
     <string name="context_translator_enable_text">Activar</string>
     <string name="context_translator_disable_text">Desactivar</string>
+    <string name="panell_options_button_content_escription">Panell options boto</string>
+    <string name="panell_favorite_button_content_escription">Panell favorit boto</string>
+    <string name="viewpager_content_escription">ViewPager</string>
+    <string name="context_panell_favorite_text">Fer favorit</string>
 
 </resources>

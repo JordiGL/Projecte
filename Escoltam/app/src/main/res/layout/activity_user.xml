@@ -20,19 +20,6 @@
 
     </FrameLayout>
 
-<!--    <FrameLayout-->
-<!--        android:id="@+id/favorites_fragment_container"-->
-<!--        android:name="FavoritesFragmentContainer"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="130dp"-->
-<!--        android:layout_marginStart="-40dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintLeft_toRightOf="@+id/control_fragment_container"-->
-<!--        app:layout_constraintRight_toRightOf="parent"-->
-<!--        tools:layout="@layout/fragment_user_favorites">-->
-
-<!--    </FrameLayout>-->
-
     <FrameLayout
         android:id="@+id/control_fragment_container"
         android:name="ControlFragmentContainer"
@@ -45,16 +32,6 @@
         tools:layout="@layout/fragment_user_control">
 
     </FrameLayout>
-
-<!--    <TextView-->
-<!--        android:id="@+id/textMostrarRol"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/control_fragment_container"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.498"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/toolbar_fragment_container" />-->
 
     <TextView
         android:id="@+id/titolPanell"
@@ -80,7 +57,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_fragment_container"
         android:src="@drawable/ic_action_settings"
-        android:contentDescription="@string/user_toolbar_delete_all_description" />
+        android:contentDescription="@string/panell_options_button_content_escription" />
+
+    <ImageButton
+        android:id="@+id/favoritePanell"
+        android:layout_width="@dimen/control_dimen_button"
+        android:layout_height="@dimen/control_dimen_button"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_middle_top_round"
+        android:contentDescription="@string/panell_favorite_button_content_escription"
+        android:src="@drawable/ic_action_favorite"
+        app:layout_constraintEnd_toStartOf="@+id/optionsPanell"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_fragment_container" />
 
     <View
         android:id="@+id/lineSeparator"
@@ -99,6 +88,7 @@
         app:layout_constraintBottom_toTopOf="@+id/control_fragment_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lineSeparator" />
+        app:layout_constraintTop_toBottomOf="@+id/lineSeparator"
+        android:contentDescription="@string/viewpager_content_escription"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

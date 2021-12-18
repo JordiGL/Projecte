@@ -18,7 +18,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -26,6 +25,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -100,7 +100,7 @@ public class UserActivity extends FragmentActivity
     private static final String ID_PANELL_BUNDLE_KEY = "id_panell";
     private static final String ERROR_DELETE_PANELL = "Error en eliminar el panel del servidor";
     private static final String PANELL_SUCCESSFULLY_REMOVED = "Panell eliminat correctament";
-    private static final String DIALOG_TITLE = "Atenció";
+    private static final String DIALOG_DELETE_PANELL_TITLE = "Atenció";
     private static final String DIALOG_MESSAGE_DELETE = "Segur que vols eliminar el panell?";
     private static final String EDIT_PANELL_OPTION = "edit";
     private static final String PANELL_NAME_BUNDLE_KEY = "panell_name";
@@ -133,6 +133,7 @@ public class UserActivity extends FragmentActivity
     private static final String TRANSLATE_TEXT_OPTION = "translate_text";
     private static final String AUDIO_FILE = "/audio.wav";
     private static final String TRANSLATED_TEXT_BUNDLE_KEY = "translated";
+    public static final String DIALOG_FAVORITE_TITLE = "Vols aquest panell com a favorit?";
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
     private UserToolbarFragment toolbarFragment;
@@ -143,12 +144,14 @@ public class UserActivity extends FragmentActivity
     private String role;
     private TextView panellTitle;
     private ImageButton optionsButton;
+    private ImageButton favoriteButton;
     private Uri uriIconImage = null;
     private Reproductor speechPlayerAudio;
     private MediaPlayer mediaPlayer;
     private Traductor translator;
     private String translatedText;
     private boolean translatorEnabled;
+    private int panellFavoritPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,8 +163,8 @@ public class UserActivity extends FragmentActivity
 
         panellTitle = findViewById(R.id.titolPanell);
 
+        favoriteButton = findViewById(R.id.favoritePanell);
         optionsButton = findViewById(R.id.optionsPanell);
-        optionsButton.setTag(R.drawable.ic_action_settings);
         registerForContextMenu(optionsButton);
 
 //        TextView textInfo = findViewById(R.id.textMostrarRol);
@@ -182,8 +185,7 @@ public class UserActivity extends FragmentActivity
 
         //Inicialitzem el reproductor i el mediaplayer per a controlar aquest.
         setUpSpeechPlayerAudio();
-        //setUpEnglishSpeechPlayer();
-        setUpMediaPlayer();
+
         translator = new Traductor();
         translatorEnabled = false;
 
@@ -196,6 +198,11 @@ public class UserActivity extends FragmentActivity
     protected void onStart() {
         super.onStart();
         setUpPanellListeners();
+        //setUpEnglishSpeechPlayer();
+        setUpMediaPlayer();
+
+        GestorUser.setUpPanellFavoritePosition();
+        panellFavoritPosition = GestorUser.getPanellFavoritePosition();
     }
 
     public void setUpFragmentManager(){
@@ -227,6 +234,7 @@ public class UserActivity extends FragmentActivity
     public void setUpMediaPlayer(){
 
         try {
+            new File(getFilesDir()+AUDIO_FILE);
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setVolume(0.8f,0.8f);
             mediaPlayer.setDataSource(getFilesDir()+AUDIO_FILE);
@@ -268,6 +276,15 @@ public class UserActivity extends FragmentActivity
             public void onClick(View v) {
                 if(pagerAdapter.getCount() > 0){
                     openPanellMenuOptions(v);
+                }
+            }
+        });
+
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(panellFavoritPosition != -1) {
+                    viewPager.setCurrentItem(panellFavoritPosition);
                 }
             }
         });
@@ -409,11 +426,11 @@ public class UserActivity extends FragmentActivity
                     idIcona = args.getInt(ICON_ID_BUNDLE_KEY);
                     return new DeleteIconaLoader(this, idIcona, token);
 
-                    case TRANSLATE_TEXT_OPTION:
-                        sub = args.getString(SUB_BUNDLE_KEY);
-                        text = args.getString(TEXT_BUNDLE_KEY);
-                        location = args.getString(LOCATION_BUNDLE_KEY);
-                        return new TranslatorLoader(this, text, sub, location);
+                case TRANSLATE_TEXT_OPTION:
+                    sub = args.getString(SUB_BUNDLE_KEY);
+                    text = args.getString(TEXT_BUNDLE_KEY);
+                    location = args.getString(LOCATION_BUNDLE_KEY);
+                    return new TranslatorLoader(this, text, sub, location);
 
             }
 
@@ -483,7 +500,6 @@ public class UserActivity extends FragmentActivity
 
                         panellName = data.getString(PANELL_NAME_BUNDLE_KEY);
                         panellTitle.setText(panellName);
-                        callGetPanellsLoader();
                         displayToast(PANELL_SUCCESSFULLY_EDITED);
 
                     }else if(responseCode == HttpURLConnection.HTTP_NOT_FOUND){
@@ -783,12 +799,7 @@ public class UserActivity extends FragmentActivity
         callAddPanellLoader(panell);
 
         final Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                pagerAdapter.refreshView();
-            }
-        }, 500);
+        refreshView(handler,500);
 
         handler.postDelayed(new Runnable() {
             @Override
@@ -816,28 +827,16 @@ public class UserActivity extends FragmentActivity
         }
 
         pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).getIcones().add(icona);
-
         final Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                pagerAdapter.refreshView();
-            }
-        }, 750);
+        refreshView(handler,750);
 
     }
 
     private void editIcon(Icona icona, File file){
         callEditIconLoader(icona, file.getName());
         pagerAdapter.notifyDataSetChanged();
-
         final Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                pagerAdapter.refreshView();
-            }
-        }, 750);
+        refreshView(handler,750);
     }
 
 //Dialogs
@@ -1006,7 +1005,7 @@ public class UserActivity extends FragmentActivity
 
     private void deletePanellDialog(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(DIALOG_TITLE);
+        alert.setTitle(DIALOG_DELETE_PANELL_TITLE);
         alert.setMessage(DIALOG_MESSAGE_DELETE);
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
@@ -1028,6 +1027,7 @@ public class UserActivity extends FragmentActivity
                         }else{
                             panellTitle.setText(pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).getNom());
                         }
+                        GestorUser.setUpPanellFavoritePosition();
                     }
                 }, 250);
 
@@ -1042,23 +1042,56 @@ public class UserActivity extends FragmentActivity
         alert.show();
     }
 
+    private void panellFavoriteDialog(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(DIALOG_FAVORITE_TITLE);
+
+        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                panellFavoritPosition = viewPager.getCurrentItem();
+                Panell previousFavoritePanell = GestorUser.getPanellFavorite();
+                Panell newFavoritePanell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem());
+
+                if (previousFavoritePanell != null && previousFavoritePanell.getId() != newFavoritePanell.getId()) {
+                    previousFavoritePanell.setFavorit(false);
+                    callEditPanellLoader(previousFavoritePanell);
+
+                    final Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            newFavoritePanell.setFavorit(true);
+                            callEditPanellLoader(newFavoritePanell);
+                            pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).setFavorit(true);
+                        }
+                    }, 100);
+
+                    refreshListData(handler, 150);
+                    refreshView(handler, 175);
+                }
+
+            }
+        });
+        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        alert.show();
+    }
+
     private void deleteIconDialog(int idIcona){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(DIALOG_TITLE);
+        alert.setTitle(DIALOG_DELETE_PANELL_TITLE);
         alert.setMessage(DIALOG_MESSAGE_DELETE);
 
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
                 callDeleteIconaLoader(idIcona);
-
                 final Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        pagerAdapter.refreshView();
-                    }
-                }, 500);
+                refreshView(handler,500);
             }
         });
         alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -1092,15 +1125,9 @@ public class UserActivity extends FragmentActivity
                 }
 
                 callEditPanellLoader(panell);
-
                 final Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        pagerAdapter.refreshView();
-                    }
-                }, 1000);
-
+                refreshListData(handler,1000);
+                refreshView(handler,1000);
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -1146,7 +1173,7 @@ public class UserActivity extends FragmentActivity
                     default:
                         break;
                 }
-                pagerAdapter.refreshView();
+                pagerAdapter.refreshAdapterView();
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -1209,6 +1236,11 @@ public class UserActivity extends FragmentActivity
                 editPanellDialog();
                 return true;
 
+            case R.id.context_panell_favorite:
+
+                panellFavoriteDialog();
+                return true;
+
             case R.id.context_panell_delete:
 
                 deletePanellDialog();
@@ -1269,36 +1301,11 @@ public class UserActivity extends FragmentActivity
 
         switch (imageButton.getId()) {
             case R.id.button_play:
-                String text = GestorText.getText();
 
+                String text = GestorText.getText();
                 if (!text.isEmpty()) {
 
-                    try {
-                        if (translatorEnabled) {
-                            callGetTranslatedTextLoader();
-
-                            final Handler handler = new Handler(Looper.getMainLooper());
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        speechPlayerAudio.getAudio(translatedText);
-                                        mediaPlayer.start();
-                                    } catch (GestorException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                }
-                            }, 1000);
-
-                        } else {
-                            speechPlayerAudio.getAudio(text);
-                            mediaPlayer.start();
-                        }
-                    } catch (GestorException e) {
-                        e.printStackTrace();
-                    }
-
+                    speechControl(text);
                 }
                 break;
 
@@ -1360,7 +1367,71 @@ public class UserActivity extends FragmentActivity
         }
     }
 
+    public void speechControl( String text){
+
+        if (translatorEnabled) {
+
+            callGetTranslatedTextLoader();
+            final Handler handler = new Handler(Looper.getMainLooper());
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    try {
+                        speechPlayerAudio.getAudio(translatedText);
+                        mediaPlayer.start();
+
+                    } catch (GestorException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }, 1000);
+
+        } else {
+
+            final Handler handler = new Handler(Looper.getMainLooper());
+
+            handler.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        speechPlayerAudio.getAudio(text);
+                        mediaPlayer.start();
+
+                    } catch (GestorException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }, 500);
+        }
+    }
+
+
 //Utils
+
+    public void refreshView(Handler handler, int delayMillis){
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                pagerAdapter.refreshAdapterView();
+
+            }
+        }, delayMillis);
+    }
+
+    public void refreshListData(Handler handler, int delayMillis){
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                callGetPanellsLoader();
+            }
+        }, delayMillis);
+    }
+
     /**
      * Mostra informació per pantalla.
      * @param message missatge que es mostrara per pantalla.
@@ -1424,13 +1495,24 @@ public class UserActivity extends FragmentActivity
             notifyDataSetChanged();
         }
 
-        public void refreshView(){
+        public void refreshAdapterView(){
             panellList = GestorUser.getPanells();
             notifyDataSetChanged();
         }
 
         public Panell getCurrentPanell(int position){
             return panellList.get(position);
+        }
+
+        public int getPanellFavoritePosition(){
+            for(int i = 0; i<panellList.size(); i++){
+
+                if(panellList.get(i).isFavorit()){
+                    return i;
+                }
+                i++;
+            }
+            return 0;
         }
     }
 }
