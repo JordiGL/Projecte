@@ -14,7 +14,6 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,7 +24,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -86,6 +84,7 @@ public class UserActivity extends FragmentActivity
 
     private static final int PICK_IMAGE = 1;
     private static final String URL_BUNDLE_KEY = "url";
+    private static final String EDIT_TEXT_SAVED_INSTANCE = "text_content";
     private static final String PANELLS_BUNDLE_KEY = "panells";
     private static final String RESPONSE_CODE_BUNDLE_KEY = "responseCode";
     private static final String OPTION_BUNDLE_KEY = "opcio";
@@ -133,11 +132,10 @@ public class UserActivity extends FragmentActivity
     private static final String TRANSLATE_TEXT_OPTION = "translate_text";
     private static final String AUDIO_FILE = "/audio.wav";
     private static final String TRANSLATED_TEXT_BUNDLE_KEY = "translated";
-    public static final String DIALOG_FAVORITE_TITLE = "Vols aquest panell com a favorit?";
+    private static final String DIALOG_FAVORITE_TITLE = "Vols aquest panell com a favorit?";
     private ViewPager viewPager;
     private ScreenSlidePagerAdapter pagerAdapter;
     private UserToolbarFragment toolbarFragment;
-//    private UserFavoritesFragment favoritesFragment;
     private UserControlFragment controlFragment;
     private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
@@ -152,6 +150,7 @@ public class UserActivity extends FragmentActivity
     private String translatedText;
     private boolean translatorEnabled;
     private int panellFavoritPosition;
+    private GestorUser gestorUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +166,7 @@ public class UserActivity extends FragmentActivity
         optionsButton = findViewById(R.id.optionsPanell);
         registerForContextMenu(optionsButton);
 
+        gestorUser = new GestorUser();
 //        TextView textInfo = findViewById(R.id.textMostrarRol);
 
         Intent intent = getIntent();
@@ -179,8 +179,8 @@ public class UserActivity extends FragmentActivity
         // Instanciar viewpager i adaptador d'aquest
         setUpViewPager();
 
-        if(GestorUser.getNumPanells() > 0){
-            panellTitle.setText(GestorUser.getPanells().get(0).getNom());
+        if(gestorUser.getNumPanells() > 0){
+            panellTitle.setText(gestorUser.getPanells().get(0).getNom());
         }
 
         //Inicialitzem el reproductor i el mediaplayer per a controlar aquest.
@@ -201,10 +201,14 @@ public class UserActivity extends FragmentActivity
         //setUpEnglishSpeechPlayer();
         setUpMediaPlayer();
 
-        GestorUser.setUpPanellFavoritePosition();
-        panellFavoritPosition = GestorUser.getPanellFavoritePosition();
+        gestorUser.setUpPanellFavoritePosition();
+        panellFavoritPosition = gestorUser.getPanellFavoritePosition();
     }
 
+    /**
+     * Mètode d'administració dels fragments
+     * @author Jordi Gomez Lozano
+     */
     public void setUpFragmentManager(){
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction =  fragmentManager.beginTransaction();
@@ -220,9 +224,13 @@ public class UserActivity extends FragmentActivity
         fragmentTransaction.commit();
     }
 
+    /**
+     * Mètode inicialitzador i configuració del reproductor de so
+     * @author Jordi Gomez Lozano
+     */
     public void setUpSpeechPlayerAudio(){
 
-        String veu = GestorUser.getVeu();
+        String veu = gestorUser.getVeu();
 
         try {
             speechPlayerAudio = new Reproductor(veu, this);
@@ -231,6 +239,10 @@ public class UserActivity extends FragmentActivity
         }
     }
 
+    /**
+     * Mètode inicialitzador i configuració del controlador d'audio
+     * @author Jordi Gomez Lozano
+     */
     public void setUpMediaPlayer(){
 
         try {
@@ -244,6 +256,7 @@ public class UserActivity extends FragmentActivity
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     try {
+                        new File(getFilesDir()+AUDIO_FILE);
                         speechPlayerAudio.stop();
                         mp.stop();
                         mp.reset();
@@ -261,14 +274,22 @@ public class UserActivity extends FragmentActivity
         }
     }
 
+    /**
+     * Mètode per a inicialitzar el ViewPager
+     * @author Jordi Gomez Lozano
+     */
     private void setUpViewPager() {
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
-        pagerAdapter = new UserActivity.ScreenSlidePagerAdapter(getSupportFragmentManager(), GestorUser.getPanells());
+        pagerAdapter = new UserActivity.ScreenSlidePagerAdapter(getSupportFragmentManager(), gestorUser.getPanells());
         viewPager.setAdapter(pagerAdapter);
         pagerAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Mètode dels listeners dels viws d'aquest FragmentActivity
+     * @author Jordi Gomez Lozano
+     */
     public void setUpPanellListeners(){
 
         optionsButton.setOnClickListener(new View.OnClickListener() {
@@ -319,32 +340,36 @@ public class UserActivity extends FragmentActivity
         }
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
-//        editTextCommunicator.setText(gestorSharedPreferences.getEtitTextContent());
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
-//        gestorSharedPreferences.setEditTextContent(editTextCommunicator.getText().toString());
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GestorText.refreshEditText();
+    }
 
-//    @Override
-//    public void onSaveInstanceState(Bundle savedInstanceState) {
-//        savedInstanceState.putString(EDIT_TEXT_SAVED_INSTANCE, "hola");
-//        super.onSaveInstanceState(savedInstanceState);
-//    }
-//
-//    @Override
-//    public void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//        editTextCommunicator.setText(savedInstanceState.getString(EDIT_TEXT_SAVED_INSTANCE));
-//    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString(EDIT_TEXT_SAVED_INSTANCE, GestorText.getText());
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        String[] textWords = savedInstanceState.getString(EDIT_TEXT_SAVED_INSTANCE).split(" ");
+
+        for(String word: textWords){
+            GestorText.getList().add(word + " ");
+        }
+
+        GestorText.refreshEditText();
+    }
+
+//Loaders
     @NonNull
     @Override
     public Loader<Bundle> onCreateLoader(int id, @Nullable Bundle args) {
@@ -439,7 +464,6 @@ public class UserActivity extends FragmentActivity
         return new PanellsListLoader(this, url, token);
     }
 
-//Loader methods
     @Override
     public void onLoadFinished(@NonNull Loader<Bundle> loader, Bundle data) {
         String panells ="";
@@ -484,6 +508,11 @@ public class UserActivity extends FragmentActivity
                         int idPanell = data.getInt(ID_PANELL_BUNDLE_KEY);
                         pagerAdapter.removePanelView(idPanell);
                         displayToast(PANELL_SUCCESSFULLY_REMOVED);
+
+                        if(idPanell == 0){
+                            panellFavoritPosition--;
+                        }
+
                         callGetPanellsLoader();
 
                     }else if(responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
@@ -538,7 +567,7 @@ public class UserActivity extends FragmentActivity
 
                     if (responseCode == HttpURLConnection.HTTP_OK) {
                         idIcona = data.getInt(ICON_ID_BUNDLE_KEY);
-                        Icona icona = GestorUser.findIcona(idIcona);
+                        Icona icona = gestorUser.findIcona(idIcona);
                         File file = new File(getFilesDir(),icona.getNom());
 
                         if(file.delete()){
@@ -574,6 +603,7 @@ public class UserActivity extends FragmentActivity
     /**
      * Metode per a fer la crida al LoadManager per afegir un nou panell al servidor
      * @param panell panell a afegir.
+     * @author Jordi Gomez Lozano
      */
     private void callAddPanellLoader(Panell panell){
         //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
@@ -684,6 +714,10 @@ public class UserActivity extends FragmentActivity
 
     }
 
+    /**
+     * Metode per a fer la crida al LoadManager per obtenir la traducció del text
+     * @author Jordi Gómez Lozano
+     */
     private void callGetTranslatedTextLoader(){
 
         //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
@@ -708,7 +742,8 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer la crida al LoadManager per obtenir els panells del servidor
+     * Metode per a fer la crida al LoadManager per editar un panell
+     * @param panell panell a editar.
      * @author Jordi Gómez Lozano
      */
     private void callEditPanellLoader(Panell panell){
@@ -740,6 +775,13 @@ public class UserActivity extends FragmentActivity
 
     }
 
+    /**
+     * Metode per a fer la crida al LoadManager per a afegir una nova icona al servidor
+     * @param idPanell id del panell de la icona.
+     * @param icon icona a guardar.
+     * @param fileName nom que ha de tenir l'arxiu.
+     * @author Jordi Gómez Lozano
+     */
     private void callNewIconLoader(int idPanell, Icona icon, String fileName){
 
         //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
@@ -766,6 +808,12 @@ public class UserActivity extends FragmentActivity
         }
     }
 
+    /**
+     * Metode per a fer la crida al LoadManager per editar una icona
+     * @param icon icona a editar.
+     * @param fileName nou nom de la icona.
+     * @author Jordi Gómez Lozano
+     */
     private void callEditIconLoader(Icona icon, String fileName){
 
         //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
@@ -792,10 +840,15 @@ public class UserActivity extends FragmentActivity
         }
     }
 
+    /**
+     * Metode per a gestionar el nou panell
+     * @param panellName nom del panell a guardar.
+     * @author Jordi Gómez Lozano
+     */
     public void addNewPanell(String panellName){
 
         int position = pagerAdapter.getCount()+1;
-        Panell panell = GestorUser.newPanell(position, panellName);
+        Panell panell = gestorUser.newPanell(position, panellName);
         callAddPanellLoader(panell);
 
         final Handler handler = new Handler(Looper.getMainLooper());
@@ -812,6 +865,12 @@ public class UserActivity extends FragmentActivity
         }, 500);
     }
 
+    /**
+     * Metode per a gestionar una nova icona
+     * @param file imatge de la icona a guardar.
+     * @param iconName nom de la icona a guardar.
+     * @author Jordi Gómez Lozano
+     */
     private void addNewIcon(File file, String iconName){
         Icona icona;
         int posicio = viewPager.getCurrentItem();
@@ -832,6 +891,12 @@ public class UserActivity extends FragmentActivity
 
     }
 
+    /**
+     * Metode per a gestionar l'edició d'una icona.
+     * @param icona panell a editar.
+     * @param file panell a editar.
+     * @author Jordi Gómez Lozano
+     */
     private void editIcon(Icona icona, File file){
         callEditIconLoader(icona, file.getName());
         pagerAdapter.notifyDataSetChanged();
@@ -840,6 +905,10 @@ public class UserActivity extends FragmentActivity
     }
 
 //Dialogs
+    /**
+     * Metode per a fer i mostrar el dialog per a afegir un nou panell
+     * @author Jordi Gómez Lozano
+     */
     private void addNewPanellDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(DIALOG_CREATE_PANELL_TITLE);
@@ -870,6 +939,10 @@ public class UserActivity extends FragmentActivity
         builder.show();
     }
 
+    /**
+     * Metode per a fer i mostrar el dialog per a afegir una nova icona
+     * @author Jordi Gómez Lozano
+     */
     private void addNewIconDialog(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -904,7 +977,7 @@ public class UserActivity extends FragmentActivity
 
                 if(!iconName.matches("")){
                     dialog.dismiss();
-                    File iconFile = GestorUser.createFile(
+                    File iconFile = gestorUser.createFile(
                             UserActivity.this,
                             getContentResolver(),
                             uriIconImage,
@@ -925,10 +998,15 @@ public class UserActivity extends FragmentActivity
         builder.show();
     }
 
+    /**
+     * Metode per a fer i mostrar el dialog per a editar una icona
+     * @param idIcona l'id de la icona a editar.
+     * @author Jordi Gómez Lozano
+     */
     private void editIconDialog(int idIcona){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(DIALOG_EDIT_ICONA_TITLE);
-        Icona icona = GestorUser.findIcona(idIcona);
+        Icona icona = gestorUser.findIcona(idIcona);
 
         View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_new_icon,
                 (ViewGroup) findViewById(android.R.id.content), false);
@@ -972,14 +1050,14 @@ public class UserActivity extends FragmentActivity
 
                     if (uriIconImage != null) {
 
-                        iconFile = GestorUser.createFile(
+                        iconFile = gestorUser.createFile(
                                 UserActivity.this,
                                 getContentResolver(),
                                 uriIconImage,
                                 icona.getNom());
                     } else {
 
-                        iconFile = GestorUser.createFileByte(
+                        iconFile = gestorUser.createFileByte(
                                 UserActivity.this,
                                 icona.getImatge(),
                                 icona.getNom());
@@ -1003,6 +1081,10 @@ public class UserActivity extends FragmentActivity
         builder.show();
     }
 
+    /**
+     * Metode per a fer i mostrar el dialog per a eliminar un panell
+     * @author Jordi Gómez Lozano
+     */
     private void deletePanellDialog(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(DIALOG_DELETE_PANELL_TITLE);
@@ -1027,7 +1109,7 @@ public class UserActivity extends FragmentActivity
                         }else{
                             panellTitle.setText(pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).getNom());
                         }
-                        GestorUser.setUpPanellFavoritePosition();
+                        gestorUser.setUpPanellFavoritePosition();
                     }
                 }, 250);
 
@@ -1042,6 +1124,10 @@ public class UserActivity extends FragmentActivity
         alert.show();
     }
 
+    /**
+     * Metode per a fer i mostrar el dialog per a assignar un panell com a favorit
+     * @author Jordi Gómez Lozano
+     */
     private void panellFavoriteDialog(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(DIALOG_FAVORITE_TITLE);
@@ -1049,15 +1135,27 @@ public class UserActivity extends FragmentActivity
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
+
                 panellFavoritPosition = viewPager.getCurrentItem();
-                Panell previousFavoritePanell = GestorUser.getPanellFavorite();
+                Panell previousFavoritePanell = gestorUser.getPanellFavorite();
                 Panell newFavoritePanell = pagerAdapter.getCurrentPanell(viewPager.getCurrentItem());
+                final Handler handler = new Handler(Looper.getMainLooper());
 
-                if (previousFavoritePanell != null && previousFavoritePanell.getId() != newFavoritePanell.getId()) {
-                    previousFavoritePanell.setFavorit(false);
-                    callEditPanellLoader(previousFavoritePanell);
+                if(previousFavoritePanell != null){
+                    if (previousFavoritePanell.getId() != newFavoritePanell.getId()) {
+                        previousFavoritePanell.setFavorit(false);
+                        callEditPanellLoader(previousFavoritePanell);
 
-                    final Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                newFavoritePanell.setFavorit(true);
+                                callEditPanellLoader(newFavoritePanell);
+                                pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).setFavorit(true);
+                            }
+                        }, 100);
+                    }
+                } else {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -1066,10 +1164,10 @@ public class UserActivity extends FragmentActivity
                             pagerAdapter.getCurrentPanell(viewPager.getCurrentItem()).setFavorit(true);
                         }
                     }, 100);
-
-                    refreshListData(handler, 150);
-                    refreshView(handler, 175);
                 }
+
+                refreshListData(handler, 150);
+                refreshView(handler, 175);
 
             }
         });
@@ -1081,6 +1179,11 @@ public class UserActivity extends FragmentActivity
         alert.show();
     }
 
+    /**
+     * Metode per a fer i mostrar el dialog per a eliminar una icona
+     * @param idIcona l'id de la icona a eliminar.
+     * @author Jordi Gómez Lozano
+     */
     private void deleteIconDialog(int idIcona){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(DIALOG_DELETE_PANELL_TITLE);
@@ -1102,6 +1205,10 @@ public class UserActivity extends FragmentActivity
         alert.show();
     }
 
+    /**
+     * Metode per a fer i mostrar el dialog per a editar un panell
+     * @author Jordi Gómez Lozano
+     */
     private void editPanellDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(DIALOG_EDIT_PANELL_TITLE);
@@ -1140,7 +1247,12 @@ public class UserActivity extends FragmentActivity
         builder.show();
     }
 
-    private void rowIconsNumber(){
+    /**
+     * Metode per a fer i mostrar el dialog per a canviar el tamany de les icones a partir
+     * del nombre de icones per fila
+     * @author Jordi Gómez Lozano
+     */
+    private void rowIconsNumberDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(DIALOG_MODIFY_ROW_ICONS_TITLE);
 
@@ -1159,16 +1271,16 @@ public class UserActivity extends FragmentActivity
 
                 switch(selectedId){
                     case R.id.radio_two:
-                        GestorUser.setFileIcons(2);
+                        gestorUser.setFileIcons(2);
                         break;
                     case R.id.radio_three:
-                        GestorUser.setFileIcons(3);
+                        gestorUser.setFileIcons(3);
                         break;
                     case R.id.radio_four:
-                        GestorUser.setFileIcons(4);
+                        gestorUser.setFileIcons(4);
                         break;
                     case R.id.radio_five:
-                        GestorUser.setFileIcons(5);
+                        gestorUser.setFileIcons(5);
                         break;
                     default:
                         break;
@@ -1187,7 +1299,7 @@ public class UserActivity extends FragmentActivity
 
 //Menus
     /**
-     * PopupMenu per a mostrar les diferents opcions del botó.
+     * PopupMenu per a mostrar les diferents opcions del botó d'options del panell.
      * @param view del component.
      * @author Jordi Gómez Lozano.
      */
@@ -1210,6 +1322,11 @@ public class UserActivity extends FragmentActivity
         popup.show();
     }
 
+    /**
+     * PopupMenu per a mostrar les diferents opcions del botó del traductor.
+     * @param view del component.
+     * @author Jordi Gómez Lozano.
+     */
     public void openTraductorMenuOptions(View view) {
 
         PopupMenu popup = new PopupMenu(this, view);
@@ -1222,11 +1339,6 @@ public class UserActivity extends FragmentActivity
         popup.show();
     }
 
-    /**
-     * Context popup menu per a editar el panell
-     * @param item opció escollida del menu.
-     * @return la opcio escollida.
-     */
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
@@ -1248,14 +1360,14 @@ public class UserActivity extends FragmentActivity
 
             case R.id.context_panell_icon_size:
 
-                rowIconsNumber();
+                rowIconsNumberDialog();
                 return true;
 
             case R.id.context_translator_enabled:
 
                 try {
                     translatorEnabled = true;
-                    speechPlayerAudio.changeSynthesizer("en-GB", GestorUser.getVeu());
+                    speechPlayerAudio.changeSynthesizer("en-GB", gestorUser.getVeu());
                 } catch (GestorException e) {
                     e.printStackTrace();
                 }
@@ -1265,7 +1377,7 @@ public class UserActivity extends FragmentActivity
 
                 try {
                     translatorEnabled = false;
-                    speechPlayerAudio.changeSynthesizer("ca-ES", GestorUser.getVeu());
+                    speechPlayerAudio.changeSynthesizer("ca-ES", gestorUser.getVeu());
                 } catch (GestorException e) {
                     e.printStackTrace();
                 }
@@ -1276,7 +1388,6 @@ public class UserActivity extends FragmentActivity
         }
     }
 
-//Fragment listeners
     @Override
     public void onIconMenuItemPressed(@NonNull MenuItem menuItem, int idIcona) {
         switch (menuItem.getItemId()) {
@@ -1296,6 +1407,7 @@ public class UserActivity extends FragmentActivity
         }
     }
 
+//Fragment listeners
     @Override
     public void onControlButtonPressed(ImageButton imageButton) {
 
@@ -1367,6 +1479,11 @@ public class UserActivity extends FragmentActivity
         }
     }
 
+    /**
+     * Metode per a gestionar el control del so a reproduir.
+     * @param text text que reproduira el reproductor i controlara el MediaPlayer.
+     * @author Jordi Gómez Lozano
+     */
     public void speechControl( String text){
 
         if (translatorEnabled) {
@@ -1410,9 +1527,14 @@ public class UserActivity extends FragmentActivity
         }
     }
 
-
 //Utils
 
+    /**
+     * Metode per a refrescar el ViewPager
+     * @param handler per a controlar el temps en que es refrescara el view.
+     * @param delayMillis temps d'espera per a efectuar l'acció.
+     * @author Jordi Gómez Lozano
+     */
     public void refreshView(Handler handler, int delayMillis){
         handler.postDelayed(new Runnable() {
             @Override
@@ -1423,6 +1545,12 @@ public class UserActivity extends FragmentActivity
         }, delayMillis);
     }
 
+    /**
+     * Metode per a fer la crida al servidor i refrescar la llista de panells.
+     * @param handler per a controlar el temps en que es refrescara el view.
+     * @param delayMillis temps d'espera per a efectuar l'acció.
+     * @author Jordi Gómez Lozano
+     */
     public void refreshListData(Handler handler, int delayMillis){
         handler.postDelayed(new Runnable() {
             @Override
@@ -1452,9 +1580,9 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Classe adaptador del ViewPager
+     * Inner class de l' adaptador del ViewPager
      * @see FragmentStateAdapter
-     * @see ViewPager2
+     * @see ViewPager
      * @author Jordi Gómez Lozano
      */
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
@@ -1482,6 +1610,10 @@ public class UserActivity extends FragmentActivity
             return POSITION_NONE;
         }
 
+        /**
+         * Elimina un panell del view segons el seu id.
+         * @param idPanell del panell a eliminar
+         */
         public void removePanelView(int idPanell) {
 
             Panell panellToDelete = new Panell();
@@ -1495,24 +1627,22 @@ public class UserActivity extends FragmentActivity
             notifyDataSetChanged();
         }
 
+        /**
+         * Refresca el ViewPager
+         */
         public void refreshAdapterView(){
-            panellList = GestorUser.getPanells();
+            panellList = gestorUser.getPanells();
             notifyDataSetChanged();
         }
 
+        /**
+         * Obte el panell segons la posició
+         * @param position del panell a la llista
+         * @return el panell cercat
+         */
         public Panell getCurrentPanell(int position){
             return panellList.get(position);
         }
 
-        public int getPanellFavoritePosition(){
-            for(int i = 0; i<panellList.size(); i++){
-
-                if(panellList.get(i).isFavorit()){
-                    return i;
-                }
-                i++;
-            }
-            return 0;
-        }
     }
 }

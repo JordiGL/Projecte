@@ -42,10 +42,11 @@ public class PanellFragment extends Fragment implements OnIconInteractionListene
     private Panell panell;
     private View rootView;
     private int idIcona;
+    private GestorUser gestorUser;
 
-    public PanellFragment(Panell panell) {
-        this.panell = panell;
-    }
+//    public PanellFragment(Panell panell) {
+//        this.panell = panell;
+//    }
 
     public PanellFragment() {
     }
@@ -70,13 +71,15 @@ public class PanellFragment extends Fragment implements OnIconInteractionListene
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_panell, container, false);
 
+        gestorUser = new GestorUser();
+
         panell = (Panell) getArguments().getSerializable(CHOICE);
 
         mIcones = panell.getIcones();
 
         //RecyclerView i adapter.
         mRecyclerView = rootView.findViewById(R.id.recyclerViewPanell);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), GestorUser.getFileIcons()));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), gestorUser.getFileIcons()));
         mAdapter = new PanellRecyclerAdapter(mIcones, rootView.getContext(), this);
         mRecyclerView.setAdapter(mAdapter);
 

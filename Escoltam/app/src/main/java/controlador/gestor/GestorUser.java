@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Base64;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +46,7 @@ public class GestorUser {
     public GestorUser(List<Panell> mPanells) {
         GestorUser.mPanells = mPanells;
     }
+    public GestorUser() {}
 
     /**
      * Omplim el List de panells amb les dades obtingudes del servidor.
@@ -135,22 +135,22 @@ public class GestorUser {
         }
     }
 
-    public static List<Panell> getPanells() {
+    public List<Panell> getPanells() {
         return mPanells;
     }
 
-    public static void setPanells(List<Panell> mPanells) {
-        GestorUser.mPanells = mPanells;
-    }
+//    public static void setPanells(List<Panell> mPanells) {
+//        GestorUser.mPanells = mPanells;
+//    }
 
-    public static int getNumPanells() {
+    public int getNumPanells() {
         if(GestorUser.mPanells != null){
             return GestorUser.mPanells.size();
         }
         return 0;
     }
 
-    public static Panell newPanell(int position, String panellName){
+    public Panell newPanell(int position, String panellName){
 
         return new Panell(
                 panellName,
@@ -164,17 +164,17 @@ public class GestorUser {
         panellFavoritePosition = position;
     }
 
-    public static int getPanellFavoritePosition(){
+    public int getPanellFavoritePosition(){
         return panellFavoritePosition;
     }
 
-    public static void setUpPanellFavoritePosition(){
+    public void setUpPanellFavoritePosition(){
         boolean control = true;
 
         for(int i = 0; i<mPanells.size(); i++){
             control = false;
             if(mPanells.get(i).isFavorit()){
-                panellFavoritePosition = i+1;
+                panellFavoritePosition = i;
             }
         }
         if(control){
@@ -182,7 +182,7 @@ public class GestorUser {
         }
     }
 
-    public static Panell getPanellFavorite(){
+    public Panell getPanellFavorite(){
 
         for(Panell panell: mPanells){
             if(panell.isFavorit()){
@@ -194,7 +194,7 @@ public class GestorUser {
 
 //Icones
 
-    public static File createFile(Context context, ContentResolver resolver, Uri uri, String name){
+    public File createFile(Context context, ContentResolver resolver, Uri uri, String name){
         FileOutputStream out = null;
         InputStream stream = null;
         File file = null;
@@ -227,7 +227,7 @@ public class GestorUser {
         return file;
     }
 
-    public static File createFileByte(Context context, byte[] imageBytes, String name){
+    public File createFileByte(Context context, byte[] imageBytes, String name){
         FileOutputStream out = null;
         File file = null;
         try {
@@ -253,7 +253,7 @@ public class GestorUser {
         return file;
     }
 
-    public static Icona findIcona(int id){
+    public Icona findIcona(int id){
 
         for(Panell panell: mPanells){
             for(Icona icona: panell.getIcones()){
@@ -295,15 +295,15 @@ public class GestorUser {
         return byteBuffer.toByteArray();
     }
 
-    public static int getFileIcons(){
+    public int getFileIcons(){
         return fileIcons;
     }
 
-    public static void setFileIcons(int number){
+    public void setFileIcons(int number){
         fileIcons = number;
     }
 
-    public static String getVeu(){
+    public String getVeu(){
         return veu;
     }
 
