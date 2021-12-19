@@ -45,6 +45,10 @@ public class GestorUser {
 
     public GestorUser() {}
 
+    public GestorUser(List<Panell> panells) {
+        mPanells = panells;
+    }
+
     public void setPanellFavoritPosition(int position){
         panellFavoritePosition = position;
     }

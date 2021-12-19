@@ -1125,7 +1125,7 @@ public class UserActivity extends FragmentActivity
                 }
 
                 refreshListData(handler, 150);
-                refreshView(handler, 175);
+                refreshView(handler, 250);
 
             }
         });
