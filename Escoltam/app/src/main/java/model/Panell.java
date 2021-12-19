@@ -3,6 +3,12 @@ package model;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Classe Panell
+ * @see Serializable
+ * @see Icona
+ * @author Jordi Gómez Lozano
+ */
 public class Panell implements Serializable {
     private int id;
     private String nom;

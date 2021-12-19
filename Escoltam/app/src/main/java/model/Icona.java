@@ -2,6 +2,11 @@ package model;
 
 import java.io.Serializable;
 
+/**
+ * Classe Icona
+ * @see Serializable
+ * @author Jordi Gómez Lozano
+ */
 public class Icona implements Serializable {
     private int id;
     private String nom;

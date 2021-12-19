@@ -17,14 +17,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,7 +37,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 
@@ -68,8 +65,7 @@ import model.Reproductor;
 import model.Traductor;
 
 /**
- * Activitat del comunicador.
- * @see AppCompatActivity
+ * FragmentActivity del comunicador.
  * @see FragmentActivity
  * @see OnFragmentInteractionPanellListener
  * @see LoaderManager
@@ -145,8 +141,8 @@ public class UserActivity extends FragmentActivity
     private ImageButton optionsButton;
     private ImageButton favoriteButton;
     private Uri uriIconImage = null;
-    private Reproductor speechPlayerAudio;
-    private MediaPlayer mediaPlayer;
+    private Reproductor reproductor;
+
     private Traductor translator;
     private String translatedText;
     private boolean translatorEnabled;
@@ -182,8 +178,8 @@ public class UserActivity extends FragmentActivity
             panellTitle.setText(gestorUser.getPanells().get(0).getNom());
         }
 
-        //Inicialitzem el reproductor i el mediaplayer per a controlar aquest.
-        setUpSpeechPlayerAudio();
+        //Inicialitzem el reproductor per a controlar aquest.
+        setUpReproductor();
 
         translator = new Traductor();
         translatorEnabled = false;
@@ -197,13 +193,12 @@ public class UserActivity extends FragmentActivity
     protected void onStart() {
         super.onStart();
         setUpPanellListeners();
-        //setUpEnglishSpeechPlayer();
-        setUpMediaPlayer();
 
         gestorUser.setUpPanellFavoritePosition();
         panellFavoritPosition = gestorUser.getPanellFavoritePosition();
     }
 
+//SetUps
     /**
      * Mètode d'administració dels fragments
      * @author Jordi Gomez Lozano
@@ -226,60 +221,13 @@ public class UserActivity extends FragmentActivity
      * Mètode inicialitzador i configuració del reproductor de so
      * @author Jordi Gomez Lozano
      */
-    public void setUpSpeechPlayerAudio(){
+    public void setUpReproductor(){
 
         String veu = gestorUser.getVeu();
 
         try {
-            speechPlayerAudio = new Reproductor(veu, this);
+            reproductor = new Reproductor(veu, this);
         } catch (GestorException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Mètode inicialitzador i configuració del controlador d'audio
-     * @author Jordi Gomez Lozano
-     */
-    public void setUpMediaPlayer(){
-
-        try {
-            new File(getFilesDir()+AUDIO_FILE);
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.setVolume(0.8f,0.8f);
-            mediaPlayer.setDataSource(getFilesDir()+AUDIO_FILE);
-            mediaPlayer.prepareAsync();
-
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    try {
-                        new File(getFilesDir()+AUDIO_FILE);
-                        speechPlayerAudio.stop();
-                        mp.stop();
-                        mp.reset();
-                        final Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                try {
-                                    mp.setDataSource(getFilesDir() + AUDIO_FILE);
-                                    mp.prepareAsync();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }, 250);
-
-                    } catch (GestorException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            });
-
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -335,6 +283,7 @@ public class UserActivity extends FragmentActivity
         });
     }
 
+//Estat i control de l'aplicació
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -611,7 +560,7 @@ public class UserActivity extends FragmentActivity
 
 //Loader Callers
     /**
-     * Metode per a fer la crida al LoadManager per afegir un nou panell al servidor
+     * Mètode per a fer la crida al LoadManager per afegir un nou panell al servidor
      * @param panell panell a afegir.
      * @author Jordi Gomez Lozano
      */
@@ -640,7 +589,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer la crida al LoadManager per eliminar un panell al servidor
+     * Mètode per a fer la crida al LoadManager per eliminar un panell al servidor
      * @param idPanell id del panell a eliminar.
      * @author Jordi Gómez Lozano
      */
@@ -669,7 +618,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer la crida al LoadManager per eliminar una icona al servidor
+     * Mètode per a fer la crida al LoadManager per eliminar una icona al servidor
      * @param idIcona id de la icona a eliminar.
      * @author Jordi Gómez Lozano
      */
@@ -696,7 +645,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer la crida al LoadManager per obtenir els panells del servidor
+     * Mètode per a fer la crida al LoadManager per obtenir els panells del servidor
      * @author Jordi Gómez Lozano
      */
     private void callGetPanellsLoader(){
@@ -725,7 +674,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer la crida al LoadManager per obtenir la traducció del text
+     * Mètode per a fer la crida al LoadManager per obtenir la traducció del text
      * @author Jordi Gómez Lozano
      */
     private void callGetTranslatedTextLoader(){
@@ -752,7 +701,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer la crida al LoadManager per editar un panell
+     * Mètode per a fer la crida al LoadManager per editar un panell
      * @param panell panell a editar.
      * @author Jordi Gómez Lozano
      */
@@ -786,7 +735,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer la crida al LoadManager per a afegir una nova icona al servidor
+     * Mètode per a fer la crida al LoadManager per a afegir una nova icona al servidor
      * @param idPanell id del panell de la icona.
      * @param icon icona a guardar.
      * @param fileName nom que ha de tenir l'arxiu.
@@ -819,7 +768,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer la crida al LoadManager per editar una icona
+     * Mètode per a fer la crida al LoadManager per editar una icona
      * @param icon icona a editar.
      * @param fileName nou nom de la icona.
      * @author Jordi Gómez Lozano
@@ -851,7 +800,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a gestionar el nou panell
+     * Mètode per a gestionar el nou panell
      * @param panellName nom del panell a guardar.
      * @author Jordi Gómez Lozano
      */
@@ -876,7 +825,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a gestionar una nova icona
+     * Mètode per a gestionar una nova icona
      * @param file imatge de la icona a guardar.
      * @param iconName nom de la icona a guardar.
      * @author Jordi Gómez Lozano
@@ -902,7 +851,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a gestionar l'edició d'una icona.
+     * Mètode per a gestionar l'edició d'una icona.
      * @param icona panell a editar.
      * @param file panell a editar.
      * @author Jordi Gómez Lozano
@@ -916,7 +865,7 @@ public class UserActivity extends FragmentActivity
 
 //Dialogs
     /**
-     * Metode per a fer i mostrar el dialog per a afegir un nou panell
+     * Mètode per a fer i mostrar el dialog per a afegir un nou panell
      * @author Jordi Gómez Lozano
      */
     private void addNewPanellDialog(){
@@ -950,7 +899,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer i mostrar el dialog per a afegir una nova icona
+     * Mètode per a fer i mostrar el dialog per a afegir una nova icona
      * @author Jordi Gómez Lozano
      */
     private void addNewIconDialog(){
@@ -1009,7 +958,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer i mostrar el dialog per a editar una icona
+     * Mètode per a fer i mostrar el dialog per a editar una icona
      * @param idIcona l'id de la icona a editar.
      * @author Jordi Gómez Lozano
      */
@@ -1092,7 +1041,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer i mostrar el dialog per a eliminar un panell
+     * Mètode per a fer i mostrar el dialog per a eliminar un panell
      * @author Jordi Gómez Lozano
      */
     private void deletePanellDialog(){
@@ -1135,7 +1084,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer i mostrar el dialog per a assignar un panell com a favorit
+     * Mètode per a fer i mostrar el dialog per a assignar un panell com a favorit
      * @author Jordi Gómez Lozano
      */
     private void panellFavoriteDialog(){
@@ -1190,7 +1139,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer i mostrar el dialog per a eliminar una icona
+     * Mètode per a fer i mostrar el dialog per a eliminar una icona
      * @param idIcona l'id de la icona a eliminar.
      * @author Jordi Gómez Lozano
      */
@@ -1216,7 +1165,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer i mostrar el dialog per a editar un panell
+     * Mètode per a fer i mostrar el dialog per a editar un panell
      * @author Jordi Gómez Lozano
      */
     private void editPanellDialog(){
@@ -1258,7 +1207,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer i mostrar el dialog per a canviar el tamany de les icones a partir
+     * Mètode per a fer i mostrar el dialog per a canviar el tamany de les icones a partir
      * del nombre de icones per fila
      * @author Jordi Gómez Lozano
      */
@@ -1377,7 +1326,7 @@ public class UserActivity extends FragmentActivity
 
                 try {
                     translatorEnabled = true;
-                    speechPlayerAudio.changeSynthesizer("en-GB", gestorUser.getVeu());
+                    reproductor.changeSynthesizer("en-GB", gestorUser.getVeu());
                 } catch (GestorException e) {
                     e.printStackTrace();
                 }
@@ -1387,7 +1336,7 @@ public class UserActivity extends FragmentActivity
 
                 try {
                     translatorEnabled = false;
-                    speechPlayerAudio.changeSynthesizer("ca-ES", gestorUser.getVeu());
+                    reproductor.changeSynthesizer("ca-ES", gestorUser.getVeu());
                 } catch (GestorException e) {
                     e.printStackTrace();
                 }
@@ -1433,21 +1382,16 @@ public class UserActivity extends FragmentActivity
 
             case R.id.button_pause:
 
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
+                if (reproductor.getMediaPlayer().isPlaying()) {
+                    reproductor.getMediaPlayer().pause();
                 }
                 break;
 
             case R.id.button_stop:
 
                 try {
-                    speechPlayerAudio.stop();
-                    mediaPlayer.stop();
-                    mediaPlayer.reset();
-                    mediaPlayer.setDataSource(getFilesDir() + AUDIO_FILE);
-                    mediaPlayer.prepareAsync();
-
-                } catch (GestorException | IOException e) {
+                    reproductor.stop();
+                } catch (GestorException e) {
                     e.printStackTrace();
                 }
                 break;
@@ -1489,9 +1433,10 @@ public class UserActivity extends FragmentActivity
         }
     }
 
+//Control del reproductor
     /**
-     * Metode per a gestionar el control del so a reproduir.
-     * @param text text que reproduira el reproductor i controlara el MediaPlayer.
+     * Mètode per a gestionar i controlar l'idioma del so a reproduir.
+     * @param text text a reproduir per veu.
      * @author Jordi Gómez Lozano
      */
     public void speechControl( String text){
@@ -1505,14 +1450,7 @@ public class UserActivity extends FragmentActivity
                 @Override
                 public void run() {
 
-                    try {
-                        speechPlayerAudio.getAudio(translatedText);
-                        mediaPlayer.start();
-
-                    } catch (GestorException e) {
-                        e.printStackTrace();
-                    }
-
+                    reproductor.playInEnglish(translatedText);
                 }
             }, 1000);
 
@@ -1524,14 +1462,8 @@ public class UserActivity extends FragmentActivity
 
                 @Override
                 public void run() {
-                    try {
-                        speechPlayerAudio.getAudio(text);
-                        mediaPlayer.start();
 
-                    } catch (GestorException e) {
-                        e.printStackTrace();
-                    }
-
+                    reproductor.playInCatalan(text);
                 }
             }, 500);
         }
@@ -1540,7 +1472,7 @@ public class UserActivity extends FragmentActivity
 //Utils
 
     /**
-     * Metode per a refrescar el ViewPager
+     * Mètode per a refrescar el ViewPager
      * @param handler per a controlar el temps en que es refrescara el view.
      * @param delayMillis temps d'espera per a efectuar l'acció.
      * @author Jordi Gómez Lozano
@@ -1556,7 +1488,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Metode per a fer la crida al servidor i refrescar la llista de panells.
+     * Mètode per a fer la crida al servidor i refrescar la llista de panells.
      * @param handler per a controlar el temps en que es refrescara el view.
      * @param delayMillis temps d'espera per a efectuar l'acció.
      * @author Jordi Gómez Lozano
@@ -1571,7 +1503,7 @@ public class UserActivity extends FragmentActivity
     }
 
     /**
-     * Mostra informació per pantalla.
+     * Mètode que mostra informació per pantalla.
      * @param message missatge que es mostrara per pantalla.
      * @author Jordi Gómez Lozano.
      */
@@ -1621,8 +1553,9 @@ public class UserActivity extends FragmentActivity
         }
 
         /**
-         * Elimina un panell del view segons el seu id.
+         * Mètode que elimina un panell del view segons el seu id.
          * @param idPanell del panell a eliminar
+         * @author Jordi Gómez Lozano
          */
         public void removePanelView(int idPanell) {
 
@@ -1638,7 +1571,8 @@ public class UserActivity extends FragmentActivity
         }
 
         /**
-         * Refresca el ViewPager
+         * Mètode que refresca el ViewPager
+         * @author Jordi Gómez Lozano
          */
         public void refreshAdapterView(){
             panellList = gestorUser.getPanells();
@@ -1646,9 +1580,10 @@ public class UserActivity extends FragmentActivity
         }
 
         /**
-         * Obte el panell segons la posició
+         * Mètode que obte el panell segons la posició
          * @param position del panell a la llista
          * @return el panell cercat
+         * @author Jordi Gómez Lozano
          */
         public Panell getCurrentPanell(int position){
             return panellList.get(position);
