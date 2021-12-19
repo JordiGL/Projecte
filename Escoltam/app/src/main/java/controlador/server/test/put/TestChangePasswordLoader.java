@@ -1,7 +1,6 @@
-package controlador.server.put;
+package controlador.server.test.put;
 
 import android.content.Context;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,12 +13,12 @@ import controlador.server.NetworkUtils;
  * @see AsyncTaskLoader
  * @author Jordi Gómez Lozano.
  */
-public class ChangePasswordLoader extends AsyncTaskLoader<Bundle> {
+public class TestChangePasswordLoader extends AsyncTaskLoader<Integer> {
     private String password;
     private String email;
     private String token;
 
-    public ChangePasswordLoader(@NonNull Context context, String password, String email, String token) {
+    public TestChangePasswordLoader(@NonNull Context context, String password, String email, String token) {
         super(context);
         this.password = password;
         this.email = email;
@@ -33,8 +32,8 @@ public class ChangePasswordLoader extends AsyncTaskLoader<Bundle> {
      */
     @Nullable
     @Override
-    public Bundle loadInBackground() {
-        return NetworkUtils.sendPassword(password, email, token);
+    public Integer loadInBackground() {
+        return NetworkUtils.testSendPassword(password, email, token);
     }
 
     /**

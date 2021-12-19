@@ -1,4 +1,4 @@
-package controlador.server.put;
+package controlador.server.delete;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,32 +9,22 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
-/**
- * Classe per a crear el fil per a connectar amb el servidor.
- * @see AsyncTaskLoader
- * @author Jordi Gómez Lozano.
- */
-public class ChangePasswordLoader extends AsyncTaskLoader<Bundle> {
-    private String password;
-    private String email;
+public class DeleteAccountLoader extends AsyncTaskLoader<Bundle> {
+    private int idIcona;
     private String token;
+    private String username;
 
-    public ChangePasswordLoader(@NonNull Context context, String password, String email, String token) {
+    public DeleteAccountLoader(@NonNull Context context, String username, String token) {
         super(context);
-        this.password = password;
-        this.email = email;
+        this.username = username;
         this.token = token;
     }
 
-    /**
-     * Designem l'operació a fer.
-     * @return l'int amb el codi de resposta del servidor.
-     * @author Jordi Gómez Lozano.
-     */
+
     @Nullable
     @Override
     public Bundle loadInBackground() {
-        return NetworkUtils.sendPassword(password, email, token);
+        return NetworkUtils.deleteAccount(username, token);
     }
 
     /**

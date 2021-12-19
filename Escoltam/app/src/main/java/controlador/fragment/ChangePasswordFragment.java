@@ -56,6 +56,10 @@ public class ChangePasswordFragment extends Fragment {
                         previousPasswordEntered,
                         newPassword,
                         conformNewPassword);
+
+                previousPasswordEntered.getText().clear();
+                newPassword.getText().clear();
+                conformNewPassword.getText().clear();
             }
         });
 

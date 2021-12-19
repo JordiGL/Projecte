@@ -25,6 +25,8 @@ import controlador.server.test.post.TestLoginLoader;
 import controlador.server.test.post.TestSignUpLoader;
 import controlador.server.put.ChangePasswordLoader;
 import controlador.server.put.ChangeVoiceLoader;
+import controlador.server.test.put.TestChangePasswordLoader;
+import controlador.server.test.put.TestChangeVoiceLoader;
 import jordigomez.ioc.cat.escoltam.R;
 import model.Usuari;
 
@@ -301,14 +303,14 @@ public class RequestTestActivity extends AppCompatActivity implements LoaderMana
                     email = args.getString(BUNDLE_EMAIL_KEY);
                     novaClau = args.getString(BUNDLE_PASSWORD_KEY);
                     novaVeu = args.getString(BUNDLE_VOICE_KEY);
-                    return new ChangeVoiceLoader(this, novaClau , novaVeu, email, token);
+                    return new TestChangeVoiceLoader(this, novaClau , novaVeu, email, token);
 
                 case OPTION_CANVIAR_CLAU:
                     token = args.getString(BUNDLE_TOKEN_KEY);
                     email = args.getString(BUNDLE_EMAIL_KEY);
                     novaClau = args.getString(BUNDLE_PASSWORD_KEY);
 
-                    return new ChangePasswordLoader(this, novaClau ,email, token);
+                    return new TestChangePasswordLoader(this, novaClau ,email, token);
 
                 default:
                     break;

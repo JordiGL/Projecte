@@ -1,6 +1,7 @@
 package controlador.server.put;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,7 +14,7 @@ import controlador.server.NetworkUtils;
  * @see AsyncTaskLoader
  * @author Jordi Gómez Lozano.
  */
-public class ChangeVoiceLoader extends AsyncTaskLoader<Integer> {
+public class ChangeVoiceLoader extends AsyncTaskLoader<Bundle> {
     private String password;
     private String email;
     private String token;
@@ -34,7 +35,7 @@ public class ChangeVoiceLoader extends AsyncTaskLoader<Integer> {
      */
     @Nullable
     @Override
-    public Integer loadInBackground() {
+    public Bundle loadInBackground() {
         return NetworkUtils.sendVoice(password, voice, email, token);
     }
 

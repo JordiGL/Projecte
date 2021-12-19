@@ -151,5 +151,6 @@
     <string name="panell_favorite_button_content_escription">Panell favorit boto</string>
     <string name="viewpager_content_escription">ViewPager</string>
     <string name="context_panell_favorite_text">Fer favorit</string>
+    <string name="text_eliminar_compte_settings">Eliminar compte</string>
 
 </resources>

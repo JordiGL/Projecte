@@ -35,6 +35,8 @@ public class NetworkUtils extends Connexio{
     private static final String BASIC_GET_URL = "http://10.0.2.2:8080/api/usuaris";
     private static final String PANELLS_URL = "http://10.0.2.2:8080/app/panells/";
     private static final String PANELLS_GET_DATA_URL = "http://10.0.2.2:8080/api/usuaris/profile/";
+    private static final String DELETE_ACCOUNT_URL = "http://10.0.2.2:8080/api/usuaris/profile/";
+    private static final String CHANGE_PASSWORD_ACCOUNT_URL = "http://10.0.2.2:8080/api/usuaris/profile/";
     private static final String URL_TOKEN = "http://10.0.2.2:8080/oauth/token";
     private static final String URL_NEW_ICONA = "http://10.0.2.2:8080/app/icones/icona/panell/";
     private static final String URL_BASIC_ICONA = "http://10.0.2.2:8080/app/icones/icona/";
@@ -64,6 +66,9 @@ public class NetworkUtils extends Connexio{
     private static final String PANELL_PREDEFINIT_DELETE_URL = "http://10.0.2.2:8080/app/panellPredefinit/";
     private static final String TRANSLATOR_DATA_BUNDLE_KEY = "translated";
     private static final String TRANSLATE_TEXT_OPTION = "translate_text";
+    private static final String DELETE_ACCOUNT_OPTION = "delete_account";
+    private static final String CHANGE_VOICE_OPTION = "change_voice";
+    private static final String CHANGE_PASSWORD_OPTION = "change_password";
 
     /**
      * Post request al servidor per obtenir el token.
@@ -208,9 +213,10 @@ public class NetworkUtils extends Connexio{
      * @return un int amb el codi de resposta.
      * @author Jordi Gómez Lozano.
      */
-    public static int sendPassword(String password, String email, String token){
+    public static Bundle sendPassword(String password, String email, String token){
         HttpURLConnection connexio = null;
         int responseCode = 0;
+        Bundle queryBundle = null;
 
         try{
             String body = "{\"password\": \""+password+"\"}";
@@ -224,6 +230,13 @@ public class NetworkUtils extends Connexio{
 
             responseCode = connexio.getResponseCode();
 
+            queryBundle = new Bundle();
+            queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, responseCode);
+
+            if(responseCode == HttpURLConnection.HTTP_CREATED) {
+                queryBundle.putString(OPTION_BUNDLE_KEY, CHANGE_PASSWORD_OPTION);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -232,7 +245,7 @@ public class NetworkUtils extends Connexio{
             }
         }
 
-        return responseCode;
+        return queryBundle;
     }
 
     /**
@@ -244,21 +257,29 @@ public class NetworkUtils extends Connexio{
      * @return un int amb el codi de resposta.
      * @author Jordi Gómez Lozano.
      */
-    public static int sendVoice(String password, String voice, String email, String token){
+    public static Bundle sendVoice(String password, String voice, String email, String token){
         HttpURLConnection connexio = null;
         int responseCode = 0;
+        Bundle queryBundle = null;
 
         try{
             String body = "{\"password\": \""+password+"\",\"voice\": \""+voice+"\"}";
             byte[] postData = body.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
-            connexio = putRequest(postDataLength, METODE_PETICIO_PUT, BASIC_GET_URL+"/profile/"+email, APPLICATION_JSON, token);
+            connexio = putRequest(postDataLength, METODE_PETICIO_PUT, CHANGE_PASSWORD_ACCOUNT_URL+email, APPLICATION_JSON, token);
 
             DataOutputStream wr = new DataOutputStream(connexio.getOutputStream());
 
             wr.write(postData);
 
             responseCode = connexio.getResponseCode();
+
+            queryBundle = new Bundle();
+            queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, responseCode);
+
+            if(responseCode == HttpURLConnection.HTTP_CREATED) {
+                queryBundle.putString(OPTION_BUNDLE_KEY, CHANGE_VOICE_OPTION);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -268,7 +289,7 @@ public class NetworkUtils extends Connexio{
             }
         }
 
-        return responseCode;
+        return queryBundle;
     }
 
     /**
@@ -321,6 +342,72 @@ public class NetworkUtils extends Connexio{
         }
 
         return usersJSONString;
+    }
+
+    /**
+     * Delete request per a eliminar un compte.
+     * @param username part de la url del request.
+     * @param token token de l'usuari.
+     * @return dades obtingudes del servidor.
+     * @author Jordi Gómez Lozano.
+     */
+    public static Bundle deleteAccount(String username, String token){
+
+        HttpURLConnection connexio = null;
+        BufferedReader reader = null;
+        String infoJSONString = null;
+        Bundle queryBundle = null;
+        int responseCode;
+
+        try{
+
+            connexio = deleteRequest(token, DELETE_ACCOUNT_URL
+                    +username);
+
+            responseCode = connexio.getResponseCode();
+
+            queryBundle = new Bundle();
+            queryBundle.putInt(RESPONSE_CODE_BUNDLE_KEY, responseCode);
+
+            if(responseCode == HttpURLConnection.HTTP_OK) {
+
+                InputStream inputStream = connexio.getInputStream();
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                // StringBuilder on hi guardarem la resposta.
+                StringBuilder builder = new StringBuilder();
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                    builder.append("\n");
+                }
+
+                if (builder.length() == 0) {
+                    return null;
+                }
+
+                infoJSONString = builder.toString();
+                queryBundle.putString(DELETE_PANELL_INFO_BUNDLE_KEY, infoJSONString);
+                queryBundle.putString(OPTION_BUNDLE_KEY, DELETE_ACCOUNT_OPTION);
+            }
+
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally{
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return queryBundle;
     }
 
 //PANELLS
@@ -761,6 +848,79 @@ public class NetworkUtils extends Connexio{
     }
 
     //Métodes creats només per a fer tests
+
+    /**
+     * Put request per a enviar la nova veu al servidor.
+     * @param password clau de l'usuari.
+     * @param voice nova veu de l'usuari.
+     * @param email email de l'usuari.
+     * @param token token de l'usuari.
+     * @return un int amb el codi de resposta.
+     * @author Jordi Gómez Lozano.
+     */
+    public static int testSendVoice(String password, String voice, String email, String token){
+        HttpURLConnection connexio = null;
+        int responseCode = 0;
+
+        try{
+            String body = "{\"password\": \""+password+"\",\"voice\": \""+voice+"\"}";
+            byte[] postData = body.getBytes(StandardCharsets.UTF_8);
+            int postDataLength = postData.length;
+            connexio = putRequest(postDataLength, METODE_PETICIO_PUT, BASIC_GET_URL+"/profile/"+email, APPLICATION_JSON, token);
+
+            DataOutputStream wr = new DataOutputStream(connexio.getOutputStream());
+
+            wr.write(postData);
+
+
+            responseCode = connexio.getResponseCode();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+        }
+
+        return responseCode;
+    }
+
+    /**
+     * Put request al servidor per a fer el canvi de clau.
+     * @param password nova clau.
+     * @param email email de l'usuari.
+     * @param token token de l'usuari.
+     * @return un int amb el codi de resposta.
+     * @author Jordi Gómez Lozano.
+     */
+    public static int testSendPassword(String password, String email, String token){
+        HttpURLConnection connexio = null;
+        int responseCode = 0;
+
+        try{
+            String body = "{\"password\": \""+password+"\"}";
+            byte[] postData = body.getBytes(StandardCharsets.UTF_8);
+            int postDataLength = postData.length;
+            connexio = putRequest(postDataLength, METODE_PETICIO_PUT, CHANGE_PASS_URL+email, APPLICATION_JSON, token);
+
+            DataOutputStream wr = new DataOutputStream(connexio.getOutputStream());
+
+            wr.write(postData);
+
+            responseCode = connexio.getResponseCode();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+        }
+
+        return responseCode;
+    }
 
     /**
      * Post request al servidor per obtenir el token.

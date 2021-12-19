@@ -110,6 +110,7 @@ public class GestorUser {
                         );
                     }
 
+                    Collections.sort(icones, new IconaPositionComparator());
                     //Afegim el panell a la llista
                     mPanells.add(new Panell(
                             jsonArrayPanells.getJSONObject(i).getString(PANELL_NOM_JSON),
@@ -153,7 +154,7 @@ public class GestorUser {
                         iconesJsonList.getJSONObject(j).getInt(ICONA_ID_JSON))
                 );
             }
-
+            Collections.sort(icones, new IconaPositionComparator());
             //Afegim el panell predefinit a la llista, utilitzo un constructor amb favorit=false.
             mPanells.add(new Panell(
                     predefinedJsonList.getJSONObject(0).getString(PANELL_NOM_JSON),
@@ -374,6 +375,18 @@ public class GestorUser {
 
         @Override
         public int compare(Panell one, Panell two) {
+            return one.getPosicio() - two.getPosicio();
+        }
+    }
+
+    /**
+     * Inner class per a ordenar la llista d'icones
+     * @author Jordi Gomez Lozano
+     */
+    public static class IconaPositionComparator implements Comparator<Icona> {
+
+        @Override
+        public int compare(Icona one, Icona two) {
             return one.getPosicio() - two.getPosicio();
         }
     }

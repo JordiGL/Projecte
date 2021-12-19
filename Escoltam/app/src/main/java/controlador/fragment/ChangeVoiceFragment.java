@@ -70,12 +70,14 @@ public class ChangeVoiceFragment extends Fragment {
 
 
         btnChangeVoice.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 mListener.onButtonPressed(
                         passwordEntered,
                         voiceUsuari,
                         radioGroupLayout);
+                passwordEntered.getText().clear();
             }
         });
 

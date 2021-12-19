@@ -2,6 +2,7 @@ package controlador.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -9,10 +10,14 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -29,20 +34,32 @@ import controlador.fragment.ChangeVoiceFragment;
 import controlador.gestor.GestorSettings;
 import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.OnFragmentInteractionSettingsListener;
+import controlador.server.delete.DeleteAccountLoader;
+import controlador.server.delete.DeletePanellLoader;
+import controlador.server.get.PanellsListLoader;
+import controlador.server.post.NewPanellLoader;
 import controlador.server.put.ChangePasswordLoader;
 import controlador.server.put.ChangeVoiceLoader;
 import io.github.muddz.styleabletoast.StyleableToast;
 import jordigomez.ioc.cat.escoltam.R;
 
-public class UserSettingsActivity extends AppCompatActivity implements OnFragmentInteractionSettingsListener, LoaderManager.LoaderCallbacks<Integer>{
+public class UserSettingsActivity extends AppCompatActivity implements OnFragmentInteractionSettingsListener, LoaderManager.LoaderCallbacks<Bundle>{
     private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
+    private static final String ACCOUNT_DELETED_TEXT = "El compte s'ha eliminat";
     private static final String BUNDLE_TOKEN_KEY = "token";
     private static final String BUNDLE_EMAIL_KEY = "email";
     private static final String BUNDLE_PASSWORD_KEY = "password";
-    private static final String BUNDLE_VOICE_KEY = "voice";
+    private static final String BUNDLE_VOICE_KEY = "change_voice";
     private static final String MODIFICACIO_OK = "Modificació efectuada correctament";
     private static final String MODIFICACIO_ERROR = "Error, no s'ha pogut dur a terme la modificació";
     private static final String INTENT_VALUE_ROLE_USER = "ROLE_USER";
+    private static final String DELETE_ACCOUNT_OPTION = "delete_account";
+    private static final String CHANGE_VOICE_OPTION = "change_voice";
+    private static final String CHANGE_PASSWORD_OPTION = "change_password";
+    private static final String RESPONSE_CODE_BUNDLE_KEY = "responseCode";
+    private static final String OPTION_BUNDLE_KEY = "opcio";
+    private static final String DIALOG_TITLE_DELETE = "Atenció";
+    private static final String DIALOG_MESSAGE_DELETE = "Segur que vols eliminar el compte?";
     private ChangePasswordFragment changePasswordFragment;
     private ChangeVoiceFragment changeVoiceFragment;
     private FragmentTransaction fragmentTransaction;
@@ -59,6 +76,7 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
 
         Button btnChangePassword = findViewById(R.id.btnChangePasswordUser);
         Button btnChangeVoice = findViewById(R.id.btnChangeVoiceUser);
+        Button btnDeleteAccount = findViewById(R.id.btnDeleteAccount);
 
         //Fragments
         changePasswordFragment = ChangePasswordFragment.newInstance();
@@ -116,6 +134,35 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
             }
         });
 
+        btnDeleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAccountDialog();
+            }
+        });
+
+    }
+
+    /**
+     * Mètode per a fer i mostrar el dialog per a eliminar el compte
+     * @author Jordi Gómez Lozano
+     */
+    private void deleteAccountDialog(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(DIALOG_TITLE_DELETE);
+        alert.setMessage(DIALOG_MESSAGE_DELETE);
+
+        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                deleteAccountCaller();
+            }
+        });
+        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        alert.show();
     }
 
     @Override
@@ -264,6 +311,29 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
             queryBundle.putString(BUNDLE_TOKEN_KEY, token);
             queryBundle.putString(BUNDLE_EMAIL_KEY, email);
             queryBundle.putString(BUNDLE_PASSWORD_KEY, novaClau);
+            queryBundle.putString(OPTION_BUNDLE_KEY, CHANGE_PASSWORD_OPTION);
+            getSupportLoaderManager().restartLoader(0, queryBundle, this);
+        }
+    }
+
+    private void deleteAccountCaller(){
+        GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(UserSettingsActivity.this);
+        String email = gestorSharedPreferences.getEmail();
+        String token = gestorSharedPreferences.getToken();
+
+        //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = null;
+        if (connMgr != null) {
+            networkInfo = connMgr.getActiveNetworkInfo();
+        }
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Bundle queryBundle = new Bundle();
+            queryBundle.putString(BUNDLE_TOKEN_KEY, token);
+            queryBundle.putString(BUNDLE_EMAIL_KEY, email);
+            queryBundle.putString(OPTION_BUNDLE_KEY, DELETE_ACCOUNT_OPTION);
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
         }
     }
@@ -294,46 +364,85 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
             queryBundle.putString(BUNDLE_EMAIL_KEY, email);
             queryBundle.putString(BUNDLE_PASSWORD_KEY, passwordActual);
             queryBundle.putString(BUNDLE_VOICE_KEY, novaVeu);
+            queryBundle.putString(OPTION_BUNDLE_KEY, BUNDLE_VOICE_KEY);
             getSupportLoaderManager().restartLoader(0, queryBundle, this);
         }
     }
 
     @NonNull
     @Override
-    public Loader<Integer> onCreateLoader(int id, @Nullable Bundle args) {
+    public Loader<Bundle> onCreateLoader(int id, @Nullable Bundle args) {
         String token ="";
         String email ="";
         String novaClau ="";
         String novaVeu ="";
+        String option = "";
 
         if (args != null) {
 
-            if(args.size() == 4){
+            option = args.getString(OPTION_BUNDLE_KEY);
 
-                token = args.getString(BUNDLE_TOKEN_KEY);
-                email = args.getString(BUNDLE_EMAIL_KEY);
-                novaClau = args.getString(BUNDLE_PASSWORD_KEY);
-                novaVeu = args.getString(BUNDLE_VOICE_KEY);
+            switch (option) {
+                case CHANGE_PASSWORD_OPTION:
 
-                return new ChangeVoiceLoader(this, novaClau , novaVeu, email, token);
+                    token = args.getString(BUNDLE_TOKEN_KEY);
+                    email = args.getString(BUNDLE_EMAIL_KEY);
+                    novaClau = args.getString(BUNDLE_PASSWORD_KEY);
 
-            }else{
-                token = args.getString(BUNDLE_TOKEN_KEY);
-                email = args.getString(BUNDLE_EMAIL_KEY);
-                novaClau = args.getString(BUNDLE_PASSWORD_KEY);
+                    return new ChangePasswordLoader(this, novaClau, email, token);
 
-                return new ChangePasswordLoader(this, novaClau ,email, token);
+                case CHANGE_VOICE_OPTION:
+
+                    token = args.getString(BUNDLE_TOKEN_KEY);
+                    email = args.getString(BUNDLE_EMAIL_KEY);
+                    novaClau = args.getString(BUNDLE_PASSWORD_KEY);
+                    novaVeu = args.getString(BUNDLE_VOICE_KEY);
+
+                    return new ChangeVoiceLoader(this, novaClau, novaVeu, email, token);
+
+                case DELETE_ACCOUNT_OPTION:
+
+                    token = args.getString(BUNDLE_TOKEN_KEY);
+                    email = args.getString(BUNDLE_EMAIL_KEY);
+                    return new DeleteAccountLoader(this, email, token);
             }
-
         }
+//            if(args.size() == 4){
+//
+//                token = args.getString(BUNDLE_TOKEN_KEY);
+//                email = args.getString(BUNDLE_EMAIL_KEY);
+//                novaClau = args.getString(BUNDLE_PASSWORD_KEY);
+//                novaVeu = args.getString(BUNDLE_VOICE_KEY);
+//
+//                return new ChangeVoiceLoader(this, novaClau , novaVeu, email, token);
+//
+//            }else{
+//                token = args.getString(BUNDLE_TOKEN_KEY);
+//                email = args.getString(BUNDLE_EMAIL_KEY);
+//                novaClau = args.getString(BUNDLE_PASSWORD_KEY);
+//
+//                return new ChangePasswordLoader(this, novaClau ,email, token);
+//            }
+
+
 
         return new ChangePasswordLoader(this, novaClau ,email, token);
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<Integer> loader, Integer data) {
+    public void onLoadFinished(@NonNull Loader<Bundle> loader, Bundle data) {
+        int responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
 
-        if (data == HttpURLConnection.HTTP_CREATED) {
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+
+            Toast.makeText(UserSettingsActivity.this, ACCOUNT_DELETED_TEXT, Toast.LENGTH_SHORT).show();
+            GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(UserSettingsActivity.this);
+            gestorSharedPreferences.deleteData();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+
+        }if (responseCode == HttpURLConnection.HTTP_CREATED) {
 
             if(passwordChanged != null){
                 GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(UserSettingsActivity.this);
@@ -347,8 +456,7 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<Integer> loader) {}
-
+    public void onLoaderReset(@NonNull Loader<Bundle> loader) {}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -362,6 +470,10 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
         return false;
     }
 
+    /**
+     * Mètode per amagar el teclat
+     * @author Jordi Gómez Lozano
+     */
     private void hideKeyboard(){
         //Amagar el teclat un cop l'usuari pitja el botó
         try {
