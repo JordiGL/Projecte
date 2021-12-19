@@ -52,7 +52,7 @@ public class GestorUserTest {
     }
 
     /**
-     * Comprovació del mètode per a fer la cerca i assignar a la variable
+     * Comprovació del mètode per a fer la cerca del panell favorit i assignar a la variable
      * la posicio del panell favorit.
      * @author Jordi Gómez Lozano
      */
