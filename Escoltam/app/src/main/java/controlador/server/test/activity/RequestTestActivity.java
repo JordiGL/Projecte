@@ -19,15 +19,35 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import controlador.activity.LoginActivity;
+import controlador.server.delete.DeleteAccountLoader;
+import controlador.server.delete.DeleteIconaLoader;
+import controlador.server.delete.DeletePanellLoader;
+import controlador.server.get.PanellsListLoader;
+import controlador.server.post.NewIconLoader;
+import controlador.server.post.NewPanellLoader;
+import controlador.server.put.EditIconaLoader;
+import controlador.server.put.EditPanellLoader;
+import controlador.server.test.delete.TestDeleteAccountLoader;
+import controlador.server.test.delete.TestDeleteIconaLoader;
+import controlador.server.test.delete.TestDeletePanellLoader;
+import controlador.server.test.get.TestPanellsListLoader;
 import controlador.server.test.get.TestUsuarisListLoader;
 import controlador.server.test.post.TestLoginLoader;
+import controlador.server.test.post.TestNewIconLoader;
+import controlador.server.test.post.TestNewPanellLoader;
 import controlador.server.test.post.TestSignUpLoader;
 import controlador.server.put.ChangePasswordLoader;
 import controlador.server.put.ChangeVoiceLoader;
 import controlador.server.test.put.TestChangePasswordLoader;
 import controlador.server.test.put.TestChangeVoiceLoader;
+import controlador.server.test.put.TestEditIconaLoader;
+import controlador.server.test.put.TestEditPanellLoader;
 import jordigomez.ioc.cat.escoltam.R;
+import model.Icona;
+import model.Panell;
 import model.Usuari;
 
 public class RequestTestActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Integer> {
@@ -54,13 +74,36 @@ public class RequestTestActivity extends AppCompatActivity implements LoaderMana
     private static final String HINT_NOVA_VEU = "Nova veu";
     private static final String HINT_VEU = "Veu";
     private static final String HINT_ROL = "Rol";
+
+    private static final String DELETE_ACCOUNT_OPTION = "delete_account";
+    private static final String EMAIL_BUNDLE_KEY = "email";
+    private static final String PANELL_BUNDLE_KEY = "panell";
+    private static final String CREATE_NEW_PANELL_OPTION = "add";
+    private static final String CREATE_ICONA_OPTION = "create_icona";
+    private static final String ID_PANELL_BUNDLE_KEY = "id_panell";
+    private static final String EDIT_PANELL_OPTION = "edit";
+    private static final String PANELL_NAME_BUNDLE_KEY = "panell_name";
+    private static final String PANELL_POSITION_BUNDLE_KEY = "panell_position";
+    private static final String PANELL_FAVORITE_BUNDLE_KEY = "panell_favorite";
+    private static final String PANELL_ID_BUNDLE_KEY = "panell_id";
+    private static final String ICON_NAME_BUNDLE_KEY = "icon_name";
+    private static final String ICON_POSITION_BUNDLE_KEY = "icon_position";
+    private static final String FILE_NAME_BUNDLE_KEY = "file_name";
+    private static final String EDIT_ICONA_OPTION = "edit_icona";
+    private static final String ICON_ID_BUNDLE_KEY = "icon_id";
+    private static final String DELETE_PANELL_OPTION = "delete_panell";
+    private static final String DELETE_ICONA_OPTION = "delete_icona";
+    private static final String LIST_PANELLS_OPTION = "list";
+
+
     private TextView textResponse;
     private EditText info;
     private EditText emailInput;
     //Variables de configuració del servidor.
-    private static final String TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Mzc3ODI3NTYsInVzZXJfbmFtZSI6IkpvR29tTG96QGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iXSwianRpIjoiNDk5YzQ1NjAtNDBmZS00ODA2LWIzYjgtYjc0NjdlZjQ4MGFkIiwiY2xpZW50X2lkIjoiYW5kcm9pZGFwcCIsInNjb3BlIjpbInJlYWQiLCJ3cml0ZSJdfQ.C6vipMF3WdMPDsXkk--dUbU2Yy9p10bA70jMFBGekGf6Zvh9RtYIxYG7PkF7nk6FTsBhuYwuZ6U1odR54vyhGzvJTY-O8dIoJkjWJgHCF5ku0RLtFTK9XgYpeAbOT7rBDMXuNOmIYrsgRA71pqebNyUZlAfj_Hpnbm4Z7y9Kwp_6nK_tex7sNKWW7jQHVzBnDn_DyPx5qSGZ5LsA3IITSEnj1dHt7zdISvKVK7TQWHi78BDYbWyfswy8JBZR9wpKkT48cy-U8j1iCFI_gpdmWIuE72epYXI9PVDArWrc2BohrlpgOLfAE1y1whHgJoTYnccM_5gR-IOP6yNKtO3aow";
+    private static final String TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Mzk4OTU1OTYsInVzZXJfbmFtZSI6ImpvZ29tbG96QGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iXSwianRpIjoiMmZmNzhhZDAtMjIzYS00ZmMwLTgxNzQtMDhmYjYxM2E2YTQ3IiwiY2xpZW50X2lkIjoiYW5kcm9pZGFwcCIsInNjb3BlIjpbInJlYWQiLCJ3cml0ZSJdfQ.peCcGD9si7wQBFPXl-_rkhNIOSRENGvKQSk183FiqrrfFlXaOTxSpWm-o5yRn_nFrgX9s2s16wULIX9bYYdlNiCpsYJlpn0lklTlLDGKgvKJZuMdC9bHfuDtGg9VceOedxWENkUujvwv5bzejk2XN6C1SYoZcUUDFkefDsa8fSppGg_1MWAMYpTib7W9_hSBynJNtJD_KeChQ8xh2j-664qdgG1nKiKOeiflSLCVgeCNiM3Q1hFfes4-Jf68Ol9L3QjjEazCId5-NqxHfp9IQ1BFP7xKmcldboVVUnstRaBpr-V_vdUPoPolVENEm0qMhI-Wmr3e-Kz39hYZfO9MvA";
     private static final String CLAU = "12345";
-    private static final String EMAIL = "JoGomLoz@gmail.com";
+    private static final String EMAIL = "jogomloz@gmail.com";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +114,16 @@ public class RequestTestActivity extends AppCompatActivity implements LoaderMana
         emailInput = findViewById(R.id.emailTest);
         textResponse = findViewById(R.id.textRequestResponse);
         TextView returnToLogin = findViewById(R.id.textReturnLogin);
-        Button buttonRequest = findViewById(R.id.buttonRequestTest);
         Button buttonClear = findViewById(R.id.buttonClearTest);
+        Button buttonRequest = findViewById(R.id.buttonRequestTest);
+        Button btnAfegirPanell = findViewById(R.id.btnAfegirPanellTest);
+        Button btnEditarPanell = findViewById(R.id.btnEditarPanellTest);
+        Button btnEliminarPanell = findViewById(R.id.btnEliminarPanellTest);
+        Button btnAfegirIcona = findViewById(R.id.btnAfegirIconaTest);
+        Button btnEditarIcona = findViewById(R.id.btnEditarIconaTest);
+        Button btnEliminarIcona = findViewById(R.id.btnEliminarIconaTest);
+        Button btnEliminarCompte = findViewById(R.id.btnDeleteAccountTest);
+        Button btnObtenirPanells = findViewById(R.id.btnObtenirPanellsTest);
 
         //Objecte selector.
         Spinner spinner = findViewById(R.id.spinnerRequest);
@@ -94,6 +145,114 @@ public class RequestTestActivity extends AppCompatActivity implements LoaderMana
                 obtenirInformacio(spinnerSelection);
             }
         });
+
+        Icona icona = new Icona("Ok", 7);
+        Icona editIcona = new Icona("Adeu", 3, null, 14);
+
+        Panell panell = new Panell("Animals", 4, false);
+        Panell editPanell = new Panell("Vegetacio", 4, false, new ArrayList<>(), 4);
+
+        btnAfegirPanell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString(SERVER_OPTION, CREATE_NEW_PANELL_OPTION);
+                queryBundle.putString(EMAIL_BUNDLE_KEY, EMAIL);
+                queryBundle.putString(PANELL_BUNDLE_KEY, panell.toString());
+                queryBundle.putString(BUNDLE_TOKEN_KEY, TOKEN);
+                getSupportLoaderManager().restartLoader(0, queryBundle, RequestTestActivity.this);
+            }
+        });
+
+        btnEditarPanell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString(SERVER_OPTION, EDIT_PANELL_OPTION);
+                queryBundle.putString(PANELL_NAME_BUNDLE_KEY, editPanell.getNom());
+                queryBundle.putInt(PANELL_POSITION_BUNDLE_KEY, editPanell.getPosicio());
+                queryBundle.putBoolean(PANELL_FAVORITE_BUNDLE_KEY, editPanell.isFavorit());
+                queryBundle.putInt(PANELL_ID_BUNDLE_KEY, editPanell.getId());
+                queryBundle.putString(EMAIL_BUNDLE_KEY, EMAIL);
+                queryBundle.putString(BUNDLE_TOKEN_KEY, TOKEN);
+                getSupportLoaderManager().restartLoader(0, queryBundle, RequestTestActivity.this);
+            }
+        });
+
+        btnEliminarPanell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString(SERVER_OPTION, DELETE_PANELL_OPTION);
+                queryBundle.putInt(ID_PANELL_BUNDLE_KEY, editPanell.getId());
+                queryBundle.putString(BUNDLE_TOKEN_KEY, TOKEN);
+                queryBundle.putString(EMAIL_BUNDLE_KEY, EMAIL);
+                getSupportLoaderManager().restartLoader(0, queryBundle, RequestTestActivity.this);
+            }
+        });
+
+        btnAfegirIcona.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString(SERVER_OPTION, CREATE_ICONA_OPTION);
+                queryBundle.putInt(PANELL_ID_BUNDLE_KEY, editPanell.getId());
+                queryBundle.putString(ICON_NAME_BUNDLE_KEY, icona.getNom());
+                queryBundle.putInt(ICON_POSITION_BUNDLE_KEY, icona.getPosicio());
+                queryBundle.putString(FILE_NAME_BUNDLE_KEY, "");
+                queryBundle.putString(BUNDLE_TOKEN_KEY, TOKEN);
+                getSupportLoaderManager().restartLoader(0, queryBundle, RequestTestActivity.this);
+            }
+        });
+
+        btnEditarIcona.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString(SERVER_OPTION, EDIT_ICONA_OPTION);
+                queryBundle.putInt(ICON_ID_BUNDLE_KEY, editIcona.getId());
+                queryBundle.putString(ICON_NAME_BUNDLE_KEY, editIcona.getNom());
+                queryBundle.putInt(ICON_POSITION_BUNDLE_KEY, editIcona.getPosicio());
+                queryBundle.putString(FILE_NAME_BUNDLE_KEY, "");
+                queryBundle.putString(BUNDLE_TOKEN_KEY, TOKEN);
+                getSupportLoaderManager().restartLoader(0, queryBundle, RequestTestActivity.this);
+            }
+        });
+
+        btnEliminarIcona.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString(SERVER_OPTION, DELETE_ICONA_OPTION);
+                queryBundle.putInt(ICON_ID_BUNDLE_KEY, editIcona.getId());
+                queryBundle.putString(BUNDLE_TOKEN_KEY, TOKEN);
+                getSupportLoaderManager().restartLoader(0, queryBundle, RequestTestActivity.this);
+            }
+        });
+
+        btnObtenirPanells.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString(SERVER_OPTION, LIST_PANELLS_OPTION);
+                queryBundle.putString(BUNDLE_TOKEN_KEY, TOKEN);
+                queryBundle.putString(BUNDLE_EMAIL_KEY, EMAIL);
+                getSupportLoaderManager().restartLoader(0, queryBundle, RequestTestActivity.this);
+            }
+        });
+
+        btnEliminarCompte.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString(BUNDLE_TOKEN_KEY, TOKEN);
+                queryBundle.putString(BUNDLE_EMAIL_KEY, EMAIL);
+                queryBundle.putString(SERVER_OPTION, DELETE_ACCOUNT_OPTION);
+                getSupportLoaderManager().restartLoader(0, queryBundle, RequestTestActivity.this);
+            }
+        });
+
+
 
         buttonClear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -276,6 +435,16 @@ public class RequestTestActivity extends AppCompatActivity implements LoaderMana
         String serverOption = "";
         String opcioUrl = "";
         String clau = "";
+        String username = "";
+        String panell = "";
+        String panellName = "";
+        String iconName = "";
+        String fileName = "";
+        int iconPosition;
+        int panellPosition;
+        int idPanell;
+        int idIcona;
+        boolean panellIsFavorite;
 
         if (args != null) {
 
@@ -311,6 +480,68 @@ public class RequestTestActivity extends AppCompatActivity implements LoaderMana
                     novaClau = args.getString(BUNDLE_PASSWORD_KEY);
 
                     return new TestChangePasswordLoader(this, novaClau ,email, token);
+
+
+                case CREATE_NEW_PANELL_OPTION:
+
+                    username = args.getString(EMAIL_BUNDLE_KEY);
+                    panell = args.getString(PANELL_BUNDLE_KEY);
+                    token = args.getString(BUNDLE_TOKEN_KEY);
+                    return new TestNewPanellLoader(this, panell, username, token);
+
+                case DELETE_PANELL_OPTION:
+
+                    token = args.getString(BUNDLE_TOKEN_KEY);
+                    idPanell = args.getInt(ID_PANELL_BUNDLE_KEY);
+                    username = args.getString(EMAIL_BUNDLE_KEY);
+                    return new TestDeletePanellLoader(this, idPanell, username, token);
+
+                case EDIT_PANELL_OPTION:
+
+                    panellName = args.getString(PANELL_NAME_BUNDLE_KEY);
+                    panellPosition = args.getInt(PANELL_POSITION_BUNDLE_KEY);
+                    panellIsFavorite = args.getBoolean(PANELL_FAVORITE_BUNDLE_KEY);
+                    idPanell = args.getInt(PANELL_ID_BUNDLE_KEY);
+                    username = args.getString(EMAIL_BUNDLE_KEY);
+                    token = args.getString(BUNDLE_TOKEN_KEY);
+                    return new TestEditPanellLoader(this, panellName, panellPosition,
+                            panellIsFavorite, idPanell, username, token);
+
+                case CREATE_ICONA_OPTION:
+                    idPanell = args.getInt(PANELL_ID_BUNDLE_KEY);
+                    iconName = args.getString(ICON_NAME_BUNDLE_KEY);
+                    iconPosition = args.getInt(ICON_POSITION_BUNDLE_KEY);
+                    fileName = args.getString(FILE_NAME_BUNDLE_KEY);
+                    token = args.getString(BUNDLE_TOKEN_KEY);
+                    return new TestNewIconLoader(this, idPanell, iconName,
+                            iconPosition, fileName, token);
+
+                case EDIT_ICONA_OPTION:
+                    idIcona = args.getInt(ICON_ID_BUNDLE_KEY);
+                    iconName = args.getString(ICON_NAME_BUNDLE_KEY);
+                    iconPosition = args.getInt(ICON_POSITION_BUNDLE_KEY);
+                    fileName = args.getString(FILE_NAME_BUNDLE_KEY);
+                    token = args.getString(BUNDLE_TOKEN_KEY);
+                    return new TestEditIconaLoader(this, idIcona, iconName,
+                            iconPosition, fileName, token);
+
+                case DELETE_ICONA_OPTION:
+                    token = args.getString(BUNDLE_TOKEN_KEY);
+                    idIcona = args.getInt(ICON_ID_BUNDLE_KEY);
+                    return new TestDeleteIconaLoader(this, idIcona, token);
+
+                case LIST_PANELLS_OPTION:
+
+                    token = args.getString(BUNDLE_TOKEN_KEY);
+                    email = args.getString(EMAIL_BUNDLE_KEY);
+
+                    return new TestPanellsListLoader(this, email, token);
+
+                case DELETE_ACCOUNT_OPTION:
+
+                    token = args.getString(BUNDLE_TOKEN_KEY);
+                    email = args.getString(BUNDLE_EMAIL_KEY);
+                    return new TestDeleteAccountLoader(this, email, token);
 
                 default:
                     break;

@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +18,14 @@ public class Panell implements Serializable {
     private List<Icona> icones;
 
     public Panell(){}
+
+    public Panell(String nom, int posicio, boolean favorit) {
+        this.nom = nom;
+        this.posicio = posicio;
+        this.favorit = favorit;
+        this.icones = new ArrayList<>();
+        this.id = 0;
+    }
 
     public Panell(String nom, int posicio, boolean favorit, List<Icona> icones) {
         this.nom = nom;

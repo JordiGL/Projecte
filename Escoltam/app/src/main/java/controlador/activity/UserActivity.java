@@ -127,7 +127,6 @@ public class UserActivity extends FragmentActivity
     private static final String LOCATION_BUNDLE_KEY = "location";
     private static final String TEXT_BUNDLE_KEY = "text";
     private static final String TRANSLATE_TEXT_OPTION = "translate_text";
-    private static final String AUDIO_FILE = "/audio.wav";
     private static final String TRANSLATED_TEXT_BUNDLE_KEY = "translated";
     private static final String DIALOG_FAVORITE_TITLE = "Vols aquest panell com a favorit?";
     private ViewPager viewPager;

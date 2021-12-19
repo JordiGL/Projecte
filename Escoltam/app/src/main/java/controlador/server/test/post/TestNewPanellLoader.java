@@ -8,12 +8,12 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
-public class TestAddNewPanell extends AsyncTaskLoader<Integer> {
+public class TestNewPanellLoader extends AsyncTaskLoader<Integer> {
     private String panell;
     private String username;
     private String token;
 
-    public TestAddNewPanell(@NonNull Context context, String panell, String username, String token) {
+    public TestNewPanellLoader(@NonNull Context context, String panell, String username, String token) {
         super(context);
         this.panell = panell;
         this.username = username;
