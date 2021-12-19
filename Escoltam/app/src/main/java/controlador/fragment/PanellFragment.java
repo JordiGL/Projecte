@@ -44,10 +44,6 @@ public class PanellFragment extends Fragment implements OnIconInteractionListene
     private int idIcona;
     private GestorUser gestorUser;
 
-//    public PanellFragment(Panell panell) {
-//        this.panell = panell;
-//    }
-
     public PanellFragment() {
     }
 

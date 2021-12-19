@@ -18,6 +18,11 @@ import controlador.gestor.OnIconInteractionListener;
 import jordigomez.ioc.cat.escoltam.R;
 import model.Icona;
 
+/**
+ * Classe del adapter del RecyclerView per a mostrar les icones
+ * @see androidx.recyclerview.widget.RecyclerView.Adapter
+ * @author Jordi Gómez Lozano
+ */
 public class PanellRecyclerAdapter extends RecyclerView.Adapter<PanellRecyclerAdapter.ViewHolder> {
 
     private List<Icona> mIcones;
@@ -53,6 +58,10 @@ public class PanellRecyclerAdapter extends RecyclerView.Adapter<PanellRecyclerAd
 
     /**
      * Calsse holder que crea i gestiona l'item del recyclerview.
+     * @see android.view.View.OnClickListener
+     * @see android.view.View.OnLongClickListener
+     * @see androidx.recyclerview.widget.RecyclerView.ViewHolder
+     * @author Jordi Gómez Lozano
      */
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
@@ -72,7 +81,8 @@ public class PanellRecyclerAdapter extends RecyclerView.Adapter<PanellRecyclerAd
 
         /**
          * Carrega la informació i la imatge del recyclerview.
-         * @param currentIcona
+         * @param currentIcona la icona actual
+         * @author Jordi Gómez Lozano
          */
         void bindTo(Icona currentIcona){
 

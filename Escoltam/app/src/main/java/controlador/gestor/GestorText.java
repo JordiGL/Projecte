@@ -4,6 +4,10 @@ import android.widget.EditText;
 
 import java.util.LinkedList;
 
+/**
+ * Classe gestora del text introduit al TextEdit
+ * @author Jordi Gómez Lozano
+ */
 public class GestorText {
     private static LinkedList<String> textList;
     private static EditText comunicadorEditText;
@@ -17,6 +21,10 @@ public class GestorText {
         return textList;
     }
 
+    /**
+     * Mètode per a refrescar el TextEdit
+     * @author Jordi Gómez Lozano
+     */
     public static void refreshEditText(){
         comunicadorEditText.getText().clear();
         if(!textList.isEmpty()){
@@ -26,6 +34,10 @@ public class GestorText {
         }
     }
 
+    /**
+     * Mètode per a obtenir el text del TextEdit
+     * @author Jordi Gómez Lozano
+     */
     public static String getText(){
         return comunicadorEditText.getText().toString();
     }

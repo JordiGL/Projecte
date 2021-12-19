@@ -13,6 +13,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * Classe del traductor
+ * @author Jordi Gómez lozano
+ */
 public class Traductor {
     private static final String SERVICE_LOCATION = "westeurope";
     private static final String SERVICE_KEY = "08a345d692964185b09497d593e7fa2b";

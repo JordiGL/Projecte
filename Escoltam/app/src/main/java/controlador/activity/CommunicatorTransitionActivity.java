@@ -113,24 +113,14 @@ public class CommunicatorTransitionActivity extends AppCompatActivity implements
 
                 panells = data.getString(PANELLS_BUNDLE_KEY);
                 GestorUser.createObjectsFromObtainedData(panells);
+
                 Intent intentComunicador = new Intent(this, UserActivity.class);
-//Eliminar
                 intentComunicador.putExtra(EXTRA_MESSAGE, role);
                 startActivity(intentComunicador);
             } else {
-                displayToast(ERROR_GET_PANELLS);
+                Toast.makeText(getApplicationContext(), ERROR_GET_PANELLS, Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    /**
-     * Mostra informació per pantalla.
-     * @param message missatge que es mostrara per pantalla.
-     * @author Jordi Gómez Lozano.
-     */
-    public void displayToast(String message) {
-        Toast.makeText(getApplicationContext(), message,
-                Toast.LENGTH_LONG).show();
     }
 
     @Override

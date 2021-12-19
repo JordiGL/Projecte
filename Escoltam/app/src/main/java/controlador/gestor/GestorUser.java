@@ -24,7 +24,7 @@ import model.Panell;
 
 
 /**
- * Classe gestora dels Panells
+ * Classe gestora dels Panells i les icones
  * @author Jordi Gómez Lozano
  */
 public class GestorUser {
@@ -37,16 +37,39 @@ public class GestorUser {
     private static final String PANELL_FAVORIT_JSON = "favorit";
     private static final String ICONA_FOTO_JSON = "foto";
     private static final String ICONA_ID_JSON = "id";
-    public static final String ERROR_JSON_TRANSLATOR = "Error a l'hora d'extreure la paraula traduida de l'arxiu JSON rebut";
+    private static final String ERROR_JSON_TRANSLATOR = "Error a l'hora d'extreure la paraula traduida de l'arxiu JSON rebut";
     private static List<Panell> mPanells;
     private static int fileIcons = 3;
     private static String veu;
     private static int panellFavoritePosition;
 
-    public GestorUser(List<Panell> mPanells) {
-        GestorUser.mPanells = mPanells;
-    }
     public GestorUser() {}
+
+    public void setPanellFavoritPosition(int position){
+        panellFavoritePosition = position;
+    }
+
+    public int getPanellFavoritePosition(){
+        return panellFavoritePosition;
+    }
+
+    public String getVeu(){
+        return veu;
+    }
+
+    public int getFileIcons(){
+        return fileIcons;
+    }
+
+    public void setFileIcons(int number){
+        fileIcons = number;
+    }
+
+    public List<Panell> getPanells() {
+        return mPanells;
+    }
+
+//Panells
 
     /**
      * Omplim el List de panells amb les dades obtingudes del servidor.
@@ -104,6 +127,11 @@ public class GestorUser {
         return mPanells;
     }
 
+    /**
+     * Obtenim el panell predefinit amb les dades obtingudes del servidor
+     * @param jsonObject dades rebudes del GET al servidor.
+     * @author Jordi Gómez Lozano.
+     */
     private static void getPanellPredefinedIfExists(JSONObject jsonObject) throws JSONException {
         List<Icona> icones;
 
@@ -135,14 +163,11 @@ public class GestorUser {
         }
     }
 
-    public List<Panell> getPanells() {
-        return mPanells;
-    }
-
-//    public static void setPanells(List<Panell> mPanells) {
-//        GestorUser.mPanells = mPanells;
-//    }
-
+    /**
+     * Obtenim el numero de panells
+     * @return un int amb el nombre de panells.
+     * @author Jordi Gomez Lozano
+     */
     public int getNumPanells() {
         if(GestorUser.mPanells != null){
             return GestorUser.mPanells.size();
@@ -150,6 +175,13 @@ public class GestorUser {
         return 0;
     }
 
+    /**
+     * Mètode per a crear un nou panell per defecte
+     * @param position posicio del panell
+     * @param panellName nom del panell
+     * @return el panell creat
+     * @author Jordi Gomez Lozano
+     */
     public Panell newPanell(int position, String panellName){
 
         return new Panell(
@@ -160,14 +192,10 @@ public class GestorUser {
         );
     }
 
-    public void setPanellFavoritPosition(int position){
-        panellFavoritePosition = position;
-    }
-
-    public int getPanellFavoritePosition(){
-        return panellFavoritePosition;
-    }
-
+    /**
+     * Mètode per a obtenir la posicio del panell favorit
+     * @author Jordi Gomez Lozano
+     */
     public void setUpPanellFavoritePosition(){
         boolean control = true;
 
@@ -182,6 +210,11 @@ public class GestorUser {
         }
     }
 
+    /**
+     * Mètode per a obtenir el panell favorit
+     * @return el Panell favorit
+     * @author Jordi Gomez Lozano
+     */
     public Panell getPanellFavorite(){
 
         for(Panell panell: mPanells){
@@ -194,6 +227,15 @@ public class GestorUser {
 
 //Icones
 
+    /**
+     * Mètode per a crear el File de la imatge de la icona per a guardar al servidor.
+     * @param context Context de l'aplicació
+     * @param resolver el content resolver per a obtenir els bytes
+     * @param uri localitzacio de la imatge
+     * @param name nom que ha de tenir la imatge
+     * @return un File de la imatge
+     * @author Jordi Gomez Lozano
+     */
     public File createFile(Context context, ContentResolver resolver, Uri uri, String name){
         FileOutputStream out = null;
         InputStream stream = null;
@@ -227,6 +269,14 @@ public class GestorUser {
         return file;
     }
 
+    /**
+     * Mètode per a crear un file a partir dels bytes de la imatge de la icona.
+     * @param context context de l'aplicació
+     * @param imageBytes bytes de la imatge
+     * @param name nom que ha de tenir la imatge
+     * @return un File a partir dels bytes de la imatge.
+     * @author Jordi Gomez Lozano
+     */
     public File createFileByte(Context context, byte[] imageBytes, String name){
         FileOutputStream out = null;
         File file = null;
@@ -253,6 +303,12 @@ public class GestorUser {
         return file;
     }
 
+    /**
+     * Mètode per aconseguir una icona a partir del seu id
+     * @param id de la icona a cercar
+     * @return la icona a cercar
+     * @author Jordi Gomez Lozano
+     */
     public Icona findIcona(int id){
 
         for(Panell panell: mPanells){
@@ -266,6 +322,13 @@ public class GestorUser {
         return null;
     }
 
+//Traductor
+    /**
+     * Mètode per a obtenir el text traduit a partir de les dades obtingudes del servidor
+     * @param json un String en format JSON amb les dades del servidor
+     * @return un String amb el text traduit.
+     * @throws GestorException
+     */
     public static String getTranslatedText(String json) throws GestorException{
 
         try{
@@ -281,6 +344,14 @@ public class GestorUser {
         }
     }
 
+//Utils
+    /**
+     * Mètode per a obtenir els bytes d'un InputStream
+     * @param inputStream del que llegirem els bytes
+     * @return Array de bytes
+     * @throws IOException
+     * @author Jordi Gomez Lozano
+     */
     public static byte[] getBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
         int bufferSize = 1024;
@@ -295,18 +366,10 @@ public class GestorUser {
         return byteBuffer.toByteArray();
     }
 
-    public int getFileIcons(){
-        return fileIcons;
-    }
-
-    public void setFileIcons(int number){
-        fileIcons = number;
-    }
-
-    public String getVeu(){
-        return veu;
-    }
-
+    /**
+     * Inner class per a ordenar la llista de panells
+     * @author Jordi Gomez Lozano
+     */
     public static class PanellPositionComparator implements Comparator<Panell> {
 
         @Override
