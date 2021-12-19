@@ -107,6 +107,13 @@ public class NetworkUtils extends Connexio{
         return queryBundle;
     }
 
+    /**
+     * POST request per a traduir el text
+     * @param text text a traduir
+     * @param subscriptionKey key del servei
+     * @param location localitzacio del servei
+     * @return el text traduit
+     */
     public static Bundle requestTranslator(String text, String subscriptionKey, String location){
 
         Bundle queryBundle = null;
@@ -599,7 +606,7 @@ public class NetworkUtils extends Connexio{
      * @param idPanell ide del panell.
      * @param username email de l'usuari.
      * @param token token de l'usuari.
-     * @return un int amb el codi de resposta.
+     * @return un Bundle amb la informacio.
      * @author Jordi Gómez Lozano.
      */
     public static Bundle editPanell(String nom, int posicio, boolean favorit, int idPanell,
@@ -638,6 +645,18 @@ public class NetworkUtils extends Connexio{
         return queryBundle;
     }
 //ICONES
+
+    /**
+     * Post request per a afegir una nova icona al servidor
+     * @param context Context de l'aplicació
+     * @param idPanell id de la icona a afegir
+     * @param name nom de la icona a afegir
+     * @param position posicio de la icona a afegir
+     * @param fileName nom de la imatge a afegir
+     * @param token token de l'usuari
+     * @return un Bundle amb la informacio
+     * @author Jordi Gómez Lozano.
+     */
     public static Bundle addNewIcon(Context context, int idPanell, String name, int position,
                                     String fileName, String token){
         Bundle queryBundle = null;
@@ -696,6 +715,16 @@ public class NetworkUtils extends Connexio{
         return queryBundle;
     }
 
+    /**
+     * Put request al servidor per a editar una icona
+     * @param context Context de l'aplicacio
+     * @param idIcona id de la icona
+     * @param name nom de la icona
+     * @param position posicio de la icona
+     * @param fileName nom de la imatge
+     * @param token token de l'usuari
+     * @return un Bundle amb la informacio rebuda
+     */
     public static Bundle editIcona(Context context, int idIcona, String name, int position,
                                    String fileName, String token){
         Bundle queryBundle = null;
@@ -847,7 +876,7 @@ public class NetworkUtils extends Connexio{
         return into.toString(CHARSET_NAME);
     }
 
-    //Métodes creats només per a fer tests
+//Métodes creats només per a fer tests
 
     /**
      * Put request per a enviar la nova veu al servidor.
@@ -954,7 +983,7 @@ public class NetworkUtils extends Connexio{
     /**
      * Post request al servidor per afegir un nou usuari.
      * @param usuari usuari a afegir al servidor.
-     * @return un Bundle amb el codi de resposta i possible informació d'error.
+     * @return el codi de resposta
      * @author Jordi Gómez Lozano.
      */
     public static int testAddNewUser(Usuari usuari){
@@ -1018,4 +1047,393 @@ public class NetworkUtils extends Connexio{
 
         return responseCode;
     }
+
+    /**
+     * Delete request per a eliminar un compte.
+     * @param username part de la url del request.
+     * @param token token de l'usuari.
+     * @return el codi de resposta
+     * @author Jordi Gómez Lozano.
+     */
+    public static int testDeleteAccount(String username, String token){
+
+        HttpURLConnection connexio = null;
+        int responseCode = 0;
+
+        try{
+
+            connexio = deleteRequest(token, DELETE_ACCOUNT_URL
+                    +username);
+
+            responseCode = connexio.getResponseCode();
+
+
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally{
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+        }
+
+        return responseCode;
+    }
+
+    /**
+     * Delete request per a eliminar una icona.
+     * @param idIcona part de la url del request.
+     * @param token token de l'usuari.
+     * @return el codi de resposta
+     * @author Jordi Gómez Lozano.
+     */
+    public static int testDeleteIcona(int idIcona, String token){
+
+        HttpURLConnection connexio = null;
+
+        int responseCode = 0;
+
+        try{
+            connexio = deleteRequest(token, URL_BASIC_ICONA +idIcona);
+            responseCode = connexio.getResponseCode();
+
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally{
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+        }
+        return responseCode;
+    }
+
+    /**
+     * Delete request per a eliminar un panell.
+     * @param idPanell part de la url del request.
+     * @param token token de l'usuari.
+     * @return el codi de resposta
+     * @author Jordi Gómez Lozano.
+     */
+    public static int testDeletePanell(int idPanell, String username, String token){
+
+        HttpURLConnection connexio = null;
+
+        int responseCode = 0;
+
+        try{
+            if(idPanell == 0){
+                connexio = deleteRequest(token, PANELL_PREDEFINIT_DELETE_URL
+                        +username+"/"+idPanell);
+            } else {
+                connexio = deleteRequest(token, PANELLS_URL+idPanell);
+            }
+
+            responseCode = connexio.getResponseCode();
+
+
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally{
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+        }
+
+        return responseCode;
+    }
+
+    /**
+     * Get request per a obtenir els panells dels usuaris o usuari.
+     * @param opcio part de la url del request.
+     * @param token token de l'usuari.
+     * @return el codi de resposta
+     * @author Jordi Gómez Lozano.
+     */
+    public static int testGetPanellsData(String opcio, String token){
+        HttpURLConnection connexio = null;
+
+        int responseCode = 0;
+
+        try{
+
+            connexio = getRequest(token, PANELLS_GET_DATA_URL +opcio);
+            responseCode = connexio.getResponseCode();
+
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally{
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+
+        }
+
+        return responseCode;
+    }
+
+    /**
+     * Post request per a afegir una nova icona al servidor
+     * @param context Context de l'aplicació
+     * @param idPanell id de la icona a afegir
+     * @param name nom de la icona a afegir
+     * @param position posicio de la icona a afegir
+     * @param fileName nom de la imatge a afegir
+     * @param token token de l'usuari
+     * @return el codi de resposta
+     * @author Jordi Gómez Lozano.
+     */
+    public static int testAddNewIcon(Context context, int idPanell, String name, int position,
+                                    String fileName, String token){
+        int responseCode = 0;
+        OkHttpClient client = null;
+        RequestBody body = null;
+        Response response = null;
+        File file = null;
+
+        try{
+            client = new OkHttpClient().newBuilder()
+                    .build();
+
+            if(fileName.isEmpty()){
+
+                body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("id","")
+                        .addFormDataPart("nom",name)
+                        .addFormDataPart("posicio",String.valueOf(position))
+                        .addFormDataPart("foto",fileName,
+                                RequestBody.create(MediaType.parse("application/octet-stream"),
+                                        fileName))
+                        .build();
+            } else {
+                file = new File(context.getFilesDir(),fileName);
+                body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("id","")
+                        .addFormDataPart("nom",name)
+                        .addFormDataPart("posicio",String.valueOf(position))
+                        .addFormDataPart("foto",fileName,
+                                RequestBody.create(MediaType.parse("application/octet-stream"), file))
+                        .build();
+            }
+
+            Request request = new Request.Builder()
+                    .url(URL_NEW_ICONA +String.valueOf(idPanell))
+                    .method(METODE_PETICIO_POST, body)
+                    .addHeader(AUTHORIZATION_KEY, BEARER + token)
+                    .build();
+            response = client.newCall(request).execute();
+
+            responseCode = response.code();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (client != null) {
+                client.dispatcher().executorService().shutdown();
+                client.connectionPool().evictAll();
+            }
+            if (response != null && !response.isSuccessful()) {
+                response.close();
+            }
+        }
+        return responseCode;
+    }
+
+    /**
+     * Post request al servidor per afegir un nou panell.
+     * @param panell panell a afegir al servidor.
+     * @return el codi de resposta
+     * @author Jordi Gómez Lozano.
+     */
+    public static int TestAddNewPanell(String panell, String opcio, String token){
+
+        HttpURLConnection connexio = null;
+        int responseCode = 0;
+        try{
+            byte[] postData = panell.getBytes(StandardCharsets.UTF_8);
+            int postDataLength = postData.length;
+            connexio = postRequestPanell(postDataLength, METODE_PETICIO_POST, PANELLS_URL+opcio, APPLICATION_JSON, token);
+
+            DataOutputStream wr = new DataOutputStream(connexio.getOutputStream());
+
+            wr.write(postData);
+
+            InputStream error = connexio.getErrorStream();
+
+
+            responseCode = connexio.getResponseCode();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+        }
+
+        return responseCode;
+    }
+
+    /**
+     * POST request per a traduir el text
+     * @param text text a traduir
+     * @param subscriptionKey key del servei
+     * @param location localitzacio del servei
+     * @return el codi de resposta
+     */
+    public static int testRequestTranslator(String text, String subscriptionKey, String location){
+
+        OkHttpClient client = null;
+        Response response = null;
+        int responseCode = 0;
+
+        try {
+
+            HttpUrl url = new HttpUrl.Builder()
+                    .scheme("https")
+                    .host("api.cognitive.microsofttranslator.com")
+                    .addPathSegment("/translate")
+                    .addQueryParameter("api-version", "3.0")
+                    .addQueryParameter("from", "ca")
+                    .addQueryParameter("to", "en")
+                    .build();
+
+            client = new OkHttpClient();
+            MediaType mediaType = MediaType.parse("application/json");
+
+            RequestBody body = RequestBody.create(mediaType,
+                    "[{\"Text\": \"" + text + "\"}]");
+
+            Request request = new Request.Builder().url(url).post(body)
+                    .addHeader("Ocp-Apim-Subscription-Key", subscriptionKey)
+                    .addHeader("Ocp-Apim-Subscription-Region", location)
+                    .addHeader("Content-type", "application/json")
+                    .build();
+
+            //Enviem la sol·licitud i n'obtenim la resposta.
+            response = client.newCall(request).execute();
+            String textJSONString = response.body().string();
+
+            responseCode = response.code();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (client != null) {
+                client.dispatcher().executorService().shutdown();
+                client.connectionPool().evictAll();
+            }
+            if (response != null && !response.isSuccessful()) {
+                response.close();
+            }
+        }
+        return responseCode;
+    }
+
+    /**
+     * Put request al servidor per editar un panell.
+     * @param nom del panell.
+     * @param posicio del panell.
+     * @param favorit si es favorit o no.
+     * @param idPanell ide del panell.
+     * @param username email de l'usuari.
+     * @param token token de l'usuari.
+     * @return un int amb el codi de resposta.
+     * @author Jordi Gómez Lozano.
+     */
+    public static int testEditPanell(String nom, int posicio, boolean favorit, int idPanell,
+                                    String username, String token){
+
+        HttpURLConnection connexio = null;
+        int responseCode = 0;
+
+        try{
+            String body = "{\"nom\": \""+nom+"\",\"posicio\": "+posicio+",\"favorit\": "+favorit+"}";
+            byte[] postData = body.getBytes(StandardCharsets.UTF_8);
+            int postDataLength = postData.length;
+            connexio = putRequest(
+                    postDataLength,
+                    METODE_PETICIO_PUT,
+                    PANELLS_URL+username+"/"+idPanell, APPLICATION_JSON, token);
+
+            DataOutputStream wr = new DataOutputStream(connexio.getOutputStream());
+
+            wr.write(postData);
+
+            responseCode = connexio.getResponseCode();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connexio != null) {
+                connexio.disconnect();
+            }
+        }
+        return responseCode;
+    }
+
+    /**
+     * Put request al servidor per a editar una icona
+     * @param context Context de l'aplicacio
+     * @param idIcona id de la icona
+     * @param name nom de la icona
+     * @param position posicio de la icona
+     * @param fileName nom de la imatge
+     * @param token token de l'usuari
+     * @return un int amb el codi de resposta
+     */
+    public static int testEditIcona(Context context, int idIcona, String name, int position,
+                                   String fileName, String token){
+
+        OkHttpClient client = null;
+        RequestBody body = null;
+        Response response = null;
+        File file = null;
+        int responseCode = 0;
+
+        try{
+            client = new OkHttpClient().newBuilder()
+                    .build();
+
+            if(fileName.isEmpty()){
+
+                body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("nom",name)
+                        .addFormDataPart("posicio",String.valueOf(position))
+                        .addFormDataPart("foto",fileName,
+                                RequestBody.create(MediaType.parse("application/octet-stream"),
+                                        fileName))
+                        .build();
+            } else {
+                file = new File(context.getFilesDir(),fileName);
+                body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("nom",name)
+                        .addFormDataPart("posicio",String.valueOf(position))
+                        .addFormDataPart("foto",file.getPath(),
+                                RequestBody.create(MediaType.parse("application/octet-stream"), file))
+                        .build();
+            }
+            Request request = new Request.Builder()
+                    .url(URL_BASIC_ICONA +String.valueOf(idIcona))
+                    .method(METODE_PETICIO_PUT, body)
+                    .addHeader(AUTHORIZATION_KEY, BEARER + token)
+                    .build();
+            response = client.newCall(request).execute();
+
+            responseCode = response.code();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (client != null) {
+
+                client.dispatcher().executorService().shutdown();
+                client.connectionPool().evictAll();
+            }
+            if (response != null && !response.isSuccessful()) {
+                response.close();
+            }
+        }
+        return responseCode;
+    }
+
 }

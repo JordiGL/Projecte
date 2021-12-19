@@ -1,7 +1,6 @@
-package controlador.server.post;
+package controlador.server.test.post;
 
 import android.content.Context;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,12 +8,7 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
-/**
- * Classe per a crear el fil per a connectar amb el servidor.
- * @see androidx.loader.content.AsyncTaskLoader
- * @author Jordi Gómez Lozano
- */
-public class NewIconLoader  extends AsyncTaskLoader<Bundle> {
+public class TestNewIconLoader extends AsyncTaskLoader<Integer> {
     private Context context;
     private int idPanell;
     private String name;
@@ -22,7 +16,7 @@ public class NewIconLoader  extends AsyncTaskLoader<Bundle> {
     private String fileName;
     private String token;
 
-    public NewIconLoader(@NonNull Context context, int idPanell, String name, int position,
+    public TestNewIconLoader(@NonNull Context context, int idPanell, String name, int position,
                          String fileName, String token) {
         super(context);
         this.context = context;
@@ -40,9 +34,9 @@ public class NewIconLoader  extends AsyncTaskLoader<Bundle> {
      */
     @Nullable
     @Override
-    public Bundle loadInBackground() {
+    public Integer loadInBackground() {
 
-        return NetworkUtils.addNewIcon(context, idPanell, name, position, fileName, token);
+        return NetworkUtils.testAddNewIcon(context, idPanell, name, position, fileName, token);
     }
 
     /**

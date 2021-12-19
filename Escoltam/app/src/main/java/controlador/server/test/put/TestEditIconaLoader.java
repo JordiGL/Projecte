@@ -1,4 +1,4 @@
-package controlador.server.post;
+package controlador.server.test.put;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,24 +9,19 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
-/**
- * Classe per a crear el fil per a connectar amb el servidor.
- * @see androidx.loader.content.AsyncTaskLoader
- * @author Jordi Gómez Lozano
- */
-public class NewIconLoader  extends AsyncTaskLoader<Bundle> {
-    private Context context;
-    private int idPanell;
+public class TestEditIconaLoader extends AsyncTaskLoader<Integer> {
     private String name;
     private int position;
+    private int idIcona;
     private String fileName;
     private String token;
+    private Context context;
 
-    public NewIconLoader(@NonNull Context context, int idPanell, String name, int position,
-                         String fileName, String token) {
+    public TestEditIconaLoader(@NonNull Context context, int idIcona, String name, int position,
+                           String fileName, String token) {
         super(context);
         this.context = context;
-        this.idPanell = idPanell;
+        this.idIcona = idIcona;
         this.name = name;
         this.position = position;
         this.fileName = fileName;
@@ -35,19 +30,20 @@ public class NewIconLoader  extends AsyncTaskLoader<Bundle> {
 
     /**
      * Designem l'operació a fer.
-     * @return Un Bundle amb el codi de resposta del servidor, i les dades de retorn.
+     *
+     * @return l'int amb el codi de resposta del servidor.
      * @author Jordi Gómez Lozano.
      */
     @Nullable
     @Override
-    public Bundle loadInBackground() {
-
-        return NetworkUtils.addNewIcon(context, idPanell, name, position, fileName, token);
+    public Integer loadInBackground() {
+        return NetworkUtils.testEditIcona(context, idIcona, name, position, fileName, token);
     }
 
     /**
      * El sistema crida aquest metode quan iniciem el loader per a fer
      * l'operació del loadInBackground.
+     *
      * @author Jordi Gómez Lozano.
      */
     @Override

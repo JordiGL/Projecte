@@ -1,4 +1,4 @@
-package controlador.server.post;
+package controlador.server.test.delete;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,19 +9,14 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
-/**
- * Classe per a crear el fil per a connectar amb el servidor.
- * @see androidx.loader.content.AsyncTaskLoader
- * @author Jordi Gómez Lozano
- */
-public class NewPanellLoader extends AsyncTaskLoader<Bundle> {
-    private String panell;
+public class TestDeletePanellLoader extends AsyncTaskLoader<Integer> {
+    private int idPanell;
     private String username;
     private String token;
 
-    public NewPanellLoader(@NonNull Context context, String panell, String username, String token) {
+    public TestDeletePanellLoader(@NonNull Context context, int idPanell, String username, String token) {
         super(context);
-        this.panell = panell;
+        this.idPanell = idPanell;
         this.username = username;
         this.token = token;
     }
@@ -29,8 +24,8 @@ public class NewPanellLoader extends AsyncTaskLoader<Bundle> {
 
     @Nullable
     @Override
-    public Bundle loadInBackground() {
-        return NetworkUtils.addNewPanell(panell, username, token);
+    public Integer loadInBackground() {
+        return NetworkUtils.testDeletePanell(idPanell, username, token);
     }
 
     /**

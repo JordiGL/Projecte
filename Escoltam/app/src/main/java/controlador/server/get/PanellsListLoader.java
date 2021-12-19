@@ -9,6 +9,11 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
+/**
+ * Classe loader per obtenir els panells
+ * @see androidx.loader.content.AsyncTaskLoader
+ * @author Jordi Gómez Lozano
+ */
 public class PanellsListLoader extends AsyncTaskLoader<Bundle> {
     private String token;
     private String opcio;

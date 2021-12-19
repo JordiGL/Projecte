@@ -9,8 +9,13 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
+/**
+ * Classe per a crear el fil per a connectar amb el servidor.
+ * @see androidx.loader.content.AsyncTaskLoader
+ * @author Jordi Gómez Lozano
+ */
 public class DeleteAccountLoader extends AsyncTaskLoader<Bundle> {
-    private int idIcona;
+
     private String token;
     private String username;
 

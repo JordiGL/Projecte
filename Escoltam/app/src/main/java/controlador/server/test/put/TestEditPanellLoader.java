@@ -1,4 +1,4 @@
-package controlador.server.put;
+package controlador.server.test.put;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,12 +9,7 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
-/**
- * Classe per a crear el fil per a connectar amb el servidor.
- * @see androidx.loader.content.AsyncTaskLoader
- * @author Jordi Gómez Lozano
- */
-public class EditPanellLoader extends AsyncTaskLoader<Bundle> {
+public class TestEditPanellLoader extends AsyncTaskLoader<Integer> {
     private String nom;
     private int posicio;
     private boolean favorit;
@@ -22,7 +17,7 @@ public class EditPanellLoader extends AsyncTaskLoader<Bundle> {
     private String username;
     private String token;
 
-    public EditPanellLoader(@NonNull Context context, String nom, int posicio, boolean favorit, int idPanell,
+    public TestEditPanellLoader(@NonNull Context context, String nom, int posicio, boolean favorit, int idPanell,
                             String username, String token) {
         super(context);
         this.nom = nom;
@@ -42,8 +37,8 @@ public class EditPanellLoader extends AsyncTaskLoader<Bundle> {
      */
     @Nullable
     @Override
-    public Bundle loadInBackground() {
-        return NetworkUtils.editPanell(nom, posicio, favorit, idPanell, username, token);
+    public Integer loadInBackground() {
+        return NetworkUtils.testEditPanell(nom, posicio, favorit, idPanell, username, token);
     }
 
     /**

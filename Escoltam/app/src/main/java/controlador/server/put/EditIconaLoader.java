@@ -9,6 +9,11 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
+/**
+ * Classe per a crear el fil per a connectar amb el servidor.
+ * @see androidx.loader.content.AsyncTaskLoader
+ * @author Jordi Gómez Lozano
+ */
 public class EditIconaLoader extends AsyncTaskLoader<Bundle> {
     private String name;
     private int position;

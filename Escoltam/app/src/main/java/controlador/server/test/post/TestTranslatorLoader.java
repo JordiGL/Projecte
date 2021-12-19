@@ -1,4 +1,4 @@
-package controlador.server.post;
+package controlador.server.test.post;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,16 +9,11 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
-/**
- * Classe loader per a crear un fil i connectar amb servei de traductor de text
- * @see androidx.loader.content.AsyncTaskLoader
- * @author Jordi Gómez Lozano
- */
-public class TranslatorLoader extends AsyncTaskLoader<Bundle> {
+public class TestTranslatorLoader extends AsyncTaskLoader<Integer> {
     private String subscriptionKey;
     private String location;
     private String text;
-    public TranslatorLoader(@NonNull Context context, String text, String subscriptionKey, String location) {
+    public TestTranslatorLoader(@NonNull Context context, String text, String subscriptionKey, String location) {
         super(context);
         this.subscriptionKey = subscriptionKey;
         this.location = location;
@@ -32,8 +27,8 @@ public class TranslatorLoader extends AsyncTaskLoader<Bundle> {
      */
     @Nullable
     @Override
-    public Bundle loadInBackground() {
-        return NetworkUtils.requestTranslator(text, subscriptionKey, location);
+    public Integer loadInBackground() {
+        return NetworkUtils.testRequestTranslator(text, subscriptionKey, location);
     }
 
     /**

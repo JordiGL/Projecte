@@ -1,4 +1,4 @@
-package controlador.server.post;
+package controlador.server.test.get;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,28 +9,25 @@ import androidx.loader.content.AsyncTaskLoader;
 
 import controlador.server.NetworkUtils;
 
-/**
- * Classe per a crear el fil per a connectar amb el servidor.
- * @see androidx.loader.content.AsyncTaskLoader
- * @author Jordi Gómez Lozano
- */
-public class NewPanellLoader extends AsyncTaskLoader<Bundle> {
-    private String panell;
-    private String username;
+public class TestPanellsListLoader extends AsyncTaskLoader<Integer> {
     private String token;
+    private String opcio;
 
-    public NewPanellLoader(@NonNull Context context, String panell, String username, String token) {
+    public TestPanellsListLoader(@NonNull Context context, String opcio, String token) {
         super(context);
-        this.panell = panell;
-        this.username = username;
         this.token = token;
+        this.opcio = opcio;
     }
 
-
+    /**
+     * Designem l'operació a fer.
+     * @return l'String amb la llista dels panells de l'usuari.
+     * @author Jordi Gómez Lozano.
+     */
     @Nullable
     @Override
-    public Bundle loadInBackground() {
-        return NetworkUtils.addNewPanell(panell, username, token);
+    public Integer loadInBackground() {
+        return NetworkUtils.testGetPanellsData(opcio, token);
     }
 
     /**
