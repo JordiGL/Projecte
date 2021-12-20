@@ -43,8 +43,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     private static final String CLAU_BUNDLE_KEY = "clau";
     private static final String RESPONSE_CODE_BUNDLE_KEY = "responseCode";
     private static final String TOKEN_BUNDLE_KEY = "token";
-
     private EditText email, password;
+//    private GestorEncrypt gestorEncrypt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +58,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         Button btnIniciSessio = findViewById(R.id.btnLogin);
         email = findViewById(R.id.inputEmailLogin);
         password = findViewById(R.id.inputPasswordLogin);
+
+//        gestorEncrypt = new GestorEncrypt();
 
         btnAlta.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, SignUpActivity.class)));
 

@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -407,24 +406,6 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
                     return new DeleteAccountLoader(this, email, token);
             }
         }
-//            if(args.size() == 4){
-//
-//                token = args.getString(BUNDLE_TOKEN_KEY);
-//                email = args.getString(BUNDLE_EMAIL_KEY);
-//                novaClau = args.getString(BUNDLE_PASSWORD_KEY);
-//                novaVeu = args.getString(BUNDLE_VOICE_KEY);
-//
-//                return new ChangeVoiceLoader(this, novaClau , novaVeu, email, token);
-//
-//            }else{
-//                token = args.getString(BUNDLE_TOKEN_KEY);
-//                email = args.getString(BUNDLE_EMAIL_KEY);
-//                novaClau = args.getString(BUNDLE_PASSWORD_KEY);
-//
-//                return new ChangePasswordLoader(this, novaClau ,email, token);
-//            }
-
-
 
         return new ChangePasswordLoader(this, novaClau ,email, token);
     }
@@ -432,7 +413,6 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
     @Override
     public void onLoadFinished(@NonNull Loader<Bundle> loader, Bundle data) {
         int responseCode = data.getInt(RESPONSE_CODE_BUNDLE_KEY);
-        Log.i("Info", String.valueOf(responseCode));
 
         if (responseCode == HttpURLConnection.HTTP_OK) {
             Toast.makeText(AdminSettingsActivity.this, ACCOUNT_DELETED_TEXT, Toast.LENGTH_SHORT).show();

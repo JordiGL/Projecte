@@ -15,9 +15,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -35,9 +32,6 @@ import controlador.gestor.GestorSettings;
 import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.OnFragmentInteractionSettingsListener;
 import controlador.server.delete.DeleteAccountLoader;
-import controlador.server.delete.DeletePanellLoader;
-import controlador.server.get.PanellsListLoader;
-import controlador.server.post.NewPanellLoader;
 import controlador.server.put.ChangePasswordLoader;
 import controlador.server.put.ChangeVoiceLoader;
 import io.github.muddz.styleabletoast.StyleableToast;
@@ -407,24 +401,6 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
                     return new DeleteAccountLoader(this, email, token);
             }
         }
-//            if(args.size() == 4){
-//
-//                token = args.getString(BUNDLE_TOKEN_KEY);
-//                email = args.getString(BUNDLE_EMAIL_KEY);
-//                novaClau = args.getString(BUNDLE_PASSWORD_KEY);
-//                novaVeu = args.getString(BUNDLE_VOICE_KEY);
-//
-//                return new ChangeVoiceLoader(this, novaClau , novaVeu, email, token);
-//
-//            }else{
-//                token = args.getString(BUNDLE_TOKEN_KEY);
-//                email = args.getString(BUNDLE_EMAIL_KEY);
-//                novaClau = args.getString(BUNDLE_PASSWORD_KEY);
-//
-//                return new ChangePasswordLoader(this, novaClau ,email, token);
-//            }
-
-
 
         return new ChangePasswordLoader(this, novaClau ,email, token);
     }

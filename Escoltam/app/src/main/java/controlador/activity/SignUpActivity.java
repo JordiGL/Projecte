@@ -50,6 +50,8 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private static final String EMAIL_KEY = "email";
     private static final String CLAU_KEY = "clau";
     private static final String VEU_KEY = "veu";
+    public static final String ERROR = "Error";
+    public static final String SIGNUP_ERROR = "Error en registrar l'usuari";
     private EditText email, password, conformPassword;
     private RadioGroup radioGroupVeu;
     private LinearLayout ln_radioGroup;
@@ -82,7 +84,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
             } catch (GestorException ex) {
 
-                Log.w("Error", "Error en registrar l'usuari", ex);
+                Log.w(ERROR, SIGNUP_ERROR, ex);
             }
         });
 
@@ -96,7 +98,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
      * @author Jordi Gómez Lozano.
      */
     public void registerUser() throws GestorException {
-
+//        GestorEncrypt gestorEncrypt = new GestorEncrypt();
         if(checkFields()) {
 
             //Comprova la connexió i la informació introduide per l'usuari en l'EditText.
