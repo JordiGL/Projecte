@@ -45,8 +45,8 @@ import model.Usuari;
  */
 public class AdministratorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>,PopupMenu.OnMenuItemClickListener {
     private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
-    private static final String CERCA_SENSE_RESULTAT = "No s'ha obtingut cap resultat";
     private static final String INTENT_VALUE_ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String CERCA_SENSE_RESULTAT = "No s'ha obtingut cap resultat";
     private static final String TOKEN_BUNDLE_KEY = "token";
     private static final String URL_BUNDLE_KEY = "url";
     private static final String TOT_OPTION = "Tot";

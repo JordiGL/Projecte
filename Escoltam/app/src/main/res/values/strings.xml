@@ -152,5 +152,6 @@
     <string name="viewpager_content_escription">ViewPager</string>
     <string name="context_panell_favorite_text">Fer favorit</string>
     <string name="text_eliminar_compte_settings">Eliminar compte</string>
+    <string name="panells_transition_text">Carregant panells</string>
 
 </resources>

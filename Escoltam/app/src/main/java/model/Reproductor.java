@@ -56,8 +56,8 @@ public class Reproductor {
         this.location = SERVICE_LOCATION;
         this.userVoice = userVoice;
         this.idioma = LANGUAGE_CATALA;
-        setUpSystemVoice(idioma);
         synthesizer = setUpSynthesizer();
+        setUpSystemVoice(idioma);
         setUpMediaPlayer(context);
     }
 

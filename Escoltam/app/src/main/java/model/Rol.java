@@ -4,11 +4,11 @@ package model;
  * Classe Role
  * @author Jordi Gómez Lozano
  */
-public class Role {
+public class Rol {
     private int id;
     private String name;
 
-    public Role(int id, String name) {
+    public Rol(int id, String name) {
         this.name = name;
         this.id = id;
     }

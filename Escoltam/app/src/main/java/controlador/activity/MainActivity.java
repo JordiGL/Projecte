@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
             GestorMain gestorMain = new GestorMain(this);
             GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
             String role;
-            String email;
             Date expiredData;
 
             String token = gestorSharedPreferences.getToken();

@@ -438,12 +438,10 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = new Intent(this, UserActivity.class);
-                intent.putExtra(EXTRA_MESSAGE, INTENT_VALUE_ROLE_USER);
-                startActivity(intent);
+                onBackPressed();
                 return true;
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -462,6 +460,9 @@ public class UserSettingsActivity extends AppCompatActivity implements OnFragmen
 
     @Override
     public void onBackPressed() {
-        moveTaskToBack(true);
+        Intent intentComunicador = new Intent(UserSettingsActivity.this, CommunicatorTransitionActivity.class);
+        intentComunicador.putExtra(EXTRA_MESSAGE, INTENT_VALUE_ROLE_USER);
+        startActivity(intentComunicador);
+        finish();
     }
 }

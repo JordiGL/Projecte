@@ -1,10 +1,8 @@
 package controlador.gestor;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,9 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import controlador.activity.AdministratorActivity;
 import jordigomez.ioc.cat.escoltam.R;
-import model.Role;
+import model.Rol;
 import model.Usuari;
 
 /**
@@ -139,14 +136,14 @@ public class GestorAdministrator {
                     for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        Role role = new Role(
+                        Rol rol = new Rol(
                                 jsonObject.getJSONArray(ROLES_JSON).getJSONObject(0).getInt(ID_JSON),
                                 jsonObject.getJSONArray(ROLES_JSON).getJSONObject(0).getString(NAME_JSON)
                         );
 
                         Usuari usuari = new Usuari(
                                 jsonObject.getString(USERNAME_JSON),
-                                role,
+                                rol,
                                 jsonObject.getString(VOICE_JSON),
                                 jsonObject.getString(PASSWORD_JSON),
                                 jsonObject.getBoolean(ENABLED_JSON)
@@ -158,14 +155,14 @@ public class GestorAdministrator {
                 }else{
 
                     JSONObject jsonObject = new JSONObject(obtainedServerData);
-                    Role role = new Role(
+                    Rol rol = new Rol(
                             jsonObject.getJSONArray(ROLES_JSON).getJSONObject(0).getInt(ID_JSON),
                             jsonObject.getJSONArray(ROLES_JSON).getJSONObject(0).getString(NAME_JSON)
                     );
 
                     Usuari usuari = new Usuari(
                             jsonObject.getString(USERNAME_JSON),
-                            role,
+                            rol,
                             jsonObject.getString(VOICE_JSON),
                             jsonObject.getString(PASSWORD_JSON),
                             jsonObject.getBoolean(ENABLED_JSON)

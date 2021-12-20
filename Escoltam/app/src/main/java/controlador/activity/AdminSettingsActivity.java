@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -43,7 +44,8 @@ import jordigomez.ioc.cat.escoltam.R;
  * @author Jordi Gómez Lozano.
  */
 public class AdminSettingsActivity extends AppCompatActivity implements OnFragmentInteractionSettingsListener, LoaderManager.LoaderCallbacks<Bundle> {
-
+    private final static String EXTRA_MESSAGE = "jordigomez.ioc.cat.comunicador.MESSAGE";
+    private static final String INTENT_VALUE_ROLE_ADMIN = "ROLE_ADMIN";
     private static final String BUNDLE_TOKEN_KEY = "token";
     private static final String BUNDLE_EMAIL_KEY = "email";
     private static final String BUNDLE_PASSWORD_KEY = "password";
@@ -437,6 +439,16 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
     @Override
     public void onLoaderReset(@NonNull Loader<Bundle> loader) {}
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * Mètode per amagar el teclat
      * @author Jordi Gómez Lozano
@@ -453,7 +465,10 @@ public class AdminSettingsActivity extends AppCompatActivity implements OnFragme
 
     @Override
     public void onBackPressed() {
-        moveTaskToBack(true);
+        Intent intentComunicador = new Intent(AdminSettingsActivity.this, CommunicatorTransitionActivity.class);
+        intentComunicador.putExtra(EXTRA_MESSAGE, INTENT_VALUE_ROLE_ADMIN);
+        startActivity(intentComunicador);
+        finish();
     }
 
 }

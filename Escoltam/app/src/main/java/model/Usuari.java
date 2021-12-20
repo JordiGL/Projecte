@@ -1,19 +1,5 @@
 package model;
 
-import android.content.Context;
-
-import androidx.annotation.Nullable;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Classe Usuari
  * @author Jordi Gómez Lozano
@@ -23,11 +9,11 @@ public class Usuari {
     private String voice;
     private String password;
     private boolean enabled;
-    private Role role;
+    private Rol rol;
 
-    public Usuari(String email, Role role, String voice, String password, boolean enabled) {
+    public Usuari(String email, Rol rol, String voice, String password, boolean enabled) {
         this.email = email;
-        this.role = role;
+        this.rol = rol;
         this.voice = voice;
         this.password = password;
         this.enabled = enabled;
@@ -38,7 +24,7 @@ public class Usuari {
         this.voice = voice;
         this.password = password;
         this.enabled = true;
-        this.role = new Role(1, "ROLE_USER");
+        this.rol = new Rol(1, "ROLE_USER");
     }
 
     public String getEmail() {
@@ -73,12 +59,12 @@ public class Usuari {
         this.enabled = enabled;
     }
 
-    public Role getRole() {
-        return role;
+    public Rol getRole() {
+        return rol;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRole(Rol rol) {
+        this.rol = rol;
     }
 
     @Override
