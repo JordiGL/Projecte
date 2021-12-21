@@ -13,7 +13,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import controlador.gestor.GestorEncrypt;
 import controlador.gestor.JsonUtils;
 import model.Usuari;
 import okhttp3.HttpUrl;
@@ -78,8 +85,17 @@ public class NetworkUtils extends Connexio{
     public static Bundle requestToken(String username, String clau){
         int responseCode = 0;
         Bundle queryBundle = null;
+        String encrypted = "";
 
-        String urlParameters = "username="+username+"&password="+clau+"&grant_type=password";
+        try {
+            GestorEncrypt gestorEncrypt = new GestorEncrypt();
+            encrypted = gestorEncrypt.RSAEncrypt(clau);
+
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+            e.printStackTrace();
+        }
+
+        String urlParameters = "username="+username+"&password="+encrypted+"&grant_type=password";
         byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
         int postDataLength = postData.length;
         HttpURLConnection connexio = postRequest(postDataLength, METODE_PETICIO_POST, URL_TOKEN, APPLICATION_URLENCODED);
@@ -224,9 +240,18 @@ public class NetworkUtils extends Connexio{
         HttpURLConnection connexio = null;
         int responseCode = 0;
         Bundle queryBundle = null;
+        String encrypted = "";
+
+        try {
+            GestorEncrypt gestorEncrypt = new GestorEncrypt();
+            encrypted = gestorEncrypt.RSAEncrypt(password);
+
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+            e.printStackTrace();
+        }
 
         try{
-            String body = "{\"password\": \""+password+"\"}";
+            String body = "{\"password\": \""+encrypted+"\"}";
             byte[] postData = body.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
             connexio = putRequest(postDataLength, METODE_PETICIO_PUT, CHANGE_PASS_URL+email, APPLICATION_JSON, token);
@@ -268,9 +293,18 @@ public class NetworkUtils extends Connexio{
         HttpURLConnection connexio = null;
         int responseCode = 0;
         Bundle queryBundle = null;
+        String encrypted = "";
+
+        try {
+            GestorEncrypt gestorEncrypt = new GestorEncrypt();
+            encrypted = gestorEncrypt.RSAEncrypt(password);
+
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+            e.printStackTrace();
+        }
 
         try{
-            String body = "{\"password\": \""+password+"\",\"voice\": \""+voice+"\"}";
+            String body = "{\"password\": \""+encrypted+"\",\"voice\": \""+voice+"\"}";
             byte[] postData = body.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
             connexio = putRequest(postDataLength, METODE_PETICIO_PUT, CHANGE_PASSWORD_ACCOUNT_URL+email, APPLICATION_JSON, token);

@@ -23,7 +23,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.net.HttpURLConnection;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import controlador.gestor.GestorEncrypt;
 import controlador.server.post.SignUpLoader;
 
 import controlador.gestor.GestorException;
@@ -235,14 +242,25 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         String emailUsuari ="";
         String passwordUsuari ="";
         String voiceUsuari ="";
-
+        String encrypted = "";
         if (args != null) {
            emailUsuari = args.getString(EMAIL_KEY);
            passwordUsuari = args.getString(CLAU_KEY);
            voiceUsuari = args.getString(VEU_KEY);
         }
 
-        return new SignUpLoader(this, new Usuari(emailUsuari, voiceUsuari, passwordUsuari));
+        GestorEncrypt gestorEncrypt = new GestorEncrypt();
+
+        try {
+
+            encrypted = gestorEncrypt.RSAEncrypt(passwordUsuari);
+
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+            e.printStackTrace();
+        }
+
+        return new SignUpLoader(this, new Usuari(emailUsuari, voiceUsuari, encrypted));
+
     }
 
     @Override

@@ -6,12 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import android.util.Pair;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -119,6 +121,10 @@ public class CommunicatorTransitionActivity extends AppCompatActivity implements
                 startActivity(intentComunicador);
             } else {
                 Toast.makeText(getApplicationContext(), ERROR_GET_PANELLS, Toast.LENGTH_LONG).show();
+                GestorSharedPreferences gestorSharedPreferences = new GestorSharedPreferences(this);
+                gestorSharedPreferences.deleteData();
+                Intent intent = new Intent(CommunicatorTransitionActivity.this, LoginActivity.class);
+                startActivity(intent);
             }
         }
     }

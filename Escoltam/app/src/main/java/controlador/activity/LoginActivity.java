@@ -18,12 +18,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import controlador.gestor.GestorEncrypt;
 import controlador.gestor.JsonUtils;
 import controlador.server.post.LoginLoader;
 import controlador.server.test.activity.RequestTestActivity;
 import io.github.muddz.styleabletoast.StyleableToast;
 
 import java.net.HttpURLConnection;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import controlador.gestor.GestorSharedPreferences;
 import controlador.gestor.GestorLogin;
@@ -44,7 +51,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     private static final String RESPONSE_CODE_BUNDLE_KEY = "responseCode";
     private static final String TOKEN_BUNDLE_KEY = "token";
     private EditText email, password;
-//    private GestorEncrypt gestorEncrypt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
