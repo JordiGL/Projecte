@@ -23,38 +23,8 @@ import javax.crypto.NoSuchPaddingException;
  */
 public class GestorEncrypt {
 
-    private static final String PUBLIC_KEY_BASE64_ENCODED = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0pqDLzG01d4KQCOxa3nK\r\n"
-            + "EGuwho/JPwHydUE8dliCQiJFc6qsumf8N9Ui2iznWwhkGYTAICRnD89Bmnxj/8z8\r\n"
-            + "Xjas/M3ar5ZsoyAJWVomuqYYsRaBrm8NGQ/XMYJ5e2ydGXCvZVP217hwMFP3ecv1\r\n"
-            + "Q1naco0MbUdb2Nm9+OBe+q78hdwkTVZC+yPXofc1uc+kewoyccLlhWpy8xOwiN1A\r\n"
-            + "MI5H4vGmWxTygB5+BNA5a0oyWNDCJRHZzuwOywWm45IYZT/FX5HHZ1lOZrzHreZZ\r\n"
-            + "WJ8qsPBbxpDuNkdL8YPWMefSKN3fpIS1twY0s/iqg022goRC3FyAgsJ6NdV0ixDS\r\n"
-            + "MQIDAQAB\r\n";
-    private static final String PRIVATE_KEY_BASE64_ENCODED = "MIIEogIBAAKCAQEA0pqDLzG01d4KQCOxa3nKEGuwho/JPwHydUE8dliCQiJFc6qs\r\n"
-            + "umf8N9Ui2iznWwhkGYTAICRnD89Bmnxj/8z8Xjas/M3ar5ZsoyAJWVomuqYYsRaB\r\n"
-            + "rm8NGQ/XMYJ5e2ydGXCvZVP217hwMFP3ecv1Q1naco0MbUdb2Nm9+OBe+q78hdwk\r\n"
-            + "TVZC+yPXofc1uc+kewoyccLlhWpy8xOwiN1AMI5H4vGmWxTygB5+BNA5a0oyWNDC\r\n"
-            + "JRHZzuwOywWm45IYZT/FX5HHZ1lOZrzHreZZWJ8qsPBbxpDuNkdL8YPWMefSKN3f\r\n"
-            + "pIS1twY0s/iqg022goRC3FyAgsJ6NdV0ixDSMQIDAQABAoIBACd+dk9pYOIia4Wv\r\n"
-            + "q9vd0PjXWRlC6Zh5QwCeJTqESpkgWCnivdWPHotR2uFTPmeh4TOv41+js/gRA9p2\r\n"
-            + "rUIRLNp2ImaeK/51lRXaMiahc1XZRBQhhlwx0yD6CX7tWt68dZGJwjqcTlQR8Gf/\r\n"
-            + "tw8OIoZo2UBWFxh/I0g9PRTo7qbPxrxN4bu7MmtK2gm4N8pW5h3nkKcJ1+LOr68C\r\n"
-            + "0SToiHRyyBXuzTYDiIowyxKAKS9glMXb4REGIJVnYYcktqsXVHmHAfunB+iTSkDH\r\n"
-            + "W3tenKHWRe4cnyAobGipcwZ0dzHAPsmbiA99D2KnkkSeJU66Oz96QWtVftNquW7M\r\n"
-            + "u5Q9kOECgYEA8meZodsS/lYalKJvdXvez62boDTlAQX1LEYWmb0HAwcmmBnIX423\r\n"
-            + "fSXSZYtmrsnRCKDcMSXlnhwBGUBqDc3rqkdV2n3PINCw/lS87LzNSO8U8WrRJqWf\r\n"
-            + "oQTQl7S9r2Eji9aUaXOSedQqBf+BCvzm7K57bPTx7Lu5wn13q72n8TUCgYEA3mpR\r\n"
-            + "YaBcYsvWM10ifGh2DNF6xBeSIrllJLqvLoxP8NIEu7ov1cMPQFNP8ZQh2fX2463c\r\n"
-            + "LRPaVomiM5qO+p1LdDkWNlBt9yARh0SqfRvMHkaRhODrJggUvgb5OyJUor/H+KD5\r\n"
-            + "0J0Saze+NbMqzcp7vmtlLUX3F7yrjGdgRq2kGI0CgYADw+w1AWwoGzpKeMN2dbge\r\n"
-            + "TboPIQM1otwOFgCf3rnPKDtHPY9JPLBO91lvTl0H9gaTNbx13vrUG+dAdymukTZJ\r\n"
-            + "7NW+kRm4jsVRDgvpOX2O1nfi0B/zk7sJC0QaNyqDIOUmdOzVPoBV+B+2/CMLAqar\r\n"
-            + "ooI0TRG89aWLCdvkBQwoyQKBgElegxgUYUWJ/lAVUhH+F6sk0z2qlN91jwLtvmo5\r\n"
-            + "iQllDoCq66q1XOuYUA/eEMio1dfHe5E3MlhHsMUbID1V9BUT29rw70WNQ5r+sMry\r\n"
-            + "h4QZPVm7JHb4RXdmL4MtUQQbBalj2OTTW8cYrVtjjiQyvl1Tah3kLZ2b9G8tjtnh\r\n"
-            + "3/blAoGAP7Q6NI49ND+XqbtBn5cQBslew7S6L52AVCijEfGC9raZI6Q3zAIfdjST\r\n"
-            + "4nazDZYQIOsmn0Y8BSKpiYi94ZuquIMiukGIQDiYaPEujfxRX9cLre8tBbE/fKkp\r\n"
-            + "2ykfmlVcBKxyZPNmtXpeX+HgmEN/mEJLuI1PnLxwuz+3m4Be2i8=";
+    private static final String PUBLIC_KEY_BASE64_ENCODED = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCISLP98M/56HexX/9FDM8iuIEQozy6kn2JMcbZS5/BhJ+U4PZIChJfggYlWnd8NWn4BYr2kxxyO8Qgvc8rpRZCkN0OSLqLgZGmNvoSlDw80UXq90ZsVHDTOHuSFHw8Bv//B4evUNJBB8g9tpVxr6P5EJ6FMoR/kY2dVFQCQM4+5QIDAQAB";
+    private static final String PRIVATE_KEY_BASE64_ENCODED = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAIhIs/3wz/nod7Ff/0UMzyK4gRCjPLqSfYkxxtlLn8GEn5Tg9kgKEl+CBiVad3w1afgFivaTHHI7xCC9zyulFkKQ3Q5IuouBkaY2+hKUPDzRRer3RmxUcNM4e5IUfDwG//8Hh69Q0kEHyD22lXGvo/kQnoUyhH+RjZ1UVAJAzj7lAgMBAAECgYAVh26vsggY0Yl/Asw/qztZn837w93HF3cvYiaokxLErl/LVBJz5OtsHQ09f2IaxBFedfmy5CB9R0W/aly851JxrI8WAkx2W2FNllzhha01fmlNlOSumoiRF++JcbsAjDcrcIiR8eSVNuB6ymBCrx/FqhdX3+t/VUbSAFXYT9tsgQJBALsHurnovZS1qjCTl6pkNS0V5qio88SzYP7lzgq0eYGlvfupdlLX8/MrSdi4DherMTcutUcaTzgQU20uAI0EMyECQQC6il1Kdkw8Peeb0JZMHbs+cMCsbGATiAt4pfo1b/i9/BO0QnRgDqYcjt3J9Ux22dPYbDpDtMjMRNrAKFb4BJdFAkBMrdWTZOVc88IL2mcC98SJcII5wdL3YSeyOZto7icmzUH/zLFzM5CTsLq8/HDiqVArNJ4jwZia/q6Fg6e8KO2hAkB0EK1VLF/ox7e5GkK533Hmuu8XGWN6I5bHnbYd06qYQyTbbtHMBrFSaY4UH91Qwd3u9gAWqoCZoGnfT/o03V5lAkBqq8jZd2lHifey+9cf1hsHD5WQbjJKPPIb57CK08hn7vUlX5ePJ02Q8AhdZKETaW+EsqJWpNgsu5wPqsy2UynO";
 
     private PrivateKey privateKey;
     private PublicKey publicKey;
@@ -102,8 +72,6 @@ public class GestorEncrypt {
      */
     public String RSAEncrypt(final String plain) throws NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(2048);
         Cipher cipherEncrypt = Cipher.getInstance("RSA");
         cipherEncrypt.init(Cipher.ENCRYPT_MODE, publicKey);
         byte[] encryptedBytes = cipherEncrypt.doFinal(plain.getBytes());
