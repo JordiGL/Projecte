@@ -88,7 +88,6 @@ public class GestorEncrypt {
         Cipher cipherDecrypt = Cipher.getInstance("RSA");
         cipherDecrypt.init(Cipher.DECRYPT_MODE, privateKey);
         byte[] decryptedBytes = cipherDecrypt.doFinal(encryptedBytes);
-
         return new String(decryptedBytes);
     }
 }
