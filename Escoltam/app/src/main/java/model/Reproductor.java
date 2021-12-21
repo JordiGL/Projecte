@@ -2,8 +2,6 @@ package model;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.os.Handler;
-import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
@@ -41,6 +39,8 @@ public class Reproductor {
     private static final String VOICE_FEMALE_ENGLISH = "LibbyNeural";
     private static final String VOICE_MALE_ENGLISH = "RyanNeural";
     private static final String AUDIO_FILE = "/audio.wav";
+    public static final String ENGLISH = "en";
+    public static final String CATALAN = "ca";
     private String subscriptionKey;
     private String location;
     private String idioma;
@@ -56,8 +56,8 @@ public class Reproductor {
         this.location = SERVICE_LOCATION;
         this.userVoice = userVoice;
         this.idioma = LANGUAGE_CATALA;
-        synthesizer = setUpSynthesizer();
         setUpSystemVoice(idioma);
+        synthesizer = setUpSynthesizer();
         setUpMediaPlayer(context);
     }
 
@@ -90,9 +90,9 @@ public class Reproductor {
 
         try{
 
-            if (idioma.equalsIgnoreCase("en")){
+            if (idioma.equalsIgnoreCase(ENGLISH)){
                 this.idioma = LANGUAGE_ENGLISH;
-            }else if(idioma.equalsIgnoreCase("ca")){
+            }else if(idioma.equalsIgnoreCase(CATALAN)){
                 this.idioma = LANGUAGE_CATALA;
             }else{
                 throw new GestorException(ERROR_LANGUAGE);
@@ -121,7 +121,9 @@ public class Reproductor {
             new File(context.getFilesDir()+AUDIO_FILE);
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setVolume(0.8f,0.8f);
-            mediaPlayer.setDataSource(context.getFilesDir()+AUDIO_FILE);
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(context.getFilesDir() + AUDIO_FILE);
             mediaPlayer.prepareAsync();
 
 

@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import controlador.activity.AdministratorTransitionActivity;
 import controlador.activity.CommunicatorTransitionActivity;
-import controlador.activity.UserActivity;
 
 /**
  * Classe gestora de l'activitat amb la qual inicia el programa.

@@ -3,7 +3,6 @@ package controlador.activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -1414,8 +1413,10 @@ public class UserActivity extends FragmentActivity
 
             case R.id.button_delete_back:
 
-                GestorText.getList().removeLast();
-                GestorText.refreshEditText();
+                if(!GestorText.getList().isEmpty()){
+                    GestorText.getList().removeLast();
+                    GestorText.refreshEditText();
+                }
                 break;
 
             case R.id.button_delete_all:

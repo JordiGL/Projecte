@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import controlador.activity.AdministratorTransitionActivity;
 import controlador.activity.CommunicatorTransitionActivity;
-import controlador.activity.UserActivity;
 import model.Usuari;
 
 /**

@@ -5,6 +5,8 @@ package model;
  * @author Jordi Gómez Lozano
  */
 public class Usuari {
+    private static final String DEFAULT_ROL = "ROLE_USER";
+    private static final int ROL_USER_ID = 1;
     private String email;
     private String voice;
     private String password;
@@ -24,7 +26,7 @@ public class Usuari {
         this.voice = voice;
         this.password = password;
         this.enabled = true;
-        this.rol = new Rol(1, "ROLE_USER");
+        this.rol = new Rol(ROL_USER_ID, DEFAULT_ROL);
     }
 
     public String getEmail() {

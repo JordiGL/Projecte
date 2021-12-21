@@ -153,5 +153,13 @@
     <string name="context_panell_favorite_text">Fer favorit</string>
     <string name="text_eliminar_compte_settings">Eliminar compte</string>
     <string name="panells_transition_text">Carregant panells</string>
+    <string name="add_panell_test_text">Afegir panell</string>
+    <string name="edit_panell_test_text">Editar panell</string>
+    <string name="delete_panell_test_text">Eliminar panell</string>
+    <string name="add_icona_test_text">Afegir icona</string>
+    <string name="edit_icona_test_text">Editar icona</string>
+    <string name="delete_icona_test_text">Eliminar icona</string>
+    <string name="delete_account_test_text">Eliminar compte</string>
+    <string name="get_panells_test_text">Obtenir panells</string>
 
 </resources>
